@@ -27,12 +27,13 @@
     (draw-rhythmic-line (pulses value) (size value) 10 (- (om::w view) 20) 10 (- (om::h view) 20))))
 
 (defmethod om::draw-mini-view  ((view t) (value polyrhythmic-frame)) 
-  (oa:om-with-focused-view view 
-    (let ((maxsize (apply 'max (mapcar 'size (voices value))))
-          (lineh (/ (- (om::h view) 20) (length (voices value)))))
-      (loop for v in (voices value) 
-            for i = 0 then (1+ i) do
-            (draw-rhythmic-line (pulses v) maxsize 10 (- (om::w view) 20) (+ 10 (* i lineh)) lineh)))))
+  (when (voices value)
+    (oa:om-with-focused-view view 
+      (let ((maxsize (apply 'max (mapcar 'size (voices value))))
+            (lineh (/ (- (om::h view) 20) (length (voices value)))))
+        (loop for v in (voices value) 
+              for i = 0 then (1+ i) do
+              (draw-rhythmic-line (pulses v) maxsize 10 (- (om::w view) 20) (+ 10 (* i lineh)) lineh))))))
 
 (defun draw-rhythmic-line (pulses size x w y h)
   (let ((yy (+ y h -2))
