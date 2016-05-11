@@ -12,6 +12,7 @@
 
 (in-package :om)
 
+(compile&load (om-relative-path '("src") "rhythmic-frames"))
 (compile&load (om-relative-path '("src") "combinations"))
 
 (set-lib-release 0.1)
