@@ -17,7 +17,8 @@
    :pitch-inversion
    :repeat-list
    :retrograde-list
-   :rotations->poly))
+   :rotations->poly
+   :rotations->voice))
 
 (in-package :om)
 
@@ -32,11 +33,7 @@
 (compile&load (om-relative-path '("src") "repeat-list"))
 (compile&load (om-relative-path '("src") "retrograde-list"))
 (compile&load (om-relative-path '("src") "rotations->poly"))
-
-
-
-
-
+(compile&load (om-relative-path '("src") "rotations->voice"))
 
 
 
@@ -67,7 +64,7 @@
 ; ("sub-pack-name" subpacke-lists class-list function-list class-alias-list)
 (om::fill-library  
  '((NIL nil (prf) (get-combi get-rotations canon-query) nil)
-   ("operations" nil (prf) (sum-lists get-index count-truncate cribs equal-probability pitch-inversion repeat-list retrograde-list rotations->poly) nil)
+   ("operations" nil (prf) (sum-lists get-index count-truncate cribs equal-probability pitch-inversion repeat-list retrograde-list rotations->poly rotations->voice) nil)
    ("queries-database" nil (prf) (get-combi get-rotations canon-query) nil)
 
    
