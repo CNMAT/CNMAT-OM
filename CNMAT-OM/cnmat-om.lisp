@@ -37,8 +37,6 @@
 
 
 
-
-
 (set-lib-release 0.1 (om::find-library "CNMAT-OM"))
 
 (doc-library "CNMAT-OM contains compositional tools collected from CNMAT researh and projects.")
