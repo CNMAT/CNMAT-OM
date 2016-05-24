@@ -9,7 +9,7 @@
 
 (om::defmethod! get-rotations ((durations list))
   :icon 2
-  :indoc '("a list of values")
+  :indoc '("a list of lists of values")
   :outdoc '("list of rotations (circular permutations)") 
   :initvals '((1 2 3))
   :doc "Computes and returns the list of all rotations (circular permutations) of a given list <durations>."
@@ -19,7 +19,7 @@
 (om::defmethod! cribs ((my-list list))
 
   :icon 2
-  :indoc '("a list lists of values")
+  :indoc '("a list of lists of values")
   :outdoc '("list of rotations (circular permutations) for each list") 
   :initvals '(((1 2 3) (4 5 6)))
   :doc "Computes and returns the list of all rotations (circular permutations) of a given group of lists <durations lists>."

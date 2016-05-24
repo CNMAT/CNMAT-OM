@@ -27,14 +27,14 @@
 ;;; output sums of lists of lists
 (om::defmethod! sum-lists ((my-list list) &optional (mode 0))
   :icon 5
-  :indoc '("a list of lists to be summed")
+  :indoc '("list of lists to be summed" "mode: 0 = sum all numbers; 1 = sum numbers and retain list structure")
   :initvals '(((1 2 3) (4 5 6)) 0)
   :menuins '((1 (("sum of the list of lists per voice" 0) ("sums that preserve list structure" 1))))
   :doc "Returns a list of sums of list arguments"
 
   (case mode 
     ;;;sum of the lists of lists per voice
-    (0 (mapcar #'reduce-sum my-list))
+    (0 (reduce-sum my-list))
     ;;;sum that preserves the list structure
     (1 (mapcar #'reduce-sum-lists my-list))
     )
