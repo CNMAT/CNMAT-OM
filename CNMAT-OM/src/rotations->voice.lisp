@@ -19,7 +19,7 @@
 
 
 (defun make-poly (myvoices)
-   (make-instance 'poly
+    (make-instance 'poly
                    :voices myvoices
                    )
 )
@@ -46,11 +46,11 @@
 
   :icon 2
   :indoc '("a list for the meter" "a list of lists for durations" "a tatum specified as a fraction" "a list of lists of pitches" "a tempo as integer")
-  :outdoc '("a poly") 
-  :initvals '( ((1 5 7 10)) (4 4) 1/16 ((6100)) 110)
+  :outdoc '("a voice") 
+  :initvals '( ((1 5 7 10)) (4 4) 1/16 ((6100)) 100)
   :doc "Converts a rotation list into music notation."
 
-  (let ((my-chordseq (make-chord-seq (make-poly (mapcar (lambda (x y) (make-voice meter x tatum y tempo)) durations-list pitches ))))
+  (let ((my-chordseq (make-chord-seq (make-poly (print (mapcar (lambda (x y) (make-voice meter x tatum y tempo)) durations-list pitches )))))
         (my-tempo-map (get-tempo-map (make-voice meter (first durations-list) tatum (first pitches) tempo))))
     
     (reduce-to-one-voice my-chordseq my-tempo-map)
@@ -62,7 +62,7 @@
 ;;;making the sustain version first
 (om::defmethod! rotations->voice ( (durations-list prf) (meter list) (tatum number) (pitches list) (tempo integer))
   (let ((durations (mapcar 'pulses (voices durations-list))))
-    (rotations->poly durations meter tatum pitches tempo)))
+    (rotations->voice durations meter tatum pitches tempo)))
 
 ;;;make mode 1 2 3 for sustain, rest, pulses
 ;;;
