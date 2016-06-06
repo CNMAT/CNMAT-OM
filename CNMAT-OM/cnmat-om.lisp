@@ -19,7 +19,8 @@
    :retrograde-list
    :rotations->poly
    :rotations->voice
-   :permute+remove-duplicate-rotations))
+   :permute+remove-duplicate-rotations
+   :canon-permutations-no-overlaps))
 
 (in-package :om)
 
@@ -36,6 +37,7 @@
 (compile&load (om-relative-path '("src") "rotations->poly"))
 (compile&load (om-relative-path '("src") "rotations->voice"))
 (compile&load (om-relative-path '("src") "permute+remove-duplicate-rotations"))
+(compile&load (om-relative-path '("src") "canon-permutations-no-overlaps"))
 
 
 
@@ -66,7 +68,7 @@
 (om::fill-library  
  '((NIL nil (prf) (get-combi get-rotations canon-query ) nil)
    ("operations" nil (prf) (sum-lists get-index count-truncate cribs equal-probability pitch-inversion repeat-list retrograde-list rotations->poly rotations->voice) nil)
-   ("queries-database" nil (prf) (get-combi get-rotations canon-query permute+remove-duplicate-rotations) nil)
+   ("queries-database" nil (prf) (get-combi get-rotations canon-query permute+remove-duplicate-rotations canon-permutations-no-overlaps) nil)
 
    
    ;;use lines below for sub-sub menus, if needed

@@ -22,13 +22,16 @@
 
 (om::defmethod! permute+remove-duplicate-rotations ((main-list list))
 
-  :icon 7
+  :icon 3
   :indoc '("a list of lists")
   :outdoc '("Tests all permutations of a list, checking it for duplicates in the form of rotations.") 
   :initvals '((1 2 3))
   :menuins '((1 (("index list" 0) )))
   :doc "Tests all permutations of a list, checking it for duplicates in the form of rotations."
   
-  (remove-duplicates (permutations main-list) :test #'is-rotation?)
+  (let ((results (remove-duplicates (permutations main-list) :test #'is-rotation?)))
+    (mapcar (lambda (x) (reverse x)) results)
+
+    )
 
 )
