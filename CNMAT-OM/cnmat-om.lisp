@@ -21,7 +21,8 @@
    :rotations->voice
    :permute+remove-duplicate-rotations
    :canon-permutations-no-overlaps
-   :rotations->poly2))
+   :rotations->poly2
+   :pitch-mapper1))
 
 (in-package :om)
 
@@ -40,6 +41,8 @@
 (compile&load (om-relative-path '("src") "permute+remove-duplicate-rotations"))
 (compile&load (om-relative-path '("src") "canon-permutations-no-overlaps"))
 (compile&load (om-relative-path '("src") "rotations->poly2"))
+(compile&load (om-relative-path '("src") "pitch-mapper1"))
+
 
 
 
@@ -70,7 +73,7 @@
 ; ("sub-pack-name" subpacke-lists class-list function-list class-alias-list)
 (om::fill-library  
  '((NIL nil (prf) (get-combi get-rotations canon-query ) nil)
-   ("operations" nil (prf) (sum-lists get-index count-truncate cribs equal-probability pitch-inversion repeat-list retrograde-list rotations->poly rotations->voice rotations->poly2) nil)
+   ("operations" nil (prf) (sum-lists get-index count-truncate cribs equal-probability pitch-inversion repeat-list retrograde-list rotations->poly rotations->voice rotations->poly2 pitch-mapper1) nil)
    ("queries-database" nil (prf) (get-combi get-rotations canon-query permute+remove-duplicate-rotations canon-permutations-no-overlaps) nil)
 
    
