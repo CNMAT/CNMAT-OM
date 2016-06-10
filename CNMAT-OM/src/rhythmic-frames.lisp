@@ -61,4 +61,3 @@
     :voices (mapcar #'(lambda (r) (r-substitute r val subs)) (voices rhythm))
     ))
 
-
