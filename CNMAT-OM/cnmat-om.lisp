@@ -25,7 +25,8 @@
    :pitch-mapper1
    :retrograde-canon-test
    :pitch->bands-collection
-   :pitch->bands-pitchclass))
+   :pitch->bands-pitchclass
+   :make-bands))
 
 (in-package :om)
 
@@ -48,6 +49,7 @@
 (compile&load (om-relative-path '("src") "retrograde-canon-test"))
 (compile&load (om-relative-path '("src") "pitch->bands-collection"))
 (compile&load (om-relative-path '("src") "pitch->bands-pitchclass"))
+(compile&load (om-relative-path '("src") "make-bands"))
 
 
 
@@ -82,7 +84,7 @@
 ; ("sub-pack-name" subpacke-lists class-list function-list class-alias-list)
 (om::fill-library  
  '((NIL nil (prf) (get-combi get-rotations canon-query ) nil)
-   ("operations" nil (prf) (sum-lists get-index count-truncate cribs equal-probability pitch-inversion repeat-list retrograde-list rotations->poly rotations->voice rotations->poly2 pitch-mapper1 retrograde-canon-test pitch->bands-collection pitch->bands-pitchclass) nil)
+   ("operations" nil (prf) (sum-lists get-index count-truncate cribs equal-probability pitch-inversion repeat-list retrograde-list rotations->poly rotations->voice rotations->poly2 pitch-mapper1 retrograde-canon-test pitch->bands-collection pitch->bands-pitchclass make-bands) nil)
    ("queries-database" nil (prf) (get-combi get-rotations canon-query permute+remove-duplicate-rotations canon-permutations-no-overlaps) nil)
 
    
