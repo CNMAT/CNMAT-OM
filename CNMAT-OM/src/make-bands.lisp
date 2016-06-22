@@ -25,6 +25,7 @@
   :icon 7
   :indoc '("a chord-seq" "mode: 0 = n/a")
   :initvals '((nil) 0)
+  :outdoc '("Returns a bpf lib.")
   :doc "Returns a bpf lib for the pitch band to be sampled. Describes a band of pitches. Takes in a chord-seq with  three of more dyads. Returns a bpf lib describing a pitch band that can be sample across a series of attacks. Make-bands should be used in conjunction with objects pitch->bands-pitchclass or pitch->bands-collection objects. See examples: 5b pitch->bands-collection or 5c pitch-bands->pitchclass"
 
   (case mode 
