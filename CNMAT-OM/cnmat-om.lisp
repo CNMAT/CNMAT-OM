@@ -29,7 +29,8 @@
    :make-bands
    :poly-player-cuts
    :r-interleave
-   :poly->voice))
+   :poly->voice
+   :pitch-mapper2))
 
 (in-package :om)
 
@@ -56,6 +57,8 @@
 (compile&load (om-relative-path '("src") "poly-player-cuts"))
 (compile&load (om-relative-path '("src") "r-interleave"))
 (compile&load (om-relative-path '("src") "poly->voice"))
+(compile&load (om-relative-path '("src") "pitch-mapper2"))
+
 
 
 
@@ -92,7 +95,7 @@
 ; ("sub-pack-name" subpacke-lists class-list function-list class-alias-list)
 (om::fill-library  
  '((NIL nil (prf) (get-combi get-rotations canon-query ) nil)
-   ("operations" nil (prf) (sum-lists get-index count-truncate cribs equal-probability pitch-inversion repeat-list retrograde-list rotations->poly rotations->voice rotations->poly2 pitch-mapper1 retrograde-canon-test pitch->bands-collection pitch->bands-pitchclass make-bands poly-player-cuts poly->voice) nil)
+   ("operations" nil (prf) (sum-lists get-index count-truncate cribs equal-probability pitch-inversion repeat-list retrograde-list rotations->poly rotations->voice rotations->poly2 pitch-mapper1 retrograde-canon-test pitch->bands-collection pitch->bands-pitchclass make-bands poly-player-cuts poly->voice pitch-mapper2) nil)
    ("queries-database" nil (prf) (get-combi get-rotations canon-query permute+remove-duplicate-rotations canon-permutations-no-overlaps r-interleave) nil)
 
    
