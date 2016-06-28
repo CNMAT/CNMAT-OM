@@ -18,9 +18,25 @@
 (defun make-voice-cuts-rests2 (meter durations-list tatum new-pitches tempo generated-rhythms generated-tatums)
   (let* ((flat-pitches (flat new-pitches))
          (cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0 durations-list))))
-         (cuts-events (mapcar (lambda (x) (cuts-rests x tatum)) (om* durations-list tatum))))
-         ;;(generated-rhythms-with-rests (flat (mapcar (lambda (x) (cuts-rests x tatum)) generated-rhythms)))
+         (cuts-events (mapcar (lambda (x) (cuts-rests x tatum)) (om* durations-list tatum)))
+         ;;match attacks with the correct tatum in the tatum list
+         (attack-durations (posn-match generated-tatums (butlast (dx->x 0 (om-  durations-list 0)))))
+         ;;now add the rests back in to account for the time between attacks
+         (rest-durations  (om* -1 (mapcar (lambda (x y) (- x y)) generated-rhythms attack-durations)))
+         ;;this then created the final list of attacks with rests for the rests version of the cut-ins patch
+         (attacks+rests-durations (remove 0 (flat (mapcar (lambda (x y) (list x y)) attack-durations rest-durations)))) )
+
+    ;;(generated-rhythms-with-rests (flat (mapcar (lambda (x) (cuts-rests x tatum)) generated-rhythms)))
     ;;return a list with both voices
+    ;; (print generated-tatums)
+    ;;(print generated-rhythms)
+    ;;this gets list of attacks 
+    ;; (print attack-durations)
+    ;;(print rest-durations) 
+    ;;(print attacks+rests-durations)
+    ;;(print (flat (mapcar (lambda (x y) (list x y)) attack-durations rest-durations)))
+
+
        (list
     ;;this voice is the running version
          (make-instance 'voice 
@@ -31,7 +47,7 @@
     ;;; this voice is the cut in
 
           (make-instance 'voice 
-                   :tree (mktree generated-rhythms-with-rests meter)
+                   :tree (mktree attacks+rests-durations meter)
                    :chords cuts-pitches 
                    :tempo tempo 
                    )
