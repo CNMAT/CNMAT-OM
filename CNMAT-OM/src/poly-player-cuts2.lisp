@@ -11,9 +11,60 @@
 
 )
 
+(defun pulse-pitches (flat-pitches durations-list)
+
+  ;; get the right pitches at the specific index called for
+  (let ((pitch-at-index (posn-match flat-pitches  (dx->x 0 durations-list))))
+
+  ;;return the right repeated pitches for the pulse voice
+  (flat (mapcar (lambda (x y) (repeat-n x y)) pitch-at-index durations-list))
+  )
+
+)
+
+
+
+
 ;;;;
-;;;; RESTS VERSION DOES NOT WORK YET.  HOW TO GET THE CURRENT TATUM AT THE ATTACK POINT?
 ;;;;
+;;;;
+
+(defun make-voice-cuts-pulse2 (meter durations-list tatum new-pitches tempo generated-rhythms generated-tatums)
+  (let* ((flat-pitches (flat new-pitches))
+         (cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0 durations-list))))
+         (cuts-events (mapcar (lambda (x) (cuts-rests x tatum)) (om* durations-list tatum)))
+         ;;match attacks with the correct tatum in the tatum list
+         (attack-durations (posn-match generated-tatums (butlast (dx->x 0 (om-  durations-list 0)))))
+         ;;now add the rests back in to account for the time between attacks
+         (rest-durations  (om* -1 (mapcar (lambda (x y) (- x y)) generated-rhythms attack-durations)))
+         ;;this then created the final list of attacks with rests for the rests version of the cut-ins patch
+         (attacks+rests-durations (remove 0 (flat (mapcar (lambda (x y) (list x y)) attack-durations rest-durations)))) 
+         (pulsing-pitches (pulse-pitches flat-pitches durations-list)) )
+
+
+
+       (list
+    ;;this voice is the running version
+         (make-instance 'voice 
+                   :tree (mktree generated-tatums meter)
+                   :chords flat-pitches 
+                   :tempo tempo 
+                   )
+    ;;; this voice is the cut in
+
+          (make-instance 'voice 
+                   ;;use the tatums as the pulse rhythms
+                   :tree (mktree generated-tatums meter)
+                   :chords pulsing-pitches
+                   :tempo tempo 
+                   )
+       
+        )
+    )
+)
+
+
+
 
 (defun make-voice-cuts-rests2 (meter durations-list tatum new-pitches tempo generated-rhythms generated-tatums)
   (let* ((flat-pitches (flat new-pitches))
@@ -163,6 +214,9 @@
     (0 (flat (mapcar (lambda (x y z a) (make-voice-cuts2 meter x tatum-list y tempo z a)) flat-rhythm-lists  prepped-pitches generated-rhythms generated-tatums) 1)
        )
     (1 (flat (mapcar (lambda (x y z a) (make-voice-cuts-rests2 meter x tatum-list y tempo z a)) flat-rhythm-lists  prepped-pitches generated-rhythms generated-tatums) 1)
+       )
+
+    (2 (flat (mapcar (lambda (x y z a) (make-voice-cuts-pulse2 meter x tatum-list y tempo z a)) flat-rhythm-lists  prepped-pitches generated-rhythms generated-tatums) 1)
        )
        
 
