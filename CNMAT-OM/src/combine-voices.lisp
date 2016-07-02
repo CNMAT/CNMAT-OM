@@ -4,7 +4,11 @@
 
 (in-package :cnmat)
 
+(defun get-rid-of-rests (rhythms)
 
+  (if ( plusp (last-elem rhythms))  rhythms (get-rid-of-rests (butlast rhythms)))
+
+)
 
 
 
@@ -18,7 +22,7 @@
   :doc "Joins one voice to another. Use this when the concat object won't work, i.e. when segments of music dont end tidly at the end of a bar. Joins voices according to these rules: If the last rhythm is a rest then this last rest is deleted and the new voice is joined snug with the last pitch.Takes tempo and legato from the first voice."
 
 (let* ((rhythms1 (om::tree2ratio (om::tree voice1)))
-      (rhythms1-tested (if ( plusp (last-elem rhythms1))  rhythms1 (butlast rhythms1)))
+      (rhythms1-tested (get-rid-of-rests rhythms1))
       (chords1 (om::chords voice1))
       (tempo (om::tempo voice1))
       (legato (om::legato voice1))
