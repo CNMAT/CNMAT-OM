@@ -33,7 +33,8 @@
    :poly-player-cuts2
    :poly->voice
    :combine-voices
-   :combine-polys))
+   :combine-polys
+   :combine-rhythm-lists))
 
 (in-package :om)
 
@@ -64,6 +65,8 @@
 (compile&load (om-relative-path '("src") "poly->voice"))
 (compile&load (om-relative-path '("src") "combine-voices"))
 (compile&load (om-relative-path '("src") "combine-polys"))
+(compile&load (om-relative-path '("src") "combine-rhythm-lists"))
+
 
 
 
@@ -104,7 +107,7 @@
 ; ("sub-pack-name" subpacke-lists class-list function-list class-alias-list)
 (om::fill-library  
  '((NIL nil (prf) (get-combi get-rotations canon-query ) nil)
-   ("operations" nil (prf) (sum-lists get-index count-truncate cribs equal-probability pitch-inversion repeat-list retrograde-list rotations->poly rotations->voice rotations->poly2 pitch-mapper1 retrograde-canon-test pitch->bands-collection pitch->bands-pitchclass make-bands poly-player-cuts  pitch-mapper2 poly-player-cuts2 poly->voice combine-voices combine-polys) nil)
+   ("operations" nil (prf) (sum-lists get-index count-truncate cribs equal-probability pitch-inversion repeat-list retrograde-list rotations->poly rotations->voice rotations->poly2 pitch-mapper1 retrograde-canon-test pitch->bands-collection pitch->bands-pitchclass make-bands poly-player-cuts  pitch-mapper2 poly-player-cuts2 poly->voice combine-voices combine-polys combine-rhythm-lists) nil)
    ("queries-database" nil (prf) (get-combi get-rotations canon-query permute+remove-duplicate-rotations canon-permutations-no-overlaps r-interleave) nil)
 
    
