@@ -52,7 +52,18 @@
   
 )
 
+(defun prep-mapping-list (mapping-list numattacks)
+  (let* ((mylist (mapcar (lambda (x) ( flat (repeat-n (cdr x) numattacks))) mapping-list))
+        (mylist-with-keys (mapcar (lambda (x y) (list (car x) y)) mapping-list mylist)))
+    
+    ;(print 'mylist-with-keys)
+    ;(print mylist-with-keys)
+    
+    mylist-with-keys
 
+    )
+
+)
 
 (defun one-one-pitch-map (rhythm-list key-list)
 
@@ -71,6 +82,24 @@
   
 )
 
+(defun one-one-pitch-map-multiples (rhythm-list key-list)
+
+;;do a one to one pitch mapping for each list of rhythms
+;;go through each element in rhythmlist 
+;;test the elemtn until you find a match in the key-list
+;;then return the corresponding value
+
+ (flat 
+
+    (loop for attack in rhythm-list
+          collect (loop for elem in key-list
+                        if (eq attack (car (car elem))) 
+                        collect (pop (car (cdr elem)))
+                        ;;moves you to the next mapping number
+                        
+                        ))
+  )
+)
 
 ;;THIS CHECKING CODE DOESNT WORK YET
 (defun check-pitch-map (rotations-list mapped-pitch-list)
@@ -97,9 +126,12 @@
   
   (case mode
 
-    (0 (let ((resultant-pitches (mapcar (lambda (x) (one-one-pitch-map x mapping-list)) durations-list)))
-         
-         (check-pitch-map durations-list resultant-pitches)
+    (0 (let* ((prepped-mapping-list (prep-mapping-list mapping-list (length (car durations-list))))
+             (resultant-pitches (mapcar (lambda (x) (one-one-pitch-map-multiples x  (clone prepped-mapping-list))) durations-list))
+             )
+
+             resultant-pitches
+
          )
        )
     (1 (let ((resultant-pitches (mapcar (lambda (x) (random-from-set-pitch-map x mapping-list)) durations-list)))
