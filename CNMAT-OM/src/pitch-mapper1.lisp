@@ -31,7 +31,8 @@
 )
 
 
-(defun random-from-set-pitch-map (rhythm-list key-list)
+
+(defun random-from-set-pitch-map-probs (rhythm-list key-list)
 
 ;;do a one to one pitch mapping for each list of rhythms
 ;;go through each element in rhythmlist 
@@ -43,10 +44,10 @@
           collect (loop for elem in key-list
                     if (eq attack (car (car elem))) 
 
-                    ;; now make a random choice from the elements to return
+                    ;; now make 1 random choice from the elements to return using the probabilities
                     ;;(nth (random (length my-list)) my-list)
 
-		    collect (nth (random (length (nth 1 elem))) (nth 1 elem)))
+		    collect (rand-from-list (nth 1 elem) 1))
        )
     )
   
@@ -134,7 +135,13 @@
 
          )
        )
-    (1 (let ((resultant-pitches (mapcar (lambda (x) (random-from-set-pitch-map x mapping-list)) durations-list)))
+    ;;this mode not used--regular random choice no weight--can go back to this if needed
+    (3 (let ((resultant-pitches (mapcar (lambda (x) (random-from-set-pitch-map x mapping-list)) durations-list)))
+         
+         (check-pitch-map durations-list resultant-pitches)
+         )
+       )
+    (1 (let ((resultant-pitches (mapcar (lambda (x) (random-from-set-pitch-map-probs x mapping-list)) durations-list)))
          
          (check-pitch-map durations-list resultant-pitches)
          )
@@ -144,6 +151,8 @@
          (check-pitch-map durations-list resultant-pitches)
          )
        )
+
+   
     )
 
 )

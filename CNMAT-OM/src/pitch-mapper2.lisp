@@ -35,19 +35,13 @@
   (case mode
 
     (0 
-
-         (cond ((listp (car pitch-collection))
-               ;;this is the version when there are a list of list of pitch-collections
-               (let ((resultant-pitches (mapcar (lambda (x y) (get-random-pitch x y)) pitch-collection durations-list)))
-             resultant-pitches
-             ))
-             (t ;this is the version when there is just one shared pitch collection
-             (let ((resultant-pitches (mapcar (lambda (x) (get-random-pitch pitch-collection x)) durations-list)))
-             resultant-pitches
-             ))
-          )
+             (let ((resultant-pitches (mapcar (lambda (x) (rand-from-list pitch-collection (length x))) durations-list)))
+             (flat resultant-pitches 1)
+             )
      )
-(1 
+          
+     
+(2 
 
          (cond ((listp (car pitch-collection))
                ;;this is the version when there are a list of list of pitch-collections
@@ -58,6 +52,23 @@
              (let ((resultant-pitches (mapcar (lambda (x) (get-random-pitch-from-range pitch-collection x)) durations-list)))
              resultant-pitches
              ))
+          )
+     )
+
+(1
+
+         (cond ((listp (car pitch-collection))
+               ;;this is the version when there are a list of list of pitch-collections
+               (let* ( (length-durations (mapcar (lambda (x) (length x)) durations-list))
+                       (resultant-pitches (mapcar (lambda (x y) (rand-from-list x y))  pitch-collection length-durations )))
+
+                      ;(resultant-pitches (mapcar (lambda (x y) (rand-from-list x y))  pitch-collection flat-length-durations )))
+             (print 'got-here)
+             (print (flat resultant-pitches 1))
+             (flat resultant-pitches 1)
+             ))
+             (t nil
+             )
           )
      )
 
