@@ -38,7 +38,9 @@
    :rand-from-list
    :list-transition
    :pitch->bands-register
-   :n-permutations-no-rotations))
+   :n-permutations-no-rotations
+   :permutations+canon-growth
+   :permutations+canon-growth-return-all))
 
 (in-package :om)
 
@@ -74,6 +76,9 @@
 (compile&load (om-relative-path '("src") "list-transition"))
 (compile&load (om-relative-path '("src") "pitch->bands-register"))
 (compile&load (om-relative-path '("src") "n-permutations-no-rotations"))
+(compile&load (om-relative-path '("src") "permutations+canon-growth"))
+(compile&load (om-relative-path '("src") "permutations+canon-growth-return-all"))
+
 
 
 
@@ -108,7 +113,7 @@
 ; ("sub-pack-name" subpacke-lists class-list function-list class-alias-list)
 (om::fill-library  
  '((NIL nil (prf) (get-combi get-rotations canon-query ) nil)
-   ("operations" nil (prf) (sum-lists get-index count-truncate cribs equal-probability pitch-inversion repeat-list retrograde-list rotations->poly rotations->voice rotations->poly2 pitch-mapper1 retrograde-canon-test pitch->bands-collection pitch->bands-pitchclass make-bands poly-player-cuts  pitch-mapper2 poly-player-cuts2 poly->voice combine-voices combine-polys combine-rhythm-lists rand-from-list list-transition pitch->bands-register n-permutations-no-rotations) nil)
+   ("operations" nil (prf) (sum-lists get-index count-truncate cribs equal-probability pitch-inversion repeat-list retrograde-list rotations->poly rotations->voice rotations->poly2 pitch-mapper1 retrograde-canon-test pitch->bands-collection pitch->bands-pitchclass make-bands poly-player-cuts  pitch-mapper2 poly-player-cuts2 poly->voice combine-voices combine-polys combine-rhythm-lists rand-from-list list-transition pitch->bands-register n-permutations-no-rotations permutations+canon-growth  permutations+canon-growth-return-all) nil)
    ("queries-database" nil (prf) (get-combi get-rotations canon-query permute+remove-duplicate-rotations canon-permutations-no-overlaps r-interleave) nil)
 
    
