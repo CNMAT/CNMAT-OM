@@ -62,7 +62,6 @@
                 (setq sign nil))
               )
             ))))
-)
 
 
 (defmethod! r-substitute ((rhythm rhythmic-frame) val subs) 

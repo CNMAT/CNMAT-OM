@@ -41,7 +41,8 @@
    :n-permutations-no-rotations
    :permutations+canon-growth
    :permutations+canon-growth-return-all
-   :permutations+canon-growth-utility))
+   :permutations+canon-growth-utility
+   :r-diminutions))
 
 (in-package :om)
 
@@ -80,6 +81,8 @@
 (compile&load (om-relative-path '("src") "permutations+canon-growth"))
 (compile&load (om-relative-path '("src") "permutations+canon-growth-return-all"))
 (compile&load (om-relative-path '("src") "permutations+canon-growth-utility"))
+(compile&load (om-relative-path '("src") "r-diminutions"))
+
 
 
 
@@ -116,7 +119,7 @@
 ; ("sub-pack-name" subpacke-lists class-list function-list class-alias-list)
 (om::fill-library  
  '((NIL nil (prf) (get-combi get-rotations canon-query ) nil)
-   ("operations" nil (prf) (sum-lists get-index count-truncate cribs equal-probability pitch-inversion repeat-list retrograde-list rotations->poly rotations->voice rotations->poly2 pitch-mapper1 retrograde-canon-test pitch->bands-collection pitch->bands-pitchclass make-bands poly-player-cuts  pitch-mapper2 poly-player-cuts2 poly->voice combine-voices combine-polys combine-rhythm-lists rand-from-list list-transition pitch->bands-register n-permutations-no-rotations permutations+canon-growth  permutations+canon-growth-return-all permutations+canon-growth-utility) nil)
+   ("operations" nil (prf) (sum-lists get-index count-truncate cribs equal-probability pitch-inversion repeat-list retrograde-list rotations->poly rotations->voice rotations->poly2 pitch-mapper1 retrograde-canon-test pitch->bands-collection pitch->bands-pitchclass make-bands poly-player-cuts  pitch-mapper2 poly-player-cuts2 poly->voice combine-voices combine-polys combine-rhythm-lists rand-from-list list-transition pitch->bands-register n-permutations-no-rotations permutations+canon-growth  permutations+canon-growth-return-all permutations+canon-growth-utility r-diminutions) nil)
    ("queries-database" nil (prf) (get-combi get-rotations canon-query permute+remove-duplicate-rotations canon-permutations-no-overlaps r-interleave) nil)
 
    
