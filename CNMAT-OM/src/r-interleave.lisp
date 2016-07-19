@@ -9,16 +9,10 @@
 
 
 (defun r-interleave (rhythm-parent  rhythm-child)
-
-   (let ((myvoices (mapcar (lambda (x y) (list x y)) (voices rhythm-parent) (voices rhythm-child))))
-
-      (make-instance 
-          'prf 
-          :voices (flat myvoices)
-      )
-
-
-   )
-
-
-)
+  (let ((myvoices (make-instance 
+                   'prf :voices (flat 
+                                 (mapcar 'list 
+                                              (voices rhythm-parent) (voices rhythm-child))))))
+    ;(setf (elements-per-voice myvoices) 2)
+    myvoices))
+    
