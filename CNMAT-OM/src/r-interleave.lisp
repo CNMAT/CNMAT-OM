@@ -38,3 +38,11 @@
     
 
 
+(defmethod r-interleave2 (rhythm-parent &rest rest)
+  :initvals '(nil) 
+  :indoc '("first element" "second element" "additional elements")
+  :icon 1
+  :doc "Interleaves rhythmic frames."
+  (loop for group in (mat-trans (cons rhythm-parent rest))
+        collect (make-instance 'prf :voices group))
+  )

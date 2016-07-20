@@ -44,6 +44,9 @@
    :permutations+canon-growth-utility
    :r-diminutions))
 
+
+(require-library "OMAlea")
+
 (in-package :om)
 
 (compile&load (om-relative-path '("src") "rhythmic-frames"))
@@ -82,11 +85,6 @@
 (compile&load (om-relative-path '("src") "permutations+canon-growth-return-all"))
 (compile&load (om-relative-path '("src") "permutations+canon-growth-utility"))
 (compile&load (om-relative-path '("src") "r-diminutions"))
-
-
-
-
-
 
 
 

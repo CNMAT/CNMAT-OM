@@ -315,8 +315,8 @@
 
 
 ;;;this receives from rfi object
-(om::defmethod! rotations->poly2 ( (durations-list prf) (meter list) (tatum list) (pitches list) (tempo integer) &optional (mode 0))
-  (let ((durations (mapcar 'pulses (voices durations-list))))
+(om::defmethod! rotations->poly2 ((durations-list prf) (meter list) (tatum list) (pitches list) (tempo integer) &optional (mode 0))
+  (let ((durations (mapcar 'pulses (flat-voices durations-list))))
 
   (print 'durations)
   (print durations)

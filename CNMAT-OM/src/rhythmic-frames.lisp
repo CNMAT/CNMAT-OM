@@ -13,42 +13,63 @@
 
 
 (defclass! polyrhythmic-frame ()
-  ((voices :initform nil :initarg :voices :accessor voices)
-   ;(elements-per-voice :initform 2 :accessor elements-per-voice)
-   ))
+  ((voices :initform nil :initarg :voices :accessor voices)))
 
 (defclass! prf (polyrhythmic-frame) ())
 
 (defmethod initialize-instance :after ((self polyrhythmic-frame) &rest args)
   (setf (voices self)
         (loop for voice in (voices self) collect
-              (if (listp voice) (make-instance 'rhythmic-frame :pulses voice)
+              (if (listp voice) 
+                  (make-instance 'rhythmic-frame :pulses voice)
                 voice)))
   self)
+
+(defmethod flat-voices ((self polyrhythmic-frame))
+  (flat (mapcar 'flat-voices (voices self))))
+
+(defmethod flat-voices ((self rhythmic-frame)) self)
+
+
 
 (defmethod om::draw-mini-view  ((view t) (value rhythmic-frame)) 
   (oa:om-with-focused-view view 
     (draw-rhythmic-line (pulses value) (size value) 10 (- (om::w view) 20) 10 (- (om::h view) 20))))
 
+(defmethod get-r-frame-size ((self rhythmic-frame)) (size self))
+(defmethod get-r-frame-size ((self polyrhythmic-frame)) 
+  (apply 'max (mapcar 'get-r-frame-size (voices self))))
+
+
 (defmethod om::draw-mini-view  ((view t) (value polyrhythmic-frame)) 
   (when (voices value)
     (oa:om-with-focused-view view 
-      (let ((maxsize (apply 'max (mapcar 'size (voices value))))
-            (lineh (/ (- (om::h view) 20) (length (voices value)))))
-        (loop for v in (voices value) 
-              for i = 0 then (1+ i) do
-              ;(om-api:om-with-fg-color view 
-              ;    (if (= (mod i (- (elements-per-voice value) 0)) 0)
-              ;        (om::om-make-color 1 0 0)
-              ;        (om::om-make-color 0 0 1))
-                (draw-rhythmic-line (pulses v) maxsize 10 (- (om::w view) 20) (+ 10 (* i lineh)) lineh))))))
+      (let ((maxsize (get-r-frame-size value)))
+        (draw-rhythmic-line value maxsize 10 (- (om::w view) 20) 10 (- (om::h view) 20) 0)))))
 
 
-(defun draw-rhythmic-line (pulses size x w y h)
-  (let ((yy (+ y h -2))
-        (bs (/ w size))
-        (plist (om::dx->x 0 (om-abs pulses)))
-        (sign t))
+(defmethod draw-rhythmic-line ((line polyrhythmic-frame) size x w y h i)
+  (let ((lineh (/ h (length (voices line)))))
+    ;(oa::om-with-line '(2 2)
+    ;  (oa::om-draw-line x y (+ x w) y))
+    (om::om-with-fg-color nil (oa::om-make-color 0 0 0)   
+      (loop for v in (voices line) 
+            for i = 0 then (1+ i) do
+            (draw-rhythmic-line v size x w (+ y (* i lineh)) lineh i))
+      )))
+ 
+   
+(defmethod draw-rhythmic-line ((line rhythmic-frame) size x w y h i)
+  (let* ((pulses (pulses line))
+         (yy (+ y (/ h 2)))
+         (bs (/ w size))
+         (plist (om::dx->x 0 (om-abs pulses)))
+         (sign t))
+    (oa::om-with-fg-color nil (if (= i 0)
+                                  (oa::om-make-color 0 0 0)
+                                (oa::om-make-color .4 .4 .4)
+                                )
+          
     (oa::om-draw-line x yy (+ x w) yy)
     (loop for b = 0 then (+ b 1) while (<= b size) do
           (if sign (oa::om-draw-line (+ x (* b bs)) yy (+ x (* b bs)) (- yy 4)))
@@ -61,7 +82,7 @@
                                      (om::integer-to-string (nth pos pulses))))
                 (setq sign nil))
               )
-            ))))
+            )))))
 
 
 (defmethod! r-substitute ((rhythm rhythmic-frame) val subs) 
