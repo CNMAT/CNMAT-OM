@@ -67,7 +67,7 @@
          (sign t))
     (oa::om-with-fg-color nil (if (= i 0)
                                   (oa::om-make-color 0 0 0)
-                                (oa::om-make-color .4 .4 .4)
+                                (oa::om-make-color 0 0 0)
                                 )
           
     (oa::om-draw-line x yy (+ x w) yy)
