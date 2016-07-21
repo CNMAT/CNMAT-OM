@@ -63,8 +63,8 @@
                        (resultant-pitches (mapcar (lambda (x y) (rand-from-list x y))  pitch-collection length-durations )))
 
                       ;(resultant-pitches (mapcar (lambda (x y) (rand-from-list x y))  pitch-collection flat-length-durations )))
-             (print 'got-here)
-             (print (flat resultant-pitches 1))
+             ;(print 'got-here)
+             ;(print (flat resultant-pitches 1))
              (flat resultant-pitches 1)
              ))
              (t nil
