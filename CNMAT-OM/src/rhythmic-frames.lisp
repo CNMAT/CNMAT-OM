@@ -65,11 +65,7 @@
          (bs (/ w size))
          (plist (om::dx->x 0 (om-abs pulses)))
          (sign t))
-    (oa::om-with-fg-color nil (if (= i 0)
-                                  (oa::om-make-color 0 0 0)
-                                (oa::om-make-color 0 0 0)
-                                )
-          
+    (oa::om-with-fg-color nil (oa::om-make-color 0 0 0)
     (oa::om-draw-line x yy (+ x w) yy)
     (loop for b = 0 then (+ b 1) while (<= b size) do
           (if sign (oa::om-draw-line (+ x (* b bs)) yy (+ x (* b bs)) (- yy 4)))
