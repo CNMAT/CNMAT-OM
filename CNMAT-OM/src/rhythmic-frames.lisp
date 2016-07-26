@@ -38,7 +38,9 @@
 
 (defmethod get-r-frame-size ((self rhythmic-frame)) (size self))
 (defmethod get-r-frame-size ((self polyrhythmic-frame)) 
-  (apply 'max (mapcar 'get-r-frame-size (voices self))))
+  (if (voices self)
+    (apply 'max (mapcar 'get-r-frame-size (voices self)))
+    1))
 
 
 (defmethod om::draw-mini-view  ((view t) (value polyrhythmic-frame)) 
@@ -49,14 +51,15 @@
 
 
 (defmethod draw-rhythmic-line ((line polyrhythmic-frame) size x w y h i)
-  (let ((lineh (/ h (length (voices line)))))
+  (when (voices line)
+    (let ((lineh (/ h (length (voices line)))))
     ;(oa::om-with-line '(2 2)
     ;  (oa::om-draw-line x y (+ x w) y))
-    (om::om-with-fg-color nil (oa::om-make-color 0 0 0)   
-      (loop for v in (voices line) 
-            for i = 0 then (1+ i) do
-            (draw-rhythmic-line v size x w (+ y (* i lineh)) lineh i))
-      )))
+      (om::om-with-fg-color nil (oa::om-make-color 0 0 0)   
+        (loop for v in (voices line) 
+              for i = 0 then (1+ i) do
+              (draw-rhythmic-line v size x w (+ y (* i lineh)) lineh i))
+        ))))
  
    
 (defmethod draw-rhythmic-line ((line rhythmic-frame) size x w y h i)
