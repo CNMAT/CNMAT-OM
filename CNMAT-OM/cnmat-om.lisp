@@ -15,15 +15,16 @@
   :pitch->bands-collection
  
 
-
-   :o-sum-lists
-   :o-equal-prob
-   :o-cribs
-   :o-count-trunc
-   :o-list-repeat
-   :o-index
-   :o-list-rand
+   :o-operations
    :o-list-trans
+   :o-index
+   :o-count-trunc
+   :o-cribs
+   :o-equal-prob
+   :o-list-rand
+   :o-list-repeat
+   :o-sum-lists
+
 
    :p-inversion
    :p-map1
@@ -80,52 +81,20 @@
 (compile&load (om-relative-path '("src") "rand-from-list"))
 ;(compile&load (om-relative-path '("src") "make-bands"))
 (compile&load (om-relative-path '("src") "rotations->poly2"))
-(compile&load (om-relative-path '("src") "pitch->bands-collection"))
 ;(compile&load (om-relative-path '("src") "combine-polys"))
 
-
-
-(compile&load (om-relative-path '("src") "o-count-trunc"))
-(compile&load (om-relative-path '("src") "o-equal-prob"))
-(compile&load (om-relative-path '("src") "o-sum-lists"))
-(compile&load (om-relative-path '("src") "o-cribs"))
-(compile&load (om-relative-path '("src") "o-list-repeat"))
-(compile&load (om-relative-path '("src") "o-index"))
-(compile&load (om-relative-path '("src") "o-list-rand"))
+(compile&load (om-relative-path '("src") "o-operations"))
 (compile&load (om-relative-path '("src") "o-list-trans"))
 
+(compile&load (om-relative-path '("src") "p-pitch"))
 
-(compile&load (om-relative-path '("src") "p-inversion"))
-(compile&load (om-relative-path '("src") "p-map1"))
-(compile&load (om-relative-path '("src") "p-map2"))
-(compile&load (om-relative-path '("src") "p-make-bands"))
-(compile&load (om-relative-path '("src") "p-bands-collection"))
-(compile&load (om-relative-path '("src") "p-bands-pitchclass"))
-(compile&load (om-relative-path '("src") "p-bands-register"))
+(compile&load (om-relative-path '("src") "r-rhythm"))
 
-(compile&load (om-relative-path '("src") "r-diminutions"))
-(compile&load (om-relative-path '("src") "r-interleave"))
-(compile&load (om-relative-path '("src") "r-combine-lists"))
-(compile&load (om-relative-path '("src") "r-retro-canon?"))
-
-(compile&load (om-relative-path '("src") "q-combinations"))
-(compile&load (om-relative-path '("src") "q-permutations+canon"))
-(compile&load (om-relative-path '("src") "q-permutations+canon-utility"))
+(compile&load (om-relative-path '("src") "q-queries"))
 (compile&load (om-relative-path '("src") "q-permutations+canon-all"))
-;(compile&load (om-relative-path '("src") "q-rotation-canon?"))
-(compile&load (om-relative-path '("src") "q-canon-permutations-no-overlaps"))
-(compile&load (om-relative-path '("src") "q-permute+remove-dup-rotations"))
-(compile&load (om-relative-path '("src") "q-n-permutations-no-rotations"))
 
-
-(compile&load (om-relative-path '("src") "s-poly"))
-(compile&load (om-relative-path '("src") "s-voice"))
-(compile&load (om-relative-path '("src") "s-poly2"))
-(compile&load (om-relative-path '("src") "s-cuts"))
-(compile&load (om-relative-path '("src") "s-cuts2"))
-(compile&load (om-relative-path '("src") "s-poly->voice"))
+(compile&load (om-relative-path '("src") "s-score"))
 (compile&load (om-relative-path '("src") "s-combine-voices"))
-(compile&load (om-relative-path '("src") "s-combine-polys"))
 
 
 
@@ -158,7 +127,8 @@
  '((NIL nil (prf-editor) (combinations rand-from-list) nil)
    ("queries-database" nil nil (q-combi q-canon q-rotations  q-permute+remove-dup-rotations q-n-permutations-no-rotations q-permutations+canon q-permutations+canon-utility q-permutations+canon-all q-rotation-canon? q-canon-permutations-no-overlaps) nil)
    ("pitch utilities" nil nil (p-map1 p-inversion p-map2 p-make-bands p-bands-collection p-bands-pitchclass p-bands-register ) nil)
-   ("operations" nil nil ( o-list-trans o-sum-lists o-index o-cribs o-equal-prob o-list-repeat o-list-rand o-list-trans) nil)
+   ("operations" nil nil ( o-operations o-list-trans o-index o-count-trunc o-cribs o-equal-prob o-index o-list-rand o-list-repeat o-sum-lists o-list-trans
+      ) nil)
    ("rhythm utilities" nil nil ( r-diminutions r-interleave r-combine-lists r-retro-canon? rhythmic-frames) nil)
 
    ("score utilities" nil nil (s-poly s-voice s-poly2 s-cuts s-cuts2 s-poly s-combine-voices s-combine-polys rotations->poly2) nil)

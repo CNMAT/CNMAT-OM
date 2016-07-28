@@ -1,3 +1,46 @@
+
+;;;==================================
+;;; Q-QUERIES
+;;;==================================
+
+
+
+
+
+
+;;;==================================
+;;; Q-CANON-PERMUTATIONS-NO-OVERLAPS
+;;;==================================
+
+(in-package :cnmat)
+
+
+(defun perm-canon (permutations-list mainlist)
+ (let ((canon-query-result (canon-query (list mainlist (car permutations-list) )))
+       (constructed-list (test-canon (cons mainlist permutations-list))))
+    (omif canon-query-result constructed-list)
+    )
+)
+
+
+(om::defmethod! q-canon-permutations-no-overlaps ((main-list list))
+
+  :icon 3
+  :indoc '("a list of lists")
+  :outdoc '("Tests all permutations of a canon and only returns those with no overlaps.") 
+  :initvals '((1 2 7 12))
+  :menuins '((1 (("rhythm list" 0) )))
+  :doc "Tests all permutations of a canon and only returns those with no overlaps."
+  
+  (let ((rotated-permutations-list (get-rotations (cdr (permutations main-list)))))
+    (remove nil (mapcar (lambda (x) (perm-canon x main-list)) rotated-permutations-list))
+    )
+)
+
+
+
+
+
 ;;;==================================
 ;;; COMBINATIONS
 ;;;==================================
@@ -108,3 +151,39 @@
   (let ((result (q-canon (get-rotations voice))))
     (when print (print (format nil "-- testing ~A: ~A" voice result)))
     (if result voice)))
+
+
+
+;;;==================================
+;;; Q-N-PERMUTATIONS-NO-ROTATIONS
+;;;==================================
+
+(in-package :cnmat)
+
+;;;create all of the rotations of a rhythm
+;;;uses get-rotations method/function
+
+
+  
+
+(om::defmethod! q-n-permutations-no-rotations ((mylist list) (num-results number))
+
+  :icon 2
+  :indoc '("a list for permuting" "the number of permutations desired")
+  :outdoc '("non-rotational permuted lists output") 
+  :initvals '((1 2 3 4 5) 4)
+  :doc "Returns a specified number of permutations from a given list such that none of the returned lists are rotations of one another."
+
+  (let* ((final-list '())
+         (count 0))
+    (loop while (< count num-results) do
+          (let* ((test (permut-random mylist)))
+            (unless (find test final-list :test #'cnmat::is-rotation?)
+              (progn (push test final-list) (setq count (+ count 1))))))
+               
+      
+;return the final list
+    final-list
+    )
+
+)
