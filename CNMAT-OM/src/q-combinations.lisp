@@ -26,11 +26,11 @@
 
 ;;; recursive search function (not ordered with repetitions)
 (defun search-n-sum-r (base rest n sum)
-  (print (list "current base:" base))
+   (list "current base:" base)
   (let ((curr-sum (apply '+ base)))
     (if (zerop n) 
         (when (= curr-sum sum) 
-          (print " ===> FOUND ONE!") 
+          ;(print " ===> FOUND ONE!") 
           (list base))
       (when (< curr-sum sum)
         (loop for elem in rest collect 
@@ -64,10 +64,10 @@
                       )))))
 
 (om::defmethod! q-combi ((dur-space list) (sum integer) (num integer) &optional mode)
-   (get-combi dur-space sum (list num) mode))
+   (q-combi dur-space sum (list num) mode))
 
 (om::defmethod! q-combi ((dur-space list) (sum integer) (num null) &optional mode)
-   (get-combi dur-space sum (arithm-ser 1 (length dur-space) 1) mode))
+   (q-combi dur-space sum (arithm-ser 1 (length dur-space) 1) mode))
 
 
 

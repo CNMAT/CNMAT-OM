@@ -76,8 +76,6 @@
 )
 
 
-
-  
 ;;;this receieves list of durations lists (output from get-rotations)
 (om::defmethod! s-cuts ( (durations-list list) (meter list) (tatum number) (pitches list) (tempo integer) &optional (mode 0))
 
@@ -91,10 +89,6 @@
         (flat-pitch-lists (mapcar (lambda (x) (flat x)) pitches))
         (prepped-pitches (mapcar (lambda (x y) (check-pitchlist-vs-rhythmlist x y)) flat-rhythm-lists flat-pitch-lists)))
 
-    (print flat-rhythm-lists)
-    (print flat-pitch-lists)
-    (print prepped-pitches)
-
     
   (case mode
 
@@ -103,13 +97,8 @@
     (1 (flat (mapcar (lambda (x y) (make-voice-cuts-rests meter x tatum y tempo)) flat-rhythm-lists  prepped-pitches) 1)
        )
        
-
-   ;; (2 (print pitches)
-      ;; )
-    )
+       )
   )
-  
-
 )
 
 

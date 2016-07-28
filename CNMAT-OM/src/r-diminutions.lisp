@@ -40,10 +40,10 @@
 
 (defmethod! r-diminutions ((rhythm rhythmic-frame) val subs) 
   (let ((substitutions (substitute subs val (pulses rhythm))))
-  (print 'pulses)
 
    'rhythmic-frame
-   :pulses (print (substitute-processing substitutions))))
+   :pulses  (substitute-processing substitutions))
+)
   
 
 

@@ -122,13 +122,6 @@
          (output-list '())
          (final-list '()))
 
-    ;(list (repeat-n (mapcar (lambda (x) (build-sequence x)) built-weights) num-return-vals))
-   
-    ;(list
-   ; (loop for x from 1 to num-return-vals 
-   ;       collect(build-sequence built-weights))
-   ; )
-
  
    (loop for x from 1 to num-return-vals do
          ( push (build-sequence built-weights) output-list))

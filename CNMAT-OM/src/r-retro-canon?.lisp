@@ -29,7 +29,7 @@
     
     ;;now test the canon query on the list and its retrograde
 
-        (if (eq (cnmat::canon-query combo-list) 't) 
+        (if (eq (cnmat::q-canon combo-list) 't) 
             combo-list
             'nil)
    )

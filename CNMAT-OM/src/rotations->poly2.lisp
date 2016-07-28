@@ -320,7 +320,7 @@
 
   (print 'durations)
   (print durations)
-    (rotations->poly2 durations meter tatum pitches tempo mode))
+    (s-poly2 durations meter tatum pitches tempo mode))
 
 )
 

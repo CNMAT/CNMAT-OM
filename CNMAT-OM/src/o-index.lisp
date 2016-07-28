@@ -4,19 +4,12 @@
 
 (in-package :cnmat)
 
-;;;create all of the rotations of a rhythm
-;;;uses get-rotations method/function
 
 
 (defun get-position (source-list index-list)
 
   (mapcar #'posn-match source-list index-list)
 )
-
-
-
-
-
 
 
 

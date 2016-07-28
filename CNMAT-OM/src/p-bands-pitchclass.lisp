@@ -7,7 +7,6 @@
 
 (defun get-pitchclasses-helper (pitch-samples)
 
-     
       (mapcar (lambda (x) (* (round (/ x 100)) 100)) pitch-samples)  
 
 )
@@ -21,7 +20,6 @@
 (defun get-pitchclasses (pitch-samples)
      
    (let ((rounded-results (mapcar (lambda (x) (get-pitchclasses-helper x)) pitch-samples)))
-
 
          (mapcar (lambda (x) (get-pitchclasses-helper2 x)) rounded-results)
 
@@ -41,7 +39,7 @@
 
 (defun check-pitches (allowable-pitchclasses pitch-samples)
   (let* ((pitch-and-pitchclasses (get-pitchclasses pitch-samples))
-       (list-of-allowable-pitches (mapcar (lambda (x) (get-allowable-pitches-helper x allowable-pitchclasses))pitch-and-pitchclasses)))
+       (list-of-allowable-pitches (mapcar (lambda (x) (get-allowable-pitches-helper x allowable-pitchclasses)) pitch-and-pitchclasses)))
 
     (mapcar (lambda (x) (nth 1 x)) list-of-allowable-pitches)
 
@@ -89,7 +87,6 @@
     ;;this is where I need to change the code--changed
     ;;if ever desired, revert to previous version by switching out the next two lines of code\
 
-    ;;((bpf-samps (mapcar (lambda (x) (om::bpf-sample x nil nil (length attacks-voice))) bpf-lib)))
     ((bpf-samps (mapcar (lambda (x) (scaled-bpf-samples x attacks-voice)) bpf-lib)))
 
     (mapcar (lambda (x y) (random-pitch-from-bands-pitchclass x y)) (nth 0 bpf-samps) (nth 1 bpf-samps))
@@ -120,21 +117,10 @@
          
          )
        )
-   ;;; (1 (let ((resultant-pitches (mapcar (lambda (x) (random-from-set-pitch-map x mapping-list)) durations-list)))
-         
-       ;;  (check-pitch-map durations-list resultant-pitches)
-        ;; )
+
       )
 
 
 )
 
 
-;;;this receives from rfi object
-
-;;THIS IS NOT DONE--DO THIS!!! OR TAKE IT OUT
-(om::defmethod! p-map1 ( (durations-list prf) (mapping-list list) &optional (mode 0))
-  (let ((durations (mapcar 'pulses (voices durations-list))))
-    (pitch-mapper1 durations mapping-list mode)))
-
-;;;

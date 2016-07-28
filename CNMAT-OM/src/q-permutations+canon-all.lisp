@@ -56,7 +56,6 @@
 
   (loop for i from 1 to (- (length mylist) 1) do
         (progn (push (cons first-element holding-list) masterlist)
-              ;(setq holding-list (cdr holding-list))
                (setq holding-list (rotate holding-list 1))))
 
   (reverse masterlist)
@@ -71,12 +70,6 @@
 (let* ((bulk-list (get-every-grouping-helper mylist-rotations))
        (all-groupings '())
       (this-grouping '()))
-
-  ;(print 'mylist-rotations)
-  ;(print mylist-rotations)
-  ;(print 'bulk-list)
-  ;(print bulk-list)
-
 
 ;build a list with all of the groupings in this rotation
   

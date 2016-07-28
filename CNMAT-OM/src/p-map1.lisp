@@ -45,10 +45,8 @@
                     if (eq attack (car (car elem))) 
 
                     ;; now make 1 random choice from the elements to return using the probabilities
-                    ;;(nth (random (length my-list)) my-list)
 
-		  collect (rand-from-list (nth 1 elem) 1))
-          		  ; collect (rand-from-list (cdr elem) 1))
+		  collect (o-list-rand (nth 1 elem) 1))
 
 
        )

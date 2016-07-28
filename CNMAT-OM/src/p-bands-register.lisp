@@ -29,7 +29,6 @@
 )
 
 
-
 (defun get-registrated-pitches-useless (pitch)
   ;make series below and above by octave to add to note
   ;this function could be more precise....
@@ -67,9 +66,6 @@
 )
 
 
-
-
-  
 ;;;this receieves list of durations lists (output from get-rotations)
 (om::defmethod! p-bands-register ( (bpf-lib list) (pitches list) &optional (mode 0))
 
@@ -93,13 +89,6 @@
           ;;now return a random pitch from the pool of possible pitches for each pitch 
           ;;originally provided in the pitches list
 
-          ;(print all-possible-pitches)
-          (print pitches-fitting-registration)
-          (print 'got-here)
-          (print right-pitches-no-nils)
-
-
-          
           (mapcar (lambda (x)  (nth (om-random 0 (- (length x) 1)) x)) right-pitches-no-nils)
           )
 
@@ -112,5 +101,5 @@
 
 )
 
-(om-random 0 9)
+
 

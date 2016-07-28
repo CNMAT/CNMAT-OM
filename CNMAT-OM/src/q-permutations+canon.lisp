@@ -13,7 +13,7 @@
   (let* ((outputlist '()))
     (loop for elem in mylist do
           (let* ((test (cons elem outputlist)))
-              (if (canon-query test) (push elem outputlist))
+              (if (q-canon test) (push elem outputlist))
             ))
 
 ;return the list in the order that elements were added

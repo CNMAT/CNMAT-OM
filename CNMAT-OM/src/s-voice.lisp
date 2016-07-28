@@ -7,7 +7,7 @@
 ;;;player for the rotations of a rhythm
 
 (defun make-voice (meter durations-list tatum pitches tempo)
-  (let ((tatum-durs (print (om* (print durations-list) tatum) )))
+  (let ((tatum-durs (print (om::om*  durations-list tatum) )))
     (make-instance 'voice 
                    :tree (mktree (flat tatum-durs) meter)
                    :chords pitches 
@@ -50,7 +50,7 @@
   :initvals '( ((1 5 7 10)) (4 4) 1/16 ((6100)) 100)
   :doc "Converts a rotation list into music notation."
 
-  (let ((my-chordseq (make-chord-seq (make-poly (print (mapcar (lambda (x y) (make-voice meter x tatum y tempo)) durations-list pitches )))))
+  (let ((my-chordseq (make-chord-seq (make-poly (mapcar (lambda (x y) (make-voice meter x tatum y tempo)) durations-list pitches ))))
         (my-tempo-map (get-tempo-map (make-voice meter (first durations-list) tatum (first pitches) tempo))))
     
     (reduce-to-one-voice my-chordseq my-tempo-map)

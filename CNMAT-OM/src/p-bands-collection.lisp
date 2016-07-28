@@ -29,15 +29,12 @@
 
 (defun sample-from-bands (bpf-lib attacks-voice)
 
-
-
   (let 
 
     ;;for each bpf sample it for the number of attacks
     ;;this is where I need to change the code
     ;;if ever desired, revert to previous version by switching out the next two lines of code\
 
-    ;;((bpf-samps (mapcar (lambda (x) (om::bpf-sample x nil nil (length attacks-voice))) bpf-lib)))
     ((bpf-samps (mapcar (lambda (x) (scaled-bpf-samples x attacks-voice)) bpf-lib)))
 
     (mapcar (lambda (x y) (random-pitch-from-bands x y)) (nth 0 bpf-samps) (nth 1 bpf-samps))
@@ -85,10 +82,7 @@
          (mapcar (lambda (x) (get-pitch-from-collection-by-voice x (flat pitch-collection))) prelim-sample-pitches)
          )
        )
-   ;;; (1 (let ((resultant-pitches (mapcar (lambda (x) (random-from-set-pitch-map x mapping-list)) durations-list)))
-         
-       ;;  (check-pitch-map durations-list resultant-pitches)
-        ;; )
+
        )
 
 

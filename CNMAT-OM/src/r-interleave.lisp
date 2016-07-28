@@ -14,28 +14,17 @@
   (let* ((my-stuff (mapcar (lambda (x) (list x)) rest))
         (all-stuff (flat (mat-trans (cons rhythm-parent rest)))))
   
-  (print 'all-stuff)
-
+  ;(print 'all-stuff)
+  ;this print call below is necessary--dont delete!
   (print all-stuff)
 
- ; (make-instance 'prf 
-  ;               :voices all-stuff)
+
 
 
   )
 )
 
-;;(defun r-interleave (rhythm-parent  rhythm-child &optional &rest rest)
-;;  (let ((myvoices (make-instance 
-;;                   'prf :voices (flat 
-;;                              (mapcar 'list 
-;;                                              (voices rhythm-parent) (voices rhythm-child) (voices rest))))))
 
-
-
-    ;(setf (elements-per-voice myvoices) 2)
- ;;   myvoices))
-    
 
 
 (defmethod r-interleave2 (rhythm-parent &rest rest)

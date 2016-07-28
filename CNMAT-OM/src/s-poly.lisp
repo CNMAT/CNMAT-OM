@@ -7,7 +7,7 @@
 ;;;player for the rotations of a rhythm
 
 (defun make-voice (meter durations-list tatum pitches tempo)
-  (let ((tatum-durs (print (om* (print durations-list) tatum) )))
+  (let ((tatum-durs (print (om::om* (print durations-list) tatum) )))
     (make-instance 'voice 
                    :tree (mktree (flat tatum-durs) meter)
                    :chords pitches 
@@ -29,8 +29,8 @@
   )
 
 (defun prep-rests (durations-list tatum)
-  (let ((hold-durs (om* durations-list tatum)))
-    (mapcar (lambda (x) (flat (list tatum (om* (om- x tatum) -1))))  hold-durs)
+  (let ((hold-durs (om::om* durations-list tatum)))
+    (mapcar (lambda (x) (flat (list tatum (om::om* (om- x tatum) -1))))  hold-durs)
     )
     ;;(mapcar (lambda (x) (rest-helper x tatum)) tatum-durs)
 )
@@ -61,7 +61,7 @@
 ;;;this receives from rfi object
 (om::defmethod! s-poly ( (durations-list prf) (meter list) (tatum number) (pitches list) (tempo integer) &optional (mode 0))
   (let ((durations (mapcar 'pulses (voices durations-list))))
-    (rotations->poly durations meter tatum pitches tempo mode)))
+    (s-poly durations meter tatum pitches tempo mode)))
 
 ;;;make mode 1 2 3 for sustain, rest, pulses
 ;;;

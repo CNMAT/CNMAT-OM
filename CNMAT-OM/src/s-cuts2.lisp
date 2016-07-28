@@ -77,17 +77,6 @@
          ;;this then created the final list of attacks with rests for the rests version of the cut-ins patch
          (attacks+rests-durations (remove 0 (flat (mapcar (lambda (x y) (list x y)) attack-durations rest-durations)))) )
 
-    ;;(generated-rhythms-with-rests (flat (mapcar (lambda (x) (cuts-rests x tatum)) generated-rhythms)))
-    ;;return a list with both voices
-    ;; (print generated-tatums)
-    ;;(print generated-rhythms)
-    ;;this gets list of attacks 
-    ;; (print attack-durations)
-    ;;(print rest-durations) 
-    ;;(print attacks+rests-durations)
-    ;;(print (flat (mapcar (lambda (x y) (list x y)) attack-durations rest-durations)))
-
-
        (list
     ;;this voice is the running version
          (make-instance 'voice 
@@ -180,9 +169,6 @@
          (self prepped-tatums))
         
     (flat (repeat-n self n-times))
-
-  
-
   )
 )
   
@@ -202,12 +188,6 @@
         (generated-rhythms (mapcar (lambda (x y) (generate-rhythms x y)) durations-list prepped-tatums))
         (generated-tatums (mapcar (lambda (x y) (generate-tatums x y)) durations-list prepped-tatums)))
 
-    (print flat-rhythm-lists)
-    (print flat-pitch-lists)
-    (print prepped-pitches)
-    (print generated-tatums)
-    (print generated-rhythms)
-
     
   (case mode
 
@@ -219,9 +199,6 @@
     (2 (flat (mapcar (lambda (x y z a) (make-voice-cuts-pulse2 meter x tatum-list y tempo z a)) flat-rhythm-lists  prepped-pitches generated-rhythms generated-tatums) 1)
        )
        
-
-   ;; (2 (print pitches)
-      ;; )
     )
   )
   

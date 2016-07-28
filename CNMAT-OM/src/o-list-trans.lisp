@@ -2,6 +2,10 @@
 ;;; O-LIST-TRANS
 ;;;==================================
 
+;;;REQUIRES ALEA LIBRARY TO WORK
+
+
+
 (in-package :cnmat)
 
 (defun bpf-probabilities (mybpf num-samples)

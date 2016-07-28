@@ -25,7 +25,6 @@
   :doc "As necessary, truncates all lists to the length of desired elements"
 
   (let ((lengths (mapcar #'list-lengths my-list)))
-    ;;;(mapcar #'list-truncate my-list lengths length-desired)
     (mapcar (lambda (x y) (list-truncate x y length-desired)) my-list lengths)
 
     )
