@@ -3,6 +3,60 @@
 ;;;==================================
 
 
+;;;==================================
+;;; P-HARMONY-FROM-ANALYSIS
+;;;==================================
+
+(in-package :cnmat)
+
+
+(om::defmethod! p-harmony-from-analysis (( mychordseq chord-seq) &optional (numpitches 0))
+
+  :icon 2
+  :indoc '("a chor-seq" "an optional argument specifying the numnber of pitches to return based on highest partial amplitude")
+  :outdoc '("lists") 
+  :initvals '( '(nil) 0)
+  :doc "Returns a chord object notating partials from the analysis.  Option argument returns n-pitches from the partials based on highest amplitudes."
+ (let* ((pitches  (flat (om::lmidic mychordseq)))
+            (velocities  (flat (om::lvel mychordseq)))
+            (pairs (mapcar (lambda (x y) (list x y)) pitches velocities))
+            (sorted-list  (sort pairs #'> :key #'second))
+            (final-pairs '()))
+
+   (if (eq numpitches 0)
+    
+        ;gather all pitches and velocities and make a big harmonic field
+
+
+       (make-instance 'chord
+                      :lmidic pitches
+                      :lvel velocities)
+   
+
+   ; otherwise, return n-pitches based on velocities
+  
+
+          (progn (loop for i from 0 to (- numpitches 1) do
+                (push (nth i sorted-list) final-pairs))
+          
+            (make-instance 'chord
+                      :lmidic (mapcar (lambda (x) (first x)) final-pairs)
+                      :lvel (mapcar (lambda (x) (second x)) final-pairs)))
+ 
+   )
+
+
+)
+
+
+
+)
+
+
+
+
+
+
 
 ;;;==================================
 ;;; Q-PERMUTATIONS+CANON
