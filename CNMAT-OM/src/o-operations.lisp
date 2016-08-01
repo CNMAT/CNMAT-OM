@@ -174,8 +174,7 @@
       
 ;;now add up the probabilities that were given originally
       (setq given-probabilities-sum (reduce '+ (mapcar (lambda (x) (second x)) final-list)) )
-      (print 'given-probabilities)
-      (print given-probabilities-sum)
+     
 ;;now subtract 1-given-probabilities sum and divide the result by number
 ;;of elements left over, i.e. ones without given probabilities
 
@@ -217,10 +216,6 @@
 ;restore correct ordering of probabilities
 (setq all-probabilities (flat (reverse all-probabilities)))
 
-(print 'all-probabilities)
-      (print all-probabilities)
-(print 'final-list)
-      (print final-list)
 
 
 ;;now add dx->x values for each list in the final-list

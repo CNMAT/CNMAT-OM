@@ -37,7 +37,7 @@
   :doc "From the original lists it builds lists of lists based on a iterative operations.  The operation takes element a and compares with with element b.  If there are no onset overlaps, then it adds b to the list and moves on to the next element C. and so on.  This process is repeated for each successive element (list) of the original input, i.e. for every rotation of the original input list.  (It is not done for every possible permutation of the original list.)  Grouped output lists should have no synchronous onsets except for the first."
 
 
-  (let* ((mylist-rotations (print (get-rotations mylist)))
+  (let* ((mylist-rotations (get-rotations mylist))
          (final-list (mapcar (lambda (x) (canon-growth-test x)) mylist-rotations)))
                
       
@@ -402,7 +402,6 @@
     (0 (let* ((bpf-pitch-samples (mapcar (lambda (x) (sample-from-bands-pitchclass bpf-lib x))  attacks-voices))
               (checked-bpf-pitch-samples (mapcar (lambda (x) (check-pitches allowable-pitchclasses x)) bpf-pitch-samples)))
          
-        (print "new version")
          checked-bpf-pitch-samples
          
          )
@@ -422,7 +421,7 @@
 
 (defun scaled-bpf-samples-registration (my-bpf pitches)
 
-  ;;(print "aaah!!!")
+  
   (let ((hold-samples (om::bpf-sample my-bpf 'nil 'nil (length pitches))))
     ;round them
     (om::om* (om::om-round (om::om/ hold-samples 100.00)) 100)
@@ -672,8 +671,7 @@
   (let* ((mylist (mapcar (lambda (x) ( flat (repeat-n (cdr x) numattacks))) mapping-list))
         (mylist-with-keys (mapcar (lambda (x y) (list (car x) y)) mapping-list mylist)))
     
-    ;(print 'mylist-with-keys)
-    ;(print mylist-with-keys)
+    
     
     mylist-with-keys
 
