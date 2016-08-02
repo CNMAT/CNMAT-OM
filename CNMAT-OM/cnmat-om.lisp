@@ -33,7 +33,9 @@
    :p-bands-collection
    :p-bands-pitchclass
    :p-bands-register
+   :p-harmony-from-analysis
 
+   :r-scatter-attacks
    :r-retrograde-canon?
    :r-combine-lists
    :r-interleave
@@ -126,10 +128,10 @@
 (om::fill-library  
  '((NIL nil (prf-editor) (combinations rand-from-list) nil)
    ("queries-database" nil nil (q-combi q-canon q-rotations  q-permute+remove-dup-rotations q-n-permutations-no-rotations q-permutations+canon q-permutations+canon-utility q-permutations+canon-all q-rotation-canon? q-canon-permutations-no-overlaps) nil)
-   ("pitch utilities" nil nil (p-map1 p-inversion p-map2 p-make-bands p-bands-collection p-bands-pitchclass p-bands-register ) nil)
+   ("pitch utilities" nil nil (p-map1 p-inversion p-map2 p-make-bands p-bands-collection p-bands-pitchclass p-bands-register p-harmony-from-analysis) nil)
    ("operations" nil nil ( o-operations o-list-trans o-index o-count-trunc o-cribs o-equal-prob o-index o-list-rand o-list-repeat o-sum-lists o-list-trans
       ) nil)
-   ("rhythm utilities" nil nil ( r-diminutions r-interleave r-combine-lists r-retro-canon? rhythmic-frames) nil)
+   ("rhythm utilities" nil nil ( r-scatter-attacks r-diminutions r-interleave r-combine-lists r-retro-canon? rhythmic-frames) nil)
 
    ("score utilities" nil nil (s-poly s-voice s-poly2 s-cuts s-cuts2 s-poly s-combine-voices s-combine-polys rotations->poly2) nil)
 

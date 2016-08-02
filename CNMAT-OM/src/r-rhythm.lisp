@@ -5,7 +5,42 @@
 
 
 
+;;;==================================
+;;; R-SCATTER-ATTACKS
+;;;==================================
 
+;;randomly scatter the attacks of a rhythmic sequence over n-voices
+
+(om::defmethod! r-scatter-attacks ((rhythmlist list) (numvoices number))
+
+  :icon 6
+  :indoc '("a list of lists" )
+  :outdoc '("returns rhythm lists combined by voice") 
+  :initvals '((1/16 1/16 1/8 1/16 1/16 1/16 1/8) (nil))
+  :doc "Scatter the attacks of a rhythmic sequence randomly over n-voices"
+
+  (let* ((final-list '())
+        (random-voice 0))
+
+  ;create an empty list for every voice
+  (loop for i from 0 to (- numvoices 1) do
+        (push '() final-list))
+
+  ;assign either a rest or an attack for every element in rhythmlist
+
+  (loop for attack in rhythmlist do
+        (setf random-voice (random numvoices))
+        (print random-voice)
+        (loop for i from 0 to (- numvoices 1) do
+              (if (eq i random-voice) 
+                  (push attack (nth i final-list))
+                  (push (* -1 attack) (nth i final-list)))))
+
+  (mapcar 'reverse final-list)
+
+  )
+ 
+)
 
 ;;;==================================
 ;;; R-COMBINE-RHYTHM-LISTS
