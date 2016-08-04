@@ -6,6 +6,41 @@
 
 
 
+;;;==================================
+;;; Q-COMBI-FROM-ELEMENTS
+;;;==================================
+
+(defun q-combi-local-helper (elem)
+(if (cnmat::q-canon elem) elem)
+)
+
+
+
+;;;this receieves list of durations lists (output from get-rotations)
+(om::defmethod! q-combi-from-elements ( (elements-list list) (ordered number)  &optional (mode 0))
+
+  :icon 2
+  :indoc '("a list of elements" "ordered variable number" "mode: 0or 1")
+  :outdoc '("a list") 
+  :initvals '( (1 2 3 4 5 6 8 10 12) 1 0)
+  :doc "Converts a rotation list into music notation using the ."
+  
+  (let* (( combis (mapcar (lambda (x) (q-combi elements-list x nil mode)) elements-list))
+        (rotations (mapcar #'q-rotations (flat combis 1)))
+        )
+
+    
+  (case mode
+
+    (0 (mapcar #'count-overlaps rotations)
+       )
+    (1 (remove nil (mapcar #'q-combi-local-helper rotations))
+       )
+       
+       )
+  )
+)
+
 
 
 ;;;==================================
