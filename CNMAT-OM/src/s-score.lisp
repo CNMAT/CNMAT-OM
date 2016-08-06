@@ -496,8 +496,12 @@
        ; (this-duration-sum (reduce #'+ (flat durations-list))))
 
 
-   (flat (repeat-n (flat pitches) (ceiling this-duration-sum (length pitches))))
-    )
+    ;CHANGE THIS BACK IF PITCHES STOP WORKING
+   ;(print (flat (repeat-n (flat pitches) (ceiling this-duration-sum (length pitches)))))
+   
+    (flat (repeat-n  pitches (ceiling this-duration-sum (length pitches))) 1)
+
+ )
 )
 
 (defun prep-pitches-pulse (pitches durations-list)
@@ -506,11 +510,17 @@
          ;(this-duration-sum (reduce #'+ (flat durations-list)))
          (this-duration-sum (reduce #'+ (flat abs-durations)))
 
-        (these-pitches (flat (repeat-n (flat pitches) (ceiling this-duration-sum (length pitches))))))
+    ;CHANGE THIS BACK IF PITCHES STOP WORKING
+
+        ;(these-pitches (flat (repeat-n (flat pitches) (ceiling this-duration-sum (length pitches))))))
     
+         (these-pitches (flat (repeat-n  pitches (ceiling this-duration-sum (length pitches))) 1)))
+
+    ;(print these-pitches)
 
     ;(flat (mapcar (lambda (x y) (repeat-n x y)) these-pitches (flat durations-list)))
-    (flat (mapcar (lambda (x y) (repeat-n x y)) these-pitches (flat abs-durations)))
+    ;Change this back to regular complete flat if problem with pitches
+      (flat (mapcar (lambda (x y) (repeat-n x y)) these-pitches (flat abs-durations)) 1)
 
 
 

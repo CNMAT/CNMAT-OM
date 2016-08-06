@@ -10,6 +10,32 @@
 ;;; R-SCATTER-ATTACKS
 ;;;==================================
 
+
+(defun get-random-voices (rhythmlist numvoices)
+
+  (let ((final-list '())
+        (current-voice (random numvoices))
+        (prev-voice nil))
+
+    ;;make sure it is not the same voice as the last time
+    
+
+    (loop for i from 0 to (length rhythmlist) do
+          (setf current-voice (random numvoices))
+          (loop while (eq current-voice prev-voice) do
+                  (setf current-voice (random numvoices)))
+          (setf prev-voice current-voice)
+          (push current-voice final-list))
+
+    (print 'final-list)
+    (print final-list)
+
+)
+
+)
+
+
+
 ;;randomly scatter the attacks of a rhythmic sequence over n-voices
 
 (om::defmethod! r-scatter-attacks ((rhythmlist list) (numvoices number))
@@ -21,7 +47,8 @@
   :doc "Scatter the attacks of a rhythmic sequence randomly over n-voices"
 
   (let* ((final-list '())
-        (random-voice 0))
+        (random-voice 0)
+        (sequence (get-random-voices rhythmlist numvoices)))
 
   ;create an empty list for every voice
   (loop for i from 0 to (- numvoices 1) do
@@ -29,9 +56,10 @@
 
   ;assign either a rest or an attack for every element in rhythmlist
 
-  (loop for attack in rhythmlist do
-        (setf random-voice (random numvoices))
-        (print random-voice)
+  (loop for attack in rhythmlist
+        for j from 0 to (length rhythmlist) do
+        (setf random-voice (nth j sequence))
+        ;(print random-voice)
         (loop for i from 0 to (- numvoices 1) do
               (if (eq i random-voice) 
                   (push attack (nth i final-list))
