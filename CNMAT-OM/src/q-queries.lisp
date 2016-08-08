@@ -7,9 +7,45 @@
 (in-package :cnmat)
 
 
+
+
+
+
 ;;;==================================
 ;;; Q-COMBI-FROM-ELEMENTS
 ;;;==================================
+
+
+(defun count-overlaps-sum-num-elems (mylist)
+  (let* ((dx-list (mapcar (lambda (x) (dx->x 0 x)) mylist))
+        (no-last-attacks (mapcar (lambda (x) (om::butlast x)) dx-list))
+        (no-initial-attacks (mapcar (lambda (x) (rest x)) no-last-attacks))
+        (flat-list (print (flat no-initial-attacks))))
+
+    (let ((no-dupes-list (print (om::remove-dup flat-list 'eq 1)))
+          (count 0))
+;count the times a certain number appears in the list
+      (loop for test-number in no-dupes-list do
+        (let ((little-count 0))
+        (loop for elem in flat-list do
+              
+              (if (eq test-number elem) (setq little-count (+ little-count 1))))
+
+        ;if little-count is > 1 then add it to count
+        ;then set little-count to 0 and continue
+        (if (> little-count 1) (setq count (+ count little-count)))
+
+        ))
+
+      ;return a list of the original list and a count of overlaps list
+       (flat (list mylist  (list (list "no_elems=" (length (first mylist)) "sum_elems=" (reduce #'+ (first mylist)) "overlaps=" count))) 1)
+      )
+  )
+
+)
+
+
+
 
 (defun q-combi-local-helper (elem)
 (if (cnmat::q-canon elem) elem)
@@ -21,23 +57,36 @@
 (om::defmethod! q-combi-from-elements ( (elements-list list) (ordered number)  &optional (mode 0))
 
   :icon 2
-  :indoc '("a list of elements" "ordered variable number" "mode: 0or 1")
+  :indoc '("a list of elements" "ordered variable number" "mode: 0, 1, 2, 3 or 4")
   :outdoc '("a list") 
   :initvals '( (1 2 3 4 5 6 8 10 12) 1 0)
-  :doc "Converts a rotation list into music notation using the ."
+  :doc "Mode=0 is all combinations.  Mode=1 is only combinations that fit the canon query. Mode=2 all combinations in order of number of elements
+Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in order of overlaps"
   
-  (let* (( combis (mapcar (lambda (x) (q-combi elements-list x nil mode)) elements-list))
+  (let* (( combis (mapcar (lambda (x) (q-combi elements-list x nil ordered)) elements-list))
         (rotations (mapcar #'q-rotations (flat combis 1)))
+        (all-combis+data (mapcar #'count-overlaps-sum-num-elems rotations))
         )
+    (print combis)
+  (case  mode
 
-    
-  (case mode
-
-    (0 (mapcar #'count-overlaps rotations)
+    (0 all-combis+data
        )
     (1 (remove nil (mapcar #'q-combi-local-helper rotations))
        )
-       
+
+    ;;mode=2 sort by number of elements
+    
+    (2 (sort all-combis+data  #'< :key #'(lambda (x) (second (last-elem x))))
+       )
+
+    ;;mode=3 sort by sum of elements
+
+    (3 (sort all-combis+data  #'< :key #'(lambda (x) (fourth (last-elem x))))
+       )
+
+    (4 (sort all-combis+data  #'< :key #'(lambda (x) (sixth (last-elem x))))
+       )
        )
   )
 )
