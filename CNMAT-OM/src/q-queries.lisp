@@ -8,6 +8,201 @@
 
 
 
+(defun test-canon (mylist)
+  (let ((canon (list (first mylist))))
+    (loop for elem in (cdr mylist) do
+          (if (canon-query (cons elem canon))
+              (push elem canon)))
+    (reverse canon)))
+
+(defun is-rotation? (l1 l2)
+  (let ((ok nil))
+    (loop for i from 0 to (1- (length l1))
+          while (not ok)
+          do (setf ok (equal (rotate l1 i) l2)))
+    ok))
+
+
+;;;==================================
+;;; Q-PERMUTATIONS+CANON
+;;;==================================
+
+(in-package :cnmat)
+
+;;;create all of the rotations of a rhythm
+;;;uses get-rotations method/function
+
+(defun canon-growth-test (mylist)
+
+;; iteratively add elements from the list and include them if they pass the canon-query test
+  (let* ((outputlist '()))
+    (loop for elem in mylist do
+          (let* ((test (cons elem outputlist)))
+              (if (q-canon test) (push elem outputlist))
+            ))
+
+;return the list in the order that elements were added
+  (reverse outputlist)
+  )
+)
+  
+
+(om::defmethod! q-permutations+canon ((mylist list) )
+
+  :icon 2
+  :indoc '("a list of lists" "optional mode argument")
+  :outdoc '("lists that pass the canon query") 
+  :initvals '((1 2 3 4 5) )
+  :doc "From the original lists it builds lists of lists based on a iterative operations.  The operation takes element a and compares with with element b.  If there are no onset overlaps, then it adds b to the list and moves on to the next element C. and so on.  This process is repeated for each successive element (list) of the original input, i.e. for every rotation of the original input list.  (It is not done for every possible permutation of the original list.)  Grouped output lists should have no synchronous onsets except for the first."
+
+
+  (let* ((mylist-rotations (get-rotations mylist))
+         (final-list (mapcar (lambda (x) (canon-growth-test x)) mylist-rotations)))
+               
+      
+;return the final list
+    final-list
+    )
+
+
+
+)
+
+
+
+;;;==================================
+;;; Q-PERMUTE+REMOVE-DUP-ROTATIONS
+;;;==================================
+
+(in-package :cnmat)
+
+
+(defun test-canon (mylist)
+  (let ((canon (list (first mylist))))
+    (loop for elem in (cdr mylist) do
+          (if (canon-query (cons elem canon))
+              (push elem canon)))
+    (reverse canon)))
+
+(defun is-rotation? (l1 l2)
+  (let ((ok nil))
+    (loop for i from 0 to (1- (length l1))
+          while (not ok)
+          do (setf ok (equal (rotate l1 i) l2)))
+    ok))
+
+
+(om::defmethod! q-permute+remove-dup-rotations ((main-list list))
+
+  :icon 3
+  :indoc '("a list of lists")
+  :outdoc '("Tests all permutations of a list, checking it for duplicates in the form of rotations.") 
+  :initvals '((1 2 3))
+  :menuins '((1 (("index list" 0) )))
+  :doc "Tests all permutations of a list, checking it for duplicates in the form of rotations."
+  
+  (let ((results (remove-duplicates (permutations main-list) :test #'is-rotation?)))
+    (mapcar (lambda (x) (reverse x)) results)
+
+    )
+
+)
+
+
+
+
+
+
+
+
+
+;;;==================================
+;;; Q-PERMUTATIONS+CANON-UTILITY
+;;;==================================
+
+(in-package :cnmat)
+
+;;default: return result from permutations+canon-growth excluding all rotations. 
+;;mode1: return result from permutations+canon-growth-all sorted by fewest overlaps
+;;mode2: return result from permutations+canon-growth-all sorted by fewest overlaps and excluding rotations
+
+
+(om::defmethod! q-permutations+canon-utility ((mylist list) &optional (mode 0))
+
+  :icon 2
+  :indoc '("a list of lists" "a mode argument")
+  :outdoc '("lists") 
+  :initvals '( '((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1)) 0)
+  :doc "Utility for the permutations+canon-growth and permutations+canon-growth-all objects. Default: return result from permutations+canon-growth excluding all rotations. Mode1: return result from permutations+canon-growth-all sorted by fewest overlaps. Mode2: return result from permutations+canon-growth-all sorted by fewest overlaps and excluding rotations "
+
+
+(case mode
+    
+    (0 ; DEFAULT
+    ;now return the final-list
+
+ (let* ((final-list '()))
+    (loop for elem in mylist do
+            (unless (find  elem final-list :test #'cnmat::is-rotation?)
+              (push elem final-list)))
+               
+      
+;return the final list
+    (reverse final-list)
+    )
+
+   )
+
+
+    
+ 
+
+ (1 ; CASE 1 return all sorted by fewest overlaps
+
+ 
+(let* ((reversed-list (mapcar (lambda (x) (reverse x)) mylist))
+       (sorted-list  (sort reversed-list #'< :key #'car))
+       ;re-order the output list and send it out
+       (pre-final-list   (mapcar (lambda (x) (reverse x)) sorted-list)))
+       ;remove duplicates
+  (remove-dup pre-final-list 'eq 2)
+)
+   )
+
+(2 ; CASE 2 return all sorted by fewest overlaps and excluding rotations
+
+(let* ((reversed-list (mapcar (lambda (x) (reverse x)) mylist))
+       (sorted-list  (sort reversed-list #'< :key #'car))
+       ;re-order the output list and send it out
+       (pre-final-list   (mapcar (lambda (x) (reverse x)) sorted-list))
+       ;remove duplicates
+  
+      ( mylist_x (remove-dup pre-final-list 'eq 2))
+      (final-list '()))
+
+    (loop for elem in mylist_x do
+            (unless (find  elem final-list :test #'cnmat::is-rotation-special?)
+              (push elem final-list)))
+               
+      
+;return the final list
+    (reverse final-list)
+    )
+
+
+
+)
+
+
+
+       
+
+
+   )
+
+
+)
+
 
 
 
@@ -262,7 +457,8 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
   (let* ((final-list '())
          (count 0))
     (loop while (< count num-results) do
-          (let* ((test (permut-random mylist)))
+          (print 'got-here)
+          (let* ((test (om::permut-random mylist)))
             (unless (find test final-list :test #'cnmat::is-rotation?)
               (progn (push test final-list) (setq count (+ count 1))))))
                
