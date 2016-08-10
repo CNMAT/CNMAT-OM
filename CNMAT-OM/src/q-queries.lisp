@@ -93,7 +93,7 @@ processed-olaps
             ))
 
 ;return the list in the order that elements were added
-  (reverse outputlist)
+   (reverse outputlist)
   )
 )
   
@@ -112,7 +112,10 @@ processed-olaps
                
       
 ;return the final list
-    final-list
+     ;final-list
+
+    (mapcar (lambda (x) (count-overlaps-sum-num-elems  x))  final-list)
+
     )
 
 
