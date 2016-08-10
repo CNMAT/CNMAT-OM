@@ -113,7 +113,12 @@
     (loop for elem in pre-final-list do
           (if (> (length elem) 2) (push elem final-list))
     ) 
-    (reverse final-list)
+
+    (print 'final-list)
+    (print final-list)
+    ;(reverse final-list)
+
+    (mapcar (lambda (x) (count-overlaps-sum-num-elems (butlast x))) (reverse final-list))
 
    )
 

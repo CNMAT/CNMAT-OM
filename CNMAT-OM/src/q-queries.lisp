@@ -8,19 +8,70 @@
 
 
 
-(defun test-canon (mylist)
-  (let ((canon (list (first mylist))))
-    (loop for elem in (cdr mylist) do
-          (if (canon-query (cons elem canon))
-              (push elem canon)))
-    (reverse canon)))
+;;;==================================
+;;; Q-COMBI-FILTER
+;;;==================================
 
-(defun is-rotation? (l1 l2)
-  (let ((ok nil))
-    (loop for i from 0 to (1- (length l1))
-          while (not ok)
-          do (setf ok (equal (rotate l1 i) l2)))
-    ok))
+
+(defun combi-filter-helper (mylist num-elems sums olaps) 
+
+( let ((processed-elems '())
+       (processed-sums '())
+       (processed-olaps '()))
+
+
+;if no number of elements is given
+;then pass them all into the processed-elems
+;list otherwise check and see if it is member of the 
+(cond ((eq num-elems nil) (push mylist processed-elems))
+      ((member (second (last-elem mylist)) num-elems) (push mylist processed-elems)))
+
+(print 'processed-elems)
+(print processed-elems)
+
+
+;if no sums is given
+;then pass everything in processed-elems into the processed-sums
+;list otherwise check
+(cond ((eq sums nil) (push processed-elems processed-sums))
+      ((member  (fourth (last-elem mylist)) sums) (push processed-elems processed-sums)))
+
+(print 'processed-sums)
+(print processed-sums)
+
+;if no overlaps is given
+;then pass everything in processed-sums into the processed-olaps
+;list otherwise check
+(cond ((eq olaps nil) (push processed-sums processed-olaps))
+      ((member (sixth (last-elem mylist)) olaps) (push processed-sums processed-olaps)))
+
+
+
+processed-olaps
+
+)
+)
+
+
+(om::defmethod! q-combi-filter ((main-list list) (elems list) (sums list) (olaps list))
+
+  :icon 2
+  :indoc '("a list of lists" "a list of elements" "a list of possible sums" "a list of overlaps")
+  :outdoc '("Filters input lists to return those lists with the elements required as specified in the lists for number of elements, possible sums, and number of overlaps.") 
+  :initvals '(((1 2 3) (3 4 5)) nil  nil nil)
+  :doc "Filters input lists to return those lists with the elements required as specified in the lists for number of elements, possible sums, and number of overlaps."
+  
+ (remove nil (flat (mapcar (lambda (x) (combi-filter-helper x elems sums olaps)) main-list) 3))
+
+)
+
+
+
+
+
+
+
+
 
 
 ;;;==================================
@@ -143,7 +194,7 @@
 
  (let* ((final-list '()))
     (loop for elem in mylist do
-            (unless (find  elem final-list :test #'cnmat::is-rotation?)
+            (unless (find  (butlast elem) final-list :test #'cnmat::is-rotation?)
               (push elem final-list)))
                
       
@@ -160,28 +211,33 @@
  (1 ; CASE 1 return all sorted by fewest overlaps
 
  
-(let* ((reversed-list (mapcar (lambda (x) (reverse x)) mylist))
-       (sorted-list  (sort reversed-list #'< :key #'car))
+(let* (
+       ;(reversed-list (mapcar (lambda (x) (reverse x)) mylist))
+       (sorted-list  (sort mylist #'< :key #'(lambda (x) (sixth (last-elem x))))))
        ;re-order the output list and send it out
-       (pre-final-list   (mapcar (lambda (x) (reverse x)) sorted-list)))
+       ;(pre-final-list   (mapcar (lambda (x) (reverse x)) sorted-list)))
        ;remove duplicates
-  (remove-dup pre-final-list 'eq 2)
+  (remove-dup sorted-list 'eq 2)
 )
    )
 
 (2 ; CASE 2 return all sorted by fewest overlaps and excluding rotations
 
-(let* ((reversed-list (mapcar (lambda (x) (reverse x)) mylist))
-       (sorted-list  (sort reversed-list #'< :key #'car))
+(let* (
+       ;(reversed-list (mapcar (lambda (x) (reverse x)) mylist))
+       ;(sorted-list  (sort reversed-list #'< :key #'car))
        ;re-order the output list and send it out
+       (sorted-list  (sort mylist #'< :key #'(lambda (x) (sixth (last-elem x)))))
        (pre-final-list   (mapcar (lambda (x) (reverse x)) sorted-list))
        ;remove duplicates
-  
-      ( mylist_x (remove-dup pre-final-list 'eq 2))
+      ( mylist_x (remove-dup sorted-list 'eq 2))
       (final-list '()))
+  
+  (print 'mylist_x)
+  (print mylist_x)
 
     (loop for elem in mylist_x do
-            (unless (find  elem final-list :test #'cnmat::is-rotation-special?)
+            (unless (find  (butlast elem) final-list :test #'cnmat::is-rotation-special?)
               (push elem final-list)))
                
       
@@ -233,7 +289,7 @@
         ))
 
       ;return a list of the original list and a count of overlaps list
-       (flat (list mylist  (list (list "no_elems=" (length (first mylist)) "sum_elems=" (reduce #'+ (first mylist)) "overlaps=" count))) 1)
+       (flat (list mylist  (list (list "elems" (length (first mylist)) "sum" (reduce #'+ (first mylist)) "olaps" count))) 1)
       )
   )
 
@@ -249,12 +305,12 @@
 
 
 ;;;this receieves list of durations lists (output from get-rotations)
-(om::defmethod! q-combi-from-elements ( (elements-list list) (ordered number)  &optional (mode 0))
+(om::defmethod! q-combi-from-elements ( (elements-list list) (ordered number)  &optional (mode 2))
 
   :icon 2
   :indoc '("a list of elements" "ordered variable number" "mode: 0, 1, 2, 3 or 4")
   :outdoc '("a list") 
-  :initvals '( (1 2 3 4 5 6 8 10 12) 1 0)
+  :initvals '( (1 2 3 4 5 6 8 10 12) 0 2)
   :doc "Mode=0 is all combinations.  Mode=1 is only combinations that fit the canon query. Mode=2 all combinations in order of number of elements
 Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in order of overlaps"
   

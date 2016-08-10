@@ -1,5 +1,5 @@
-; OM File Header - Saved 2016/08/02 15:07:33
-; (6.1001 :patc (om-make-point 226 110) (om-make-point 50 50) (om-make-point 1305 762) "" 183 0 "2016/08/02 11:34:03" "2016/08/02 11:34:04")
+; OM File Header - Saved 2016/08/08 10:05:48
+; (6.1001 :patc (om-make-point 226 110) (om-make-point 50 50) (om-make-point 1305 762) "" 183 0 nil nil)
 ; End File Header
 ; External resources 
 ; (list (list (quote :sdif) "#P\"../../../../../../Desktop/myDesktop/desktop stuff/Cb-ord-A#1-ff-3c.sdif\""))
