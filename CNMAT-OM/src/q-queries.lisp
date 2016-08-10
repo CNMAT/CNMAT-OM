@@ -7,6 +7,32 @@
 (in-package :cnmat)
 
 
+;;;==================================
+;;; Q-RANDOM-PERMUTATIONS-NO-DUPS
+;;;==================================
+
+(in-package :cnmat)
+
+(om::defmethod! q-random-permutations-no-dups ((mylist list) (no-times number) )
+
+  :icon 2
+  :indoc '("a list of lists" "number of permutations to generate")
+  :outdoc '("lists that pass the canon query") 
+  :initvals '((1 2 3 4 5) 5 )
+  :doc "Create n-number of permutations from a list. The first list output will be the original list."
+ (let ((final-list (list mylist)))
+
+   (loop while (< (length final-list) no-times) do
+      (push (om::permut-random mylist) final-list)
+      (setq final-list (remove-dup final-list 'equal 1)))
+
+   (reverse final-list)
+   )
+
+)
+
+
+
 
 ;;;==================================
 ;;; Q-COMBI-FILTER
