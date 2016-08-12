@@ -8,6 +8,26 @@
 
 
 ;;;==================================
+;;; Q-REMOVE ROTATIONS
+;;;==================================
+
+
+
+(om::defmethod! q-remove-rotations ((mylist list))
+
+  :icon 2
+  :indoc '("a list of lists" )
+  :outdoc '("lists with no rotations") 
+  :initvals '(((1 2 3 4 5) (2 3 4 5 1) (3 4 5 1 2) (4 5 1 2 3) (5 1 2 3 4)))
+  :doc "Removes rotationally-related list from a lists of lists."
+ 
+  (remove-duplicates mylist :test #'cnmat::is-rotation?)
+
+)
+
+
+
+;;;==================================
 ;;; Q-RANDOM-PERMUTATIONS-NO-DUPS
 ;;;==================================
 

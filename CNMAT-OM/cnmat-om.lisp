@@ -54,6 +54,7 @@
    :q-canon-permutations-no-overlaps
    :q-combi-from-elements
    :q-random-permutations-no-dups
+   :q-remove-rotations
 
    :s-poly
    :s-voice
@@ -131,8 +132,8 @@
 ; ("sub-pack-name" subpacke-lists class-list function-list class-alias-list)
 (om::fill-library  
  '((NIL 
-    (("Tesselate" 
-     (("queries-database" nil nil (q-combi q-combi-filter q-canon q-rotations  q-permute+remove-dup-rotations q-n-permutations-no-rotations q-permutations+canon q-permutations+canon-utility q-permutations+canon-all q-rotation-canon? q-canon-permutations-no-overlaps q-combi-from-elements q-random-permutations-no-dups) nil)
+    (("Tessellate" 
+     (("queries-database" nil nil (q-combi q-combi-filter q-canon q-rotations  q-permute+remove-dup-rotations q-n-permutations-no-rotations q-permutations+canon q-permutations+canon-utility q-permutations+canon-all q-rotation-canon? q-canon-permutations-no-overlaps q-combi-from-elements q-random-permutations-no-dups q-remove-rotations) nil)
       ("pitch utilities" nil nil (p-map1 p-inversion p-map2 p-make-bands p-bands-collection p-bands-pitchclass p-bands-register p-harmony-from-analysis) nil)
       ("operations" nil nil ( o-operations o-list-trans o-index o-count-trunc o-cribs o-equal-prob o-index o-list-rand o-list-repeat o-sum-lists o-list-trans rand-from-list) nil)
       
