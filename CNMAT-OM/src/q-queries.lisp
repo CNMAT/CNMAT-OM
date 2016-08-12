@@ -11,7 +11,7 @@
 ;;; Q-RANDOM-PERMUTATIONS-NO-DUPS
 ;;;==================================
 
-(in-package :cnmat)
+
 
 (om::defmethod! q-random-permutations-no-dups ((mylist list) (no-times number) )
 
@@ -104,7 +104,7 @@ processed-olaps
 ;;; Q-PERMUTATIONS+CANON
 ;;;==================================
 
-(in-package :cnmat)
+
 
 ;;;create all of the rotations of a rhythm
 ;;;uses get-rotations method/function
@@ -154,7 +154,7 @@ processed-olaps
 ;;; Q-PERMUTE+REMOVE-DUP-ROTATIONS
 ;;;==================================
 
-(in-package :cnmat)
+
 
 
 (defun test-canon (mylist)
@@ -200,7 +200,7 @@ processed-olaps
 ;;; Q-PERMUTATIONS+CANON-UTILITY
 ;;;==================================
 
-(in-package :cnmat)
+
 
 ;;default: return result from permutations+canon-growth excluding all rotations. 
 ;;mode1: return result from permutations+canon-growth-all sorted by fewest overlaps
@@ -377,7 +377,7 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
 ;;; Q-CANON-PERMUTATIONS-NO-OVERLAPS
 ;;;==================================
 
-(in-package :cnmat)
+
 
 
 (defun perm-canon (permutations-list mainlist)
@@ -410,75 +410,104 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
 ;;; COMBINATIONS
 ;;;==================================
 
-(in-package :cnmat)
 
+(defun q-comb-condition-fulfilled (base n sum)
+  (and (= (apply '+ base) sum) ;; the sum is ok
+       (or  ;; the number of elements is ok 
+        (null n)
+        (and (numberp n) (= (length base) n))
+        (and (listp n) (find (length base) n :test '=)))))
 
 ;;; recursive search function (ordered without repetitions)
 (defun search-n-sum (base rest n sum)
   (let ((curr-sum (apply '+ base)))
-    (if (zerop n) (if (= curr-sum sum) (list base))
-      (when (< curr-sum sum)
-        (loop for restcdr on rest collect 
-              (search-n-sum (append base (list (car restcdr))) (cdr restcdr) (1- n) sum)))
-      )))
+    (if (>= curr-sum sum)
+        ;;; then: will return, maybe giving a result..
+        (when (q-comb-condition-fulfilled base n sum)
+          (list base))
+      ;;; else: keep going
+      ;;; test with next elements on the base + corresponding rests  
+      (remove nil 
+              (loop for restcdr on rest append 
+                    (search-n-sum (append base (list (car restcdr))) (cdr restcdr) n sum)))
+    )))
+
+
+;;; recursive search function (ordered with repetitions)
+(defun search-n-sum-r (base rest n sum)
+  (let ((curr-sum (apply '+ base)))
+    (if (>= curr-sum sum)
+        ;;; then: will return, maybe giving a result..
+        (when (q-comb-condition-fulfilled base n sum)
+          (list base))
+      ;;; else: keep going
+      ;;; test with next elements on the base but leave the element on the rest 
+      (remove nil 
+              (loop for restcdr on rest append 
+                    (search-n-sum-r (append base (list (car restcdr))) restcdr n sum)))
+    )))
+
 
 ;;; recursive search function (not ordered without repetitions)
 (defun search-n-sum-u (base rest n sum)
-  (print (list "current base:" base))
   (let ((curr-sum (apply '+ base)))
-    (if (zerop n) (if (= curr-sum sum) (list base))
-      (when (< curr-sum sum)
-        (loop for elem in (remove-if #'(lambda (x) (find x base :test '=)) rest) collect 
-              (search-n-sum-u (append base (list elem)) rest (1- n) sum)))
+    (if (>= curr-sum sum)
+        ;;; then: will return, maybe giving a result..
+        (when (q-comb-condition-fulfilled base n sum)
+          (list base))
+      ;;; else: keep going
+      ;;; 'rest' never changes but repetitions are not considered
+      (remove nil 
+              (loop for elem in (remove-if #'(lambda (x) (find x base :test '=)) rest)
+                    append (search-n-sum-u (append base (list elem)) rest n sum)))
       )))
+
+
 
 ;;; recursive search function (not ordered with repetitions)
-(defun search-n-sum-r (base rest n sum)
-   (list "current base:" base)
+(defun search-n-sum-ur (base rest n sum)  
   (let ((curr-sum (apply '+ base)))
-    (if (zerop n) 
-        (when (= curr-sum sum) 
-          ;(print " ===> FOUND ONE!") 
+    (if (>= curr-sum sum)
+        ;;; then: will return, maybe giving a result..
+        (when (q-comb-condition-fulfilled base n sum)
           (list base))
-      (when (< curr-sum sum)
-        (loop for elem in rest collect 
-              (search-n-sum-r (append base (list elem)) rest (1- n) sum)))
+      ;;; else: keep going
+      ;;; 'rest' never changes -- all combinations accepted
+      (remove nil 
+              (loop for elem in rest append 
+                    (search-n-sum-ur (append base (list elem)) rest n sum)))
       )))
 
-(om::defmethod! q-combi ((dur-space list) (sum integer) (num list) &optional mode)
+(om::defmethod! q-combi ((dur-space list) (sum integer) n &optional (mode 0))
   :icon 1
   :indoc '("list of allowed durations" "sum of durations" "number of elements" "allow repeated elements?")
   :outdoc '("list of solutions") 
   :initvals '((1 2 3 4 5 6 8 10 12 15 20 24 30 40 60 120) 120 nil 0)
-  :menuins '((3 (("ordered without repetitions" 0) ("unordered without repetitions" 1) ("unordered with repetitions" 2))))
+  :menuins '((3 (("ordered without repetitions" 0) 
+                 ("unordered without repetitions" 1) 
+                 ("unordered with repetitions" 2)
+                 ("ordered with repetitions" 3))))
   :doc "Computes and returns the list of all combinations of <num> elements in <dur-space> which sum up to <sum>.
 <mode> (0, 1 or 2) determines whether or not the list must remain ordered and if repetitions are allowed in the results.
 
-<num> can be a signle number or a list of integers. If <num> = NIL allnumber of elements will be searched."
+<num> can be a signle number or a list of integers. If <num> = NIL all number of elements will be searched."
+  
   (let ((sorted-space (sort dur-space '<)))
-  (loop for n in num append
-        (remove nil 
-                (loop for next on sorted-space
-                      ;; no need to search further if the first element is too big already
-                      while (<= (car next) sum) 
-                      append (flat  
-                              (remove nil 
-                                      (case mode 
-                                        (0 (search-n-sum (list (car next)) (cdr next) (1- n) sum))
-                                        (1 (search-n-sum-u (list (car next)) next (1- n) sum))
-                                        (2 (search-n-sum-r (list (car next)) next (1- n) sum))
-                                        ))
-                              (1- n))
-                      )))))
-
-(om::defmethod! q-combi ((dur-space list) (sum integer) (num integer) &optional mode)
-   (q-combi dur-space sum (list num) mode))
-
-(om::defmethod! q-combi ((dur-space list) (sum integer) (num null) &optional mode)
-   (q-combi dur-space sum (arithm-ser 1 (length dur-space) 1) mode))
+    (remove nil 
+            (case mode 
+              (0 (loop for next on sorted-space append
+                        (search-n-sum (list (car next)) (cdr next) n sum)))
+              (1 (loop for next in sorted-space append
+                       (search-n-sum-u (list next) sorted-space n sum)))
+              (2 (loop for next in sorted-space append
+                       (search-n-sum-ur (list next) sorted-space n sum)))
+              (3 (loop for next on sorted-space append
+                       (search-n-sum-r (list (car next)) next n sum))))
+            )
+    ))
 
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 (om::defmethod! q-rotations ((durations list))
@@ -522,8 +551,6 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
 ;;;==================================
 ;;; Q-N-PERMUTATIONS-NO-ROTATIONS
 ;;;==================================
-
-(in-package :cnmat)
 
 ;;;create all of the rotations of a rhythm
 ;;;uses get-rotations method/function
