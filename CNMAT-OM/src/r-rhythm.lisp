@@ -118,8 +118,8 @@
 
   ;we just want the substitute vales to appear in the final lists
   ;if it is a list then just add it to final-list
-  ;otherwise put it in collection and aoutput it
-  ; as a rest when we need it
+  ;otherwise put it in collection and output it
+  ;as a rest when we need it
   
   (loop for elem in mylist do
       (if (listp elem)
@@ -141,21 +141,70 @@
 
 
 
+;;BELOW IS THE OLD VERSION OF r-diminutions
+;;(defmethod! r-diminutions ((rhythm rhythmic-frame) val subs) 
+;;  (let ((substitutions (substitute subs val (pulses rhythm))))
+
+;;   'rhythmic-frame
+;;   :pulses  (substitute-processing substitutions))
+;;)
+  
+;;(defmethod! r-diminutions ((rhythm polyrhythmic-frame) val subs) 
+;;  (make-instance 
+;;   'prf 
+;;  :voices (mapcar #'(lambda (r) (r-diminutions r val subs)) (voices rhythm))
+;;   ))
+
+
+;;BELOW IS THE NEW VERSION OF r-diminutions
+
+(defun local-substitute (subs val mylist)
+  (let ((final-list mylist ))
+    (loop for mysub in subs 
+          for value in val do
+          (setq final-list (substitute mysub value final-list)))
+  
+    final-list
+
+)
+
+)
+
 
 (defmethod! r-diminutions ((rhythm rhythmic-frame) val subs) 
-  (let ((substitutions (substitute subs val (pulses rhythm))))
+  (let ((substitutions (local-substitute subs val (pulses rhythm))))
+
+    ;(print 'substitutions)
+    ;(print substitutions)
 
    'rhythmic-frame
    :pulses  (substitute-processing substitutions))
 )
   
-
-
 (defmethod! r-diminutions ((rhythm polyrhythmic-frame) val subs) 
-   (make-instance 
-    'prf 
-    :voices (mapcar #'(lambda (r) (r-diminutions r val subs)) (voices rhythm))
-    ))
+   
+;;if the first element of the subs is 0 then you know it is the special case
+;;where the subs need to be sent in separately for each voice.
+;;In this case, remove the voice designatory, e.g. "0", before sending it on
+
+    (if (eq 0 (car (first subs)))
+
+        (make-instance 
+        'prf 
+        :voices (mapcar #'(lambda (r s) (r-diminutions r val (cdr s))) (voices rhythm) subs)
+         )
+;;Otherwise, you send the same subs list in for all the voices
+        (make-instance 
+        'prf 
+        :voices (mapcar #'(lambda (r) (r-diminutions r val subs)) (voices rhythm))
+         )
+    )
+
+)
+
+
+
+
 
 
 
