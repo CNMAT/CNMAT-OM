@@ -732,6 +732,21 @@
     meter)
 )
 
+(defun flat-by-voice (mylist)
+
+(let ((final-list '()))
+
+(loop for elem in mylist do
+     (push (flat elem) final-list))
+
+(reverse final-list)
+
+)
+
+
+
+)
+
   
 ;;;this receieves list of durations lists (output from get-rotations)
 (om::defmethod! s-poly2 ( (durations-list list) (meter list) (tatum list) (pitches list) (tempo integer) &optional (mode 0))
@@ -742,19 +757,20 @@
   :initvals '( ((1 5 7 10)) (4 4) (((1(16)) (2(20)))) ((6100)) 110 0)
   :doc "Converts a rotation list into music notation."
   
-  (let (( preped-meter (prep-meter meter)))
+  (let (( preped-meter (prep-meter meter))
+        (my-durations-list (flat-by-voice durations-list)))
 
 
 
     
   (case mode
 
-    (0 (mapcar (lambda (x y z) (make-voice2 preped-meter x y z tempo)) durations-list tatum pitches)
+    (0 (mapcar (lambda (x y z) (make-voice2 preped-meter x y z tempo)) my-durations-list tatum pitches)
        )
-    (1 (mapcar (lambda (x y z) (make-voice-and-rests2 preped-meter x y z tempo)) durations-list tatum pitches)
+    (1 (mapcar (lambda (x y z) (make-voice-and-rests2 preped-meter x y z tempo)) my-durations-list tatum pitches)
        )
 
-    (2 (mapcar (lambda (x y z) (make-voice-pulse2 preped-meter x y z tempo)) durations-list tatum pitches)
+    (2 (mapcar (lambda (x y z) (make-voice-pulse2 preped-meter x y z tempo)) my-durations-list tatum pitches)
        )
     )
   )
@@ -774,6 +790,8 @@
 
 ;;;make mode 1 2 3 for sustain, rest, pulses
 ;;;
+
+
 
 
 ;;;==================================

@@ -351,8 +351,7 @@
     (1 (mapcar #'reduce-sum-lists my-list))
     ;;;format for double-checking sums of sublists
     (2 (let ((final-list '())
-      (prelim-list '())
-       (prelim-addition-list '()))
+      (prelim-list '()))
 
        (loop for elem in my-list do
        (setq prelim-list '())
