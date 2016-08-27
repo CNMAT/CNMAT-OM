@@ -349,6 +349,22 @@
     (0 (reduce-sum my-list))
     ;;;sum that preserves the list structure
     (1 (mapcar #'reduce-sum-lists my-list))
+    ;;;format for double-checking sums of sublists
+    (2 (let ((final-list '())
+      (prelim-list '())
+       (prelim-addition-list '()))
+
+       (loop for elem in my-list do
+       (setq prelim-list '())
+           (loop for onelist in elem do
+                (push (list (reduce '+ onelist)) prelim-list))
+           (push (list (reduce '+ (flat prelim-list))) prelim-list)
+           (push (reverse prelim-list) final-list))
+
+       (reverse final-list)
+     )
+
+     )
     )
 )
 
