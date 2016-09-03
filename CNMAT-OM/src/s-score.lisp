@@ -400,10 +400,22 @@
     )
 )
 
+(defun sublist-pitch-processing (rhythms pitches)
+  (let ((final-list '())
+      (current-list '()))
+
+    (loop for voice-rhythm in rhythms for voice-pitch in pitches do
+      (setq current-list '())
+      (loop for sub-rhythm in voice-rhythm for sub-voice-pitch in voice-pitch do
+            (push (first-n (flat (repeat-n sub-voice-pitch (length sub-rhythm)) 1) (length sub-rhythm)) current-list))
+      (push (reverse (flat current-list 1)) final-list))
+    (reverse final-list)
+    )
+)
 
 
   
-;;;this receieves list of durations lists (output from get-rotations)
+;;;this receives list of durations lists (output from get-rotations)
 (om::defmethod! s-poly ( (durations-list list) (meter list) (tatum number) (pitches list) (tempo integer) &optional (mode 0))
 
   :icon 2
@@ -411,15 +423,24 @@
   :outdoc '("a poly") 
   :initvals '( ((1 5 7 10)) (4 4) 1/16 ((6100)) 110 0)
   :doc "Converts a rotation list into music notation."
-  
+
+;;create pitches for sublist versions, modes 2 & 3
+  (let ((sublist-pitches  (sublist-pitch-processing durations-list pitches)))
+
   (case mode
 
     (0 (mapcar (lambda (x y) (make-voice meter x tatum y tempo)) durations-list pitches )
        )
-    (1 (mapcar (lambda (x y) (make-voice-and-rests meter x tatum y tempo)) durations-list pitches )
+    (1 (mapcar (lambda (x y) (make-voice-and-rests meter x tatum y tempo)) durations-list pitches)
        )
+    (2 (mapcar (lambda (x y) (make-voice meter x tatum y tempo)) durations-list sublist-pitches)
+       )
+    (3 (mapcar (lambda (x y) (make-voice-and-rests meter (flat x) tatum y tempo)) durations-list sublist-pitches)
+       )
+
     )
 
+  )
 )
 
 
@@ -758,7 +779,8 @@
   :doc "Converts a rotation list into music notation."
   
   (let (( preped-meter (prep-meter meter))
-        (my-durations-list (flat-by-voice durations-list)))
+        (my-durations-list (flat-by-voice durations-list))
+        (sublist-pitches  (sublist-pitch-processing durations-list pitches)))
 
 
 
@@ -769,8 +791,16 @@
        )
     (1 (mapcar (lambda (x y z) (make-voice-and-rests2 preped-meter x y z tempo)) my-durations-list tatum pitches)
        )
-
     (2 (mapcar (lambda (x y z) (make-voice-pulse2 preped-meter x y z tempo)) my-durations-list tatum pitches)
+       )
+    ;;sustain sublist version
+    (3 (mapcar (lambda (x y z) (make-voice2 preped-meter x y z tempo)) my-durations-list tatum sublist-pitches)
+       )
+    ;;rests sublist version
+    (4 (mapcar (lambda (x y z) (make-voice-and-rests2 preped-meter x y z tempo)) my-durations-list tatum sublist-pitches)
+       )
+    ;;pulse sublist version
+    (5 (mapcar (lambda (x y z) (make-voice-pulse2 preped-meter x y z tempo)) my-durations-list tatum sublist-pitches)
        )
     )
   )
