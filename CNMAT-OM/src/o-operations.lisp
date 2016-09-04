@@ -5,6 +5,43 @@
 (in-package :cnmat)
 
 
+;;;==================================
+;;; O-LIST-LENGTHS
+;;;==================================
+
+
+;;this is in process and not being used yet
+
+(om::defmethod! o-list-lengths ((my-list list) &rest rest-lists)
+
+  :icon 6
+  :indoc '("a list of lists or more lists of lists" )
+  :outdoc '("compare lists of sublists") 
+  :initvals '(((1 2 3 4) (5 6 7 8)) (nil))
+  :doc "Compare the lengths of lists of lists"
+
+  (let ((all-lists (append my-list  rest-lists )))
+        (final-list '())
+        (current-list '()))
+
+    (print all-lists)
+
+   (loop for subcategory in all-lists
+    for i from 0 to (length all-lists) do
+       (loop for a-list in subcategory do
+           (loop for elem in a-list do
+                 (push (length elem) current-list)))
+     (push (list 'list i (reverse current-list)) final-list))
+   
+  
+  final-list
+  )
+   
+
+
+
+
+
 
 
 

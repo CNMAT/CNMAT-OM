@@ -402,16 +402,25 @@
 
 (defun sublist-pitch-processing (rhythms pitches)
   (let ((final-list '())
-      (current-list '()))
+      (current-list '())
+      (absolute-final-list '()))
 
     (loop for voice-rhythm in rhythms for voice-pitch in pitches do
       (setq current-list '())
       (loop for sub-rhythm in voice-rhythm for sub-voice-pitch in voice-pitch do
             (push (first-n (flat (repeat-n sub-voice-pitch (length sub-rhythm)) 1) (length sub-rhythm)) current-list))
-      (push (reverse (flat current-list 1)) final-list))
-    (reverse final-list)
-    )
+      (push  (reverse current-list)  final-list))
+
+    (setq absolute-final-list (reverse  (mapcar (lambda (x) (flat x 1)) final-list)))
+   
+   ; (print 'sublist-pitches)
+   ; (print absolute-final-list)
+
+    absolute-final-list
+   
+   )
 )
+
 
 
   
