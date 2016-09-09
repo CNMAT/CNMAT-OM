@@ -383,11 +383,7 @@
 
   (case mode 
     ;;;sum of the lists of lists per voice
-    (0 (reduce-sum my-list))
-    ;;;sum that preserves the list structure
-    (1 (mapcar #'reduce-sum-lists my-list))
-    ;;;format for double-checking sums of sublists
-    (2 (let ((final-list '())
+    (0 (let ((final-list '())
       (prelim-list '()))
 
        (loop for elem in my-list do
@@ -400,6 +396,25 @@
        (reverse final-list)
      )
 
+     )
+   
+    ;;;sum that preserves the list structure
+    (1 (mapcar #'reduce-sum-lists my-list))
+    ;;;format for double-checking sums of sublists
+    
+    (2 (reduce-sum my-list))
+
+    (3 (let ((hold-sublist '())
+             (final-list '()))
+               
+         (loop for sublist in my-list do
+               (loop for sub-sublist in sublist do
+                     (push (list (length sub-sublist)) hold-sublist))
+               (push (reverse hold-sublist) final-list)
+               (setq hold-sublist '()))
+         (reverse final-list)
+      
+     )
      )
     )
 )

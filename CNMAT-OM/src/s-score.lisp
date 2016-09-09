@@ -407,8 +407,12 @@
 
     (loop for voice-rhythm in rhythms for voice-pitch in pitches do
       (setq current-list '())
+      
+      (cond ((listp (first voice-rhythm))
       (loop for sub-rhythm in voice-rhythm for sub-voice-pitch in voice-pitch do
-            (push (first-n (flat (repeat-n sub-voice-pitch (length sub-rhythm)) 1) (length sub-rhythm)) current-list))
+            (push (first-n (flat (repeat-n sub-voice-pitch (length sub-rhythm)) 1) (length sub-rhythm)) current-list)))
+      (t (push voice-pitch current-list)))
+
       (push  (reverse current-list)  final-list))
 
     (setq absolute-final-list (reverse  (mapcar (lambda (x) (flat x 1)) final-list)))
@@ -763,18 +767,11 @@
 )
 
 (defun flat-by-voice (mylist)
-
-(let ((final-list '()))
-
-(loop for elem in mylist do
+  (let ((final-list '()))
+    (loop for elem in mylist do
      (push (flat elem) final-list))
-
-(reverse final-list)
-
-)
-
-
-
+    (reverse final-list)
+    )
 )
 
   
@@ -791,7 +788,7 @@
         (my-durations-list (flat-by-voice durations-list))
         (sublist-pitches  (sublist-pitch-processing durations-list pitches)))
 
-
+    
 
     
   (case mode
@@ -820,11 +817,21 @@
 
 ;;;this receives from rfi object
 (om::defmethod! s-poly2 ((durations-list prf) (meter list) (tatum list) (pitches list) (tempo integer) &optional (mode 0))
-  (let ((durations (mapcar 'pulses (flat-voices durations-list))))
+  (let (
+        (durations (mapcar 'pulses (voices durations-list)))
+        ;wrong....below
+        ;(durations (mapcar 'pulses (flat-by-voice durations-list)))
+        ;(durations (mapcar 'pulses  durations-list))
+        )
 
+    (s-poly2 durations meter tatum pitches tempo mode)
+    )
 
-    (s-poly2 durations meter tatum pitches tempo mode))
+)
 
+(om::defmethod! s-poly ( (durations-list prf) (meter list) (tatum number) (pitches list) (tempo integer) &optional (mode 0))
+  (let ((durations (mapcar 'pulses (voices durations-list))))
+    (s-poly durations meter tatum pitches tempo mode))
 )
 
 ;;;make mode 1 2 3 for sustain, rest, pulses
