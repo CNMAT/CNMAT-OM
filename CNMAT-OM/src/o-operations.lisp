@@ -399,12 +399,12 @@
      )
    
     ;;;sum that preserves the list structure
-    (1 (mapcar #'reduce-sum-lists my-list))
+    ;;(1 (mapcar #'reduce-sum-lists my-list))
     ;;;format for double-checking sums of sublists
     
-    (2 (reduce-sum my-list))
+    ;;(2 (reduce-sum my-list))
 
-    (3 (let ((hold-sublist '())
+    (1 (let ((hold-sublist '())
              (final-list '()))
                
          (loop for sublist in my-list do

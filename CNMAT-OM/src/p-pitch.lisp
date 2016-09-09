@@ -359,10 +359,10 @@
 (om::defmethod! p-bands-register ( (bpf-lib list) (pitches list) &optional (mode 0))
 
   :icon 2
-  :indoc '("a bpf-lib of two bpfs" "a list of list of attacks, in rotations or other specification" "mode: 0 = n/a")
+  :indoc '("a bpf-lib of two bpfs" "a list of list of attacks, in rotations or other specification" "mode: 0 = n/a; mode=1 for multiple pitch list input")
   :outdoc '("a list of pitces mapped from the bpf to the pitch-collection") 
   :initvals '( nil '(6000 6000 6000 6000)  0)
-  :doc "Returns random pitch samples that conforms to a list of allowable pitchclasses. The pitches sampled are determed following the contour of the bpf pitch bands provided "
+  :doc "Returns random pitch samples that conforms to a list of allowable pitchclasses. The pitches sampled are determed following the contour of the bpf pitch bands provided. Optional Mode=1 will take in multiple pitchlists."
   
   (case mode
 
@@ -383,11 +383,12 @@
 
           )
 
+    (1
+     ;this mode deals with many-voiced-rhythm-lists
+     (mapcar (lambda (x) (p-bands-register bpf-lib x)) pitches)
      
-
+     )
     )
-
-
 )
 
 
