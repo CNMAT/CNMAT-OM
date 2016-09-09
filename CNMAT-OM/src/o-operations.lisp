@@ -421,6 +421,41 @@
 
 
 
+;;;==================================
+;;; O-LIST-INFO
+;;;==================================
+
+
+
+;;; output sums of lists of lists
+(om::defmethod! o-list-info ((mylist list) &optional (mode 0))
+  :icon 5
+  :indoc '("list of lists to be tallied" "mode: 0 length of sublist and sum of sublist returned retaining list structure")
+  :initvals '(((1 2 3) (3 5 5 6 7) (19 43 59) (34) (68)) ((1 2 3 4) (22 4)) 0)
+  :menuins '((1 (("sum of the list of lists per voice" 0) ("sums that preserve list structure" 1))))
+  :doc "Returns a list of sums of list arguments"
+
+  (case mode 
+    ;;;sum of the lists of lists per voice
+    (0 
+
+     (let ((current-list '())
+           (final-list '()))
+
+       (loop for sublist in mylist do
+             (loop for elem in sublist do
+            (push (list (length elem) (reduce #'+ elem)) current-list))
+             (push (reverse current-list) final-list)
+             (setq current-list '()))
+
+       (reverse final-list)
+       )
+     )
+     )
+)
+
+
+
 
 
 ;;;==================================

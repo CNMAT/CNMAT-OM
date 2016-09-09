@@ -59,11 +59,12 @@
 ;;;==================================
 
 
-(defun combi-filter-helper (mylist num-elems sums olaps) 
+(defun combi-filter-helper (mylist num-elems sums olaps exclude) 
 
 ( let ((processed-elems '())
        (processed-sums '())
-       (processed-olaps '()))
+       (processed-olaps '())
+       (processed-exclude '()))
 
 
 ;if no number of elements is given
@@ -72,8 +73,7 @@
 (cond ((eq num-elems nil) (push mylist processed-elems))
       ((member (second (last-elem mylist)) num-elems) (push mylist processed-elems)))
 
-(print 'processed-elems)
-(print processed-elems)
+
 
 
 ;if no sums is given
@@ -91,23 +91,32 @@
 (cond ((eq olaps nil) (push processed-sums processed-olaps))
       ((member (sixth (last-elem mylist)) olaps) (push processed-sums processed-olaps)))
 
+;old end of function
+;processed-olaps
 
 
-processed-olaps
+;get everything except if it includes a deny
+(cond ((eq exclude nil) (push  processed-olaps processed-exclude))
+      ((not (x-intersect (flat (butlast mylist)) exclude)) (push processed-olaps processed-exclude)))
+
+(print '(flat (butlast mylist)))
+(print (flat (butlast mylist)))
+
+processed-exclude
 
 )
 )
 
 
-(om::defmethod! q-combi-filter ((main-list list) (elems list) (sums list) (olaps list))
+(om::defmethod! q-combi-filter ((main-list list) (elems list) (sums list) (olaps list) &optional (exclude nil))
 
   :icon 2
-  :indoc '("a list of lists" "a list of elements" "a list of possible sums" "a list of overlaps")
+  :indoc '("a list of lists" "a list of elements" "a list of possible sums" "a list of overlaps" "excluded elements")
   :outdoc '("Filters input lists to return those lists with the elements required as specified in the lists for number of elements, possible sums, and number of overlaps.") 
   :initvals '(((1 2 3) (3 4 5)) nil  nil nil)
   :doc "Filters input lists to return those lists with the elements required as specified in the lists for number of elements, possible sums, and number of overlaps."
   
- (remove nil (flat (mapcar (lambda (x) (combi-filter-helper x elems sums olaps)) main-list) 3))
+ (remove nil (flat (mapcar (lambda (x) (combi-filter-helper x elems sums olaps exclude)) main-list) 3))
 
 )
 
