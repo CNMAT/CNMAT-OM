@@ -5,6 +5,7 @@
 (in-package :cnmat)
 
 
+
 ;;;==================================
 ;;; O-LIST-LENGTHS
 ;;;==================================
@@ -37,11 +38,6 @@
   final-list
   )
    
-
-
-
-
-
 
 
 
@@ -440,15 +436,19 @@
     (0 
 
      (let ((current-list '())
+           (running-sum '())
            (final-list '()))
 
        (loop for sublist in mylist do
              (loop for elem in sublist do
-            (push (list (length elem) (reduce #'+ elem)) current-list))
+             (push (list (length elem) (reduce #'+ elem)) current-list)
+             (push (reduce #'+ elem) running-sum))
+             (push (list (reduce #'+ running-sum)) current-list)
              (push (reverse current-list) final-list)
-             (setq current-list '()))
+             (setq current-list '())
+             (setq running-sum '()))
 
-       (reverse final-list)
+        (reverse final-list) 
        )
      )
      )
