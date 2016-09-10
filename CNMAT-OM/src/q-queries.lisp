@@ -116,7 +116,7 @@ processed-exclude
   :initvals '(((1 2 3) (3 4 5)) nil  nil nil)
   :doc "Filters input lists to return those lists with the elements required as specified in the lists for number of elements, possible sums, and number of overlaps."
   
- (remove nil (flat (mapcar (lambda (x) (combi-filter-helper x elems sums olaps exclude)) main-list) 3))
+ (remove nil (flat (mapcar (lambda (x) (combi-filter-helper x elems sums olaps exclude)) main-list) 4))
 
 )
 
