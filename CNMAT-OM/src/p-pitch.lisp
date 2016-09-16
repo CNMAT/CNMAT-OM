@@ -668,16 +668,13 @@
   (loop for attack in durations-list
         collect (nth (random (length pitch-collection)) pitch-collection)
       )
-
-
 )
 
 (defun get-random-pitch-from-range (pitch-collection durations-list)
   (loop for attack in durations-list
         collect (nth 
                              (random (length (arithm-ser (car pitch-collection) (car (cdr pitch-collection)) 100))) 
-                                 (arithm-ser (car pitch-collection) (car (cdr pitch-collection)) 100)))
-     
+                                 (arithm-ser (car pitch-collection) (car (cdr pitch-collection)) 100))) 
 )
   
 ;;;this receieves list of durations lists (output from get-rotations)
@@ -727,7 +724,7 @@
           )
      )
 
-
+    )
 
 )
 
