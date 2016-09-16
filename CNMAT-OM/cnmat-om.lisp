@@ -68,7 +68,8 @@
    
    :prf
 
-
+   :u-info
+   :u-utilities
 
 
 
@@ -103,6 +104,9 @@
 
 (compile&load (om-relative-path '("src") "s-score"))
 (compile&load (om-relative-path '("src") "s-combine-voices"))
+
+(compile&load (om-relative-path '("src") "u-utilities"))
+
 
 
 
@@ -140,7 +144,11 @@
       
       ("rhythm utilities" nil (prf) (r-scatter-attacks r-diminutions r-interleave r-combine-lists r-retro-canon? rhythmic-frames) nil)
       
-      ("score utilities" () nil (s-poly s-voice s-poly2 s-cuts s-cuts2 s-poly s-combine-voices s-combine-polys rotations->poly2) nil))
+      ("score utilities" () nil (s-poly s-voice s-poly2 s-cuts s-cuts2 s-poly s-combine-voices s-combine-polys rotations->poly2) nil)
+
+
+("rhythm utilities" nil (prf) (r-scatter-attacks r-diminutions r-interleave r-combine-lists r-retro-canon? rhythmic-frames) nil)
+)
      nil ;; classes
      (combinations) ;; functions
      nil))
