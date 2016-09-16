@@ -655,7 +655,6 @@
 
 
 
-
 ;;;==================================
 ;;; P-MAP2
 ;;;==================================
@@ -699,7 +698,7 @@
      )
           
      
-(2 
+    (2 
 
          (cond ((listp (car pitch-collection))
                ;;this is the version when there are a list of list of pitch-collections
@@ -713,7 +712,7 @@
           )
      )
 
-(1
+    (1
 
          (cond ((listp (car pitch-collection))
                ;;this is the version when there are a list of list of pitch-collections
@@ -729,17 +728,11 @@
      )
 
 
-    )
 
 )
 
 
-;;;this receives from rfi object
-(om::defmethod! p-map1 ( (durations-list prf) (mapping-list list) &optional (mode 0))
-  (let ((durations (mapcar 'pulses (voices durations-list))))
-    (pitch-mapper1 durations mapping-list mode)))
 
-;;;
 
 
 

@@ -47,7 +47,10 @@
 )
 
 (defun make-voice-cuts-rests (meter durations-list tatum new-pitches tempo)
-  (let* ((flat-pitches (flat new-pitches))
+  (let* (
+         (flat-pitches new-pitches)
+         ;(flat-pitches (flat new-pitches))
+
          (cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0 durations-list))))
          (cuts-events (mapcar (lambda (x) (cuts-rests x tatum)) (om* durations-list tatum))))
     ;;return a list with both voices
@@ -73,8 +76,14 @@
 
 
 (defun make-voice-cuts (meter durations-list tatum new-pitches tempo)
-  (let* ((flat-pitches (flat new-pitches))
+  (let* (
+         (flat-pitches  new-pitches)
+         ;(flat-pitches (flat new-pitches))
          (cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0 durations-list)))))
+
+
+(print 'new-pitches)
+(print new-pitches)
     ;;return a list with both voices
        (list
     ;;this voice is the running version
@@ -103,9 +112,10 @@
 ;;output new pitchlist for the processing
 
   (let* ((sum-rhythms (reduce '+ rhythm-list))
-        (num-events (om-round (om/ sum-rhythms (length (flat pitch-list))))))
+        (num-events (om-round (om/ sum-rhythms (length pitch-list)))))
     
-        (flat (repeat-n (flat pitch-list) num-events))
+        (flat (repeat-n pitch-list  num-events) 1)
+
    )
 
 )
@@ -122,7 +132,8 @@
   
   (let* (( flat-rhythm-lists (mapcar (lambda (x) (flat x)) durations-list))
         (flat-pitch-lists (mapcar (lambda (x) (flat x)) pitches))
-        (prepped-pitches (mapcar (lambda (x y) (check-pitchlist-vs-rhythmlist x y)) flat-rhythm-lists flat-pitch-lists)))
+        (prepped-pitches (mapcar (lambda (x y) (check-pitchlist-vs-rhythmlist x y)) flat-rhythm-lists pitches)))
+
 
     
   (case mode
@@ -168,7 +179,7 @@
   (let ((pitch-at-index (posn-match flat-pitches  (dx->x 0 durations-list))))
 
   ;;return the right repeated pitches for the pulse voice
-  (flat (mapcar (lambda (x y) (repeat-n x y)) pitch-at-index durations-list))
+  (flat (mapcar (lambda (x y) (repeat-n x y)) pitch-at-index durations-list) 1)
   )
 
 )
@@ -181,7 +192,10 @@
 ;;;;
 
 (defun make-voice-cuts-pulse2 (meter durations-list tatum new-pitches tempo generated-rhythms generated-tatums)
-  (let* ((flat-pitches (flat new-pitches))
+  (let* (
+
+         ;(flat-pitches (flat new-pitches))
+         (flat-pitches  new-pitches)
          (cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0 durations-list))))
          (cuts-events (mapcar (lambda (x) (cuts-rests x tatum)) (om* durations-list tatum)))
          ;;match attacks with the correct tatum in the tatum list
@@ -218,7 +232,9 @@
 
 
 (defun make-voice-cuts-rests2 (meter durations-list tatum new-pitches tempo generated-rhythms generated-tatums)
-  (let* ((flat-pitches (flat new-pitches))
+  (let* (
+         ;(flat-pitches (flat new-pitches))
+         (flat-pitches new-pitches)
          (cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0 durations-list))))
          (cuts-events (mapcar (lambda (x) (cuts-rests x tatum)) (om* durations-list tatum)))
          ;;match attacks with the correct tatum in the tatum list
@@ -227,6 +243,10 @@
          (rest-durations  (om* -1 (mapcar (lambda (x y) (- x y)) generated-rhythms attack-durations)))
          ;;this then created the final list of attacks with rests for the rests version of the cut-ins patch
          (attacks+rests-durations (remove 0 (flat (mapcar (lambda (x y) (list x y)) attack-durations rest-durations)))) )
+
+(print 'flat-pitches)
+(print flat-pitches)
+
 
        (list
     ;;this voice is the running version
@@ -250,7 +270,10 @@
 
 
 (defun make-voice-cuts2 (meter durations-list tatum new-pitches tempo generated-rhythms generated-tatums)
-  (let* ((flat-pitches (flat new-pitches))
+  (let* (
+         ;(flat-pitches (flat new-pitches))
+         (flat-pitches  new-pitches)
+
          (cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0 durations-list)))))
     ;;return a list with both voices
        (list
@@ -280,9 +303,13 @@
 ;;output new pitchlist for the processing
 
   (let* ((sum-rhythms (reduce '+ rhythm-list))
-        (num-events (om-round (om/ sum-rhythms (length (flat pitch-list))))))
+        (num-events (om-round (om/ sum-rhythms (length (flat pitch-list)))))
+
+        )
     
-        (flat (repeat-n (flat pitch-list) num-events))
+       ; (flat (repeat-n (flat pitch-list) num-events))
+        (flat (repeat-n  pitch-list num-events) 1)
+
    )
 
 )
@@ -333,8 +360,9 @@
   :doc "Converts a rotation list into music notation using the ."
   
   (let* (( flat-rhythm-lists (mapcar (lambda (x) (flat x)) durations-list))
-        (flat-pitch-lists (mapcar (lambda (x) (flat x)) pitches))
-        (prepped-pitches (mapcar (lambda (x y) (check-pitchlist-vs-rhythmlist x y)) flat-rhythm-lists flat-pitch-lists))
+        ;(flat-pitch-lists (mapcar (lambda (x) (flat x)) pitches))
+        (prepped-pitches (mapcar (lambda (x y) (check-pitchlist-vs-rhythmlist x y)) flat-rhythm-lists pitches))
+        ;(prepped-pitches (mapcar (lambda (x y) (check-pitchlist-vs-rhythmlist x y)) flat-rhythm-lists flat-pitch-lists))
         (prepped-tatums (mapcar (lambda (x) (prep-tatum x)) tatum-list))
         (generated-rhythms (mapcar (lambda (x y) (generate-rhythms x y)) durations-list prepped-tatums))
         (generated-tatums (mapcar (lambda (x y) (generate-tatums x y)) durations-list prepped-tatums)))
@@ -346,7 +374,6 @@
        )
     (1 (flat (mapcar (lambda (x y z a) (make-voice-cuts-rests2 meter x tatum-list y tempo z a)) flat-rhythm-lists  prepped-pitches generated-rhythms generated-tatums) 1)
        )
-
     (2 (flat (mapcar (lambda (x y z a) (make-voice-cuts-pulse2 meter x tatum-list y tempo z a)) flat-rhythm-lists  prepped-pitches generated-rhythms generated-tatums) 1)
        )
        
