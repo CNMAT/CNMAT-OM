@@ -330,15 +330,92 @@
 
 
 
-(om::defmethod! o-list-repeat ((my-list list) (no-times integer))
+(om::defmethod! o-list-repeat ((mylist list) (desired-length integer)  &optional (mode 0))
 
   :icon 6
   :indoc '("a list of lists" "an integer number for number of repetitions")
-  :outdoc '("returns a repeated list preserving the original list structure") 
-  :initvals '(((1 2 3)(34 45)) 2)
+  :outdoc '("mode=0 returns a repeated list preserving the original list structure; mode=1 returns a repeated list preserving the original list structure and tailored to desired length input") 
+  :initvals '(((1 2 3)(34 45)) 5 0)
   :doc "Repeats a given list n-times while preserving the original list structure"
 
-   (repeater my-list no-times)
+  (case mode 
+
+    ;;this is simple list repeat
+    (0
+    (repeater mylist desired-length)
+    )
+
+    ;;this is the "tailored" version of list-repeat
+    (1
+
+     (let* ((repeats-needed (mapcar (lambda (x) (ceiling (/ desired-length (length x)))) mylist))
+     ; (make-repeats (mapcar (lambda (x y) (flat (repeat-n x y) 1)) mylist repeats-needed))
+            (make-repeats (mapcar (lambda (x y)  (repeat-n x y) ) mylist repeats-needed))
+
+            (pre-final-lengths (mapcar (lambda (x) (length (flat x))) make-repeats))
+            (list-pre-group '())
+            (list-groupings '())
+            (final-list '())
+            (final-lengths '())
+            (very-final-list '())
+            (hold '())
+            (no-nils-very-final-list '()))
+
+  ;(list make-repeats final-lengths)
+
+       (loop for currlist in make-repeats do
+             (loop for elem in currlist do
+                   (push (length elem) list-pre-group))
+             (push (reverse list-pre-group) list-groupings)
+             (setf list-pre-group '()))
+
+       (setf list-groupings (reverse list-groupings))
+
+
+      ;; (print 'list-groupings)
+      ;; (print list-groupings)
+        
+       (loop for currlist in make-repeats
+             for currlen in pre-final-lengths do
+
+             (cond ((<= currlen desired-length) (push currlist final-list))
+                   (t (push  (subseq (flat currlist) 0 desired-length) final-list))
+                   ))
+
+       (setq final-list (reverse final-list))
+  
+       (loop for currlist in final-list do
+             (push (length (flat currlist)) final-lengths))
+  
+       (setq final-lengths (reverse final-lengths))
+
+      ; (print 'final-list)
+      ; (print final-list)
+
+       (loop for currlist in final-list 
+             for currgrouping in list-groupings do
+             (push  (group-list currlist currgrouping 'linear) very-final-list))
+
+       ;;get rid of any nils!!!!
+
+       (loop for currlist in very-final-list do
+             (loop for elem in currlist do
+                   (push (remove nil elem) hold))
+             (push (reverse hold) no-nils-very-final-list)
+             (setf hold '()))
+       
+                   
+
+      ; (setf no-nils-very-final-list (reverse no-nils-very-final-list))
+  
+       (list no-nils-very-final-list final-lengths)
+
+       )
+
+     )    
+
+    )
+
 )
 
 
