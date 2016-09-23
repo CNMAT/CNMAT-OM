@@ -42,15 +42,12 @@
 
 ;;now bundle the isolated pitches in final-list as needed for the sorting to follow
       (loop for i from 0 to (- (length final-list) 1) do
-            (if (not (listp (car (nth i final-list)))) (setf (nth i final-list) (list (list (car (nth i final-list))) (flat (cdr (nth i final-list)))))))
-            
+            (if (not (listp (car (nth i final-list)))) (setf (nth i final-list) (list (list (car (nth i final-list))) (flat (cdr (nth i final-list)) )))))
 
 
-(defun sort-by-first-elem (elem)
-  
-(car (car elem))
 
-)
+
+
 
 
 ;;now push in all the probabilities together in pitch order low to high
@@ -86,6 +83,11 @@
 )
 
 
+(defun sort-by-first-elem (elem)
+  
+(car (car elem))
+
+)
 
 
 (defun build-sequence ( mylist)

@@ -6,6 +6,11 @@
 
 
 
+
+
+
+
+
 ;;;==================================
 ;;; O-LIST-LENGTHS
 ;;;==================================
@@ -558,7 +563,33 @@
 
 
 
+;;;==================================
+;;; O-TATUM-MAKER
+;;;==================================
 
+
+
+(om::defmethod! o-tatum-maker ((mylist list) )
+
+  :icon 6
+  :indoc '("a list of lists or more lists of lists" )
+  :outdoc '("compare lists of sublists") 
+  :initvals '( nil)
+  :doc "Compare the lengths of lists of lists"
+
+  (let (( hold-list '())
+      (final-list '()))
+
+    (loop for voice in mylist do
+      (loop for elem in voice do
+            (push (list (car elem)  (cdr elem)) hold-list))
+      (push (reverse hold-list) final-list)
+      (setf hold-list '()))
+
+    (reverse final-list)
+
+    )
+)
 
 
 
