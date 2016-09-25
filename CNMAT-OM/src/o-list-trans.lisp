@@ -49,15 +49,17 @@
 
     (let* ((bpf-probabilities (bpf-probabilities mybpf num-samples)))
 
-         (flat (loop for n from 1 to num-samples
+         (flat 
+          (loop for n from 1 to num-samples
                for lp in bpf-probabilities
-               collect (alea::choixmultiple 
+               collect  (alea::choixmultiple 
                      lp 
                      ;returns a random element with equal proability
                      ;of being chosen
                      (rand-from-list listA 1)
-                     (rand-from-list listB 1)                     
-                     )))
+                     (rand-from-list listB 1)                   
+                     )) 
+          2)
          )
 
    )
@@ -74,13 +76,15 @@
   :doc "Return a random element from listA or listB using a bpf to guide the the probability of which list is chosen from. Within each list, elem  ents have equal proability of being chosen."
  
    (let ((final-list '()))
+
+    
    
    (loop for i from 1 to num-times do
            (push (o-list-trans-helper mybpf num-samples listA listB mode) final-list))
-   (reverse final-list)
-           
-   )
+   
+   (reverse final-list))       
 )
+
 
 
 
