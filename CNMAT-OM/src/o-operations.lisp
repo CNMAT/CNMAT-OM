@@ -504,11 +504,25 @@
 ;;;==================================
 
 
+(defun tatum-lookup (tatum)
+  ;;returns number of tatums per beat
+  (cond ((= tatum 1) 1)
+        ((= tatum 2) 1)
+        ((= tatum 4) 1)
+        ((= tatum 8) 2)
+        ((= tatum 12) 3)
+        ((= tatum 16) 4)
+        ((= tatum 20) 5)
+        ((= tatum 24) 6)
+        (t nil))
+)
+
 
 ;;; output sums of lists of lists
 (om::defmethod! o-list-info ((mylist list) &optional (mode 0))
   :icon 5
-  :indoc '("list of lists to be tallied" "mode: 0 length of sublist and sum of sublist returned retaining list structure")
+  :indoc '("list of lists to be tallied" "mode: 0 length of sublist and sum of sublist returned retaining list structure"
+           "mode 1 for simple list of lists, e.g. pitch lists")
   :initvals '(((1 2 3) (3 5 5 6 7) (19 43 59) (34) (68)) ((1 2 3 4) (22 4)) 0)
   :menuins '((1 (("sum of the list of lists per voice" 0) ("sums that preserve list structure" 1))))
   :doc "Returns a list of sums of list arguments"
@@ -519,20 +533,68 @@
 
      (let ((current-list '())
            (running-sum '())
+           (running-length '())
            (final-list '()))
 
        (loop for sublist in mylist do
              (loop for elem in sublist do
-             (push (list (length elem) (reduce #'+ elem)) current-list)
-             (push (reduce #'+ elem) running-sum))
-             (push (list (reduce #'+ running-sum)) current-list)
+                   (push (list (length elem) (reduce #'+ elem)) current-list)
+                   (push (reduce #'+ elem) running-sum)
+                   (push (length elem) running-length))
+             (push (list (reduce #'+ running-length) (reduce #'+ running-sum)) current-list)
              (push (reverse current-list) final-list)
              (setq current-list '())
-             (setq running-sum '()))
+             (setq running-sum '())
+             (setq running-length '()))
 
         (reverse final-list) 
        )
      )
+
+    (1 
+     (let ((current-list '())
+           (running-sum '())
+           (running-length '())
+           (final-list '()))
+
+       (loop for sublist in (list mylist) do
+             (loop for elem in sublist do
+                   (push (list (length elem) (reduce #'+ elem)) current-list)
+                   (push (reduce #'+ elem) running-sum)
+                   (push (length elem) running-length))
+             ;this calculation is unnecessary here
+             ;(push (list (reduce #'+ running-length) (reduce #'+ running-sum)) current-list)
+             (push (reverse current-list) final-list)
+             (setq current-list '())
+             (setq running-sum '())
+             (setq running-length '()))
+
+       ;;flat the result one level and get rid of the unnecessary sums at the end
+       (flat (reverse final-list) 1)
+       )
+     )
+
+    (2 
+
+     (let* ((current-list '())
+           (running-sum '())
+           (running-length '())
+           (final-list '()))
+
+       (loop for sublist in mylist do
+             (loop for elem in sublist do
+                   (push (list (first elem) (om* (first elem)   (tatum-lookup (second (flat elem))))) current-list)
+                   (print current-list)
+                   )
+             (push (list (reduce #'+ (mapcar #'first current-list))(reduce #'+ (mapcar #'second current-list))) current-list)
+             (push (reverse current-list) final-list)
+             (setq current-list '()))
+
+       (reverse final-list)
+       )
+     )
+
+
      )
 )
 
