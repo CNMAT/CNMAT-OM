@@ -142,14 +142,20 @@
   
   (case mode
 
-    (0 (let ((prelim-sample-pitches (mapcar (lambda (x) (sample-from-bands bpf-lib x))  attacks-voices)))
-         
+    (0  
+     
+     (cond 
+         ((listp (second (flat pitch-collection 1)))
+         (let ((prelim-sample-pitches (mapcar (lambda (x) (sample-from-bands bpf-lib x))  attacks-voices)))
+         (mapcar (lambda (x y) (get-pitch-from-collection-by-voice x (flat y ))) prelim-sample-pitches pitch-collection)))
+        
+
+         ; do this in the case that there is only one pitchlist defined
+         (t (let ((prelim-sample-pitches (mapcar (lambda (x) (sample-from-bands bpf-lib x))  attacks-voices)))
          (mapcar (lambda (x) (get-pitch-from-collection-by-voice x (flat pitch-collection))) prelim-sample-pitches)
-         )
-       )
-
-       )
-
+         ))
+     )
+   ))
 
 )
 
