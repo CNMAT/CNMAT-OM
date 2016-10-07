@@ -432,6 +432,7 @@
   :doc "Returns a list of lists of elements from the source lists chosen by index number"
 
   
+; see list-inversion and helper-inversion functions in o-pitch.lisp
   (list (mapcar (lambda (x) (list-inversion inversion-element x)) pitchlist))
 
   

@@ -168,3 +168,135 @@
 )
 
 
+(om::defmethod! u-retro ( (mylist list) &optional (mode 0))
+
+  :icon 7
+  :indoc '("a list of lists" )
+  :outdoc '("Returns the retrograde of every list within a list of lists" "Mode=1 returns the retrograde of every sublist in the list of lists") 
+  :initvals '(nil)
+  :doc "Returns the retrograde of every list within a list of lists (default). Mode=1 returns the retrograde of every sublist in the list of lists"
+
+ 
+  (case mode
+
+    (0
+
+     (let ((outputlist '()))
+       (loop for elem in mylist do
+             (push (reverse elem) outputlist))
+       (reverse outputlist))
+     )
+
+
+    (1
+
+     (let ((outputlist '())
+      (pre-outputlist '()))
+
+       (loop for elem in mylist do
+             (loop for sublist in elem do
+                   (push (reverse sublist) pre-outputlist))
+             (push (reverse pre-outputlist) outputlist)
+             (setf pre-outputlist '()))
+       (reverse outputlist))
+    )
+    )
+)
+
+(om::defmethod! u-+ ( (mylist list) (mynumber number) &optional (mode 0) (mod 12))
+
+  :icon 7
+  :indoc '("a list" "a number" "Optional mode argument" "Optional mod argument" )
+  :outdoc '("U-+ is a utility for quick addition of a number to a lists of numbers.  Default mode is normal addition. Optional Mode=1 is mod12-based addition.  Optional mod=12 to change mod number.") 
+  :initvals '((nil) (nil) (nil))
+  :doc "U-+ is a utility for quick addition of a number to a lists of numbers.  Default mode is normal addition. Optional Mode=1 is mod12-based addition.  Optional mod=12 to change mod number."
+
+  (case mode
+  
+  (0
+   ;use regular om addition
+   (om::om+ mylist mynumber)
+   )
+
+  (1
+   ;use zn+ for mod 12
+   (om::mod+ (om/ mylist 100) mynumber mod)
+   )
+  )
+
+)
+
+
+(om::defmethod! u-- ( (mylist list) (mynumber number) &optional (mode 0) (mod 12))
+
+  :icon 7
+  :indoc '("a list" "a number" "Optional mode argument" "Optional mod argument" )
+  :outdoc '("U-- is a utility for quick subtraction of a number from a lists of numbers.  Default mode is normal subtraction. Optional Mode=1 is mod12-based subtraction.  Optional mod=12 to change mod number.") 
+  :initvals '((nil) (nil) (nil))
+  :doc "U-- is a utility for quick subtraction of a number from a lists of numbers.  Default mode is normal subtraction. Optional Mode=1 is mod12-based subtraction.  Optional mod=12 to change mod number."
+
+  (case mode
+  
+  (0
+   ;use regular om addition
+   (om::om- mylist mynumber)
+   )
+
+  (1
+   ;use zn+ for mod 12
+   (om::mod- (om/ mylist 100) mynumber mod)
+   )
+  )
+
+)
+
+
+(om::defmethod! u-* ( (mylist list) (mynumber number) &optional (mode 0) (mod 12))
+
+  :icon 7
+  :indoc '("a list" "a number" "Optional mode argument" "Optional mod argument" )
+  :outdoc '("U-* is a utility for quick multiplication of a number with a lists of numbers.  Default mode is normal multiplication. Optional Mode=1 is mod12-based multiplication.  Optional mod=12 to change mod number.") 
+  :initvals '((nil) (nil) (nil))
+  :doc "U-* is a utility for quick multiplication of a number with a lists of numbers.  Default mode is normal multiplication. Optional Mode=1 is mod12-based multiplication.  Optional mod=12 to change mod number."
+
+  (case mode
+  
+  (0
+   ;use regular om addition
+   (om::om* mylist mynumber)
+   )
+
+  (1
+   ;use zn+ for mod 12
+   (om::mod* (om/ mylist 100) mynumber mod)
+   )
+  )
+
+)
+
+
+
+(om::defmethod! u-inversion ((pitchlist list) (inversion-element integer) &optional (mode 0) (mod 12))
+
+  :icon 7
+  :indoc '("a list of pitch lists" "a pitch to invert around")
+  :outdoc '("Returns a list of lists of pitches inverted around a given pitch. With optional mode=1 toconvert to mod12. And with optional mod input to change mod12 to another number.") 
+  :initvals '(((7000 7100 8000) (6000 6800 7000)) 7100)
+  :doc "Returns a list of lists of elements from the source lists chosen by index number"
+
+
+  (case mode
+    
+    (0
+; see list-inversion and helper-inversion functions in o-pitch.lisp
+     (list (mapcar (lambda (x) (list-inversion inversion-element x)) pitchlist))
+     )
+
+    (1
+; see list-inversion and helper-inversion functions in o-pitch.lisp
+;divide all numbers by 100 to bring 
+     (om::mod* (om/ (mapcar (lambda (x) (list-inversion inversion-element x)) pitchlist) 100) 1 mod)
+     )
+  
+    )
+)
