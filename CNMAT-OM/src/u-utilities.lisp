@@ -300,3 +300,66 @@
   
     )
 )
+
+(om::defmethod! u-midic->pc ( (mylist list))
+
+  :icon 7
+  :indoc '("a list of lists" )
+  :outdoc '("U-midics->mod12 takes in a list of list of midics and converts them to lists of pitch class sets")
+  :initvals '((nil) (nil) (nil))
+  :doc "U-midics->mod12 takes in a list of list of midics and converts them to lists of pitch class sets"
+
+ ;assumes input is midics list of lists
+(let ((outputlist '())
+      (subelemlist '()))
+
+    (loop for elem in mylist do
+          (cond ((listp elem) 
+                (progn (loop for subelem in elem do
+                      (push  (om::mod+ (om/ subelem 100) 0 12) subelemlist))
+                       (push (reverse subelemlist) outputlist)
+                       (setf subelemlist '())))
+                
+                (t (push (om::mod+ (om/ elem 100) 0 12) outputlist))))
+
+(reverse outputlist)
+)
+)
+
+
+
+(om::defmethod! u-pc->midic ( (mylist list) (reference-pitch number))
+
+  :icon 7
+  :indoc '("a list of lists" "a reference pitch" )
+  :outdoc '("U-pc->midic takes in a list of list of pcs and converts them to lists of midics using a reference pitch to set the register. The reference pitch should be a midic, ideally a C pitchclass. The output midics will align with the closest octave.")
+  :initvals '((nil) (nil) (nil))
+  :doc "U-pc->midic takes in a list of list of pcs and converts them to lists of midics using a reference pitch to set the register."
+
+ ;assumes input is midics list of lists
+
+(let ((c-list '(0 1200 2400 3600 4800 6000 7200 8400 9600 10800 12000 13600))
+      (closest-c 000)
+      (outputlist '())
+      (pre-outputlist '())
+      (subelemlist '()))
+
+(loop for elem in c-list do
+      (if (< (abs (- reference-pitch elem)) (abs (- reference-pitch closest-c)))
+          (setf closest-c elem)))
+
+;;must take in a list of lists
+
+(loop for sublist in mylist do
+      (loop for elem in sublist do
+          (cond ((listp elem) 
+                (progn (loop for subelem in elem do
+                      (push (+ (* subelem 100) closest-c) subelemlist))
+                       (push (reverse subelemlist) pre-outputlist)
+                       (setf subelemlist '())))
+                
+                (t (push (+ (* elem 100) closest-c) pre-outputlist))))
+          (push (reverse pre-outputlist) outputlist)
+          (setf pre-outputlist '()))
+          
+(reverse outputlist)))
