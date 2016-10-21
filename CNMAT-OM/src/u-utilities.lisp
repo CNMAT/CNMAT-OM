@@ -215,12 +215,12 @@
   
   (0
    ;use regular om addition
-   (om::om+ mylist mynumber)
+   (om::om+ mylist mynumber) 
    )
 
   (1
    ;use zn+ for mod 12
-   (om::mod+ (om/ mylist 100) mynumber mod)
+    (om::mod+ (om/ mylist 100) mynumber mod) 
    )
   )
 
@@ -363,3 +363,125 @@
           (setf pre-outputlist '()))
           
 (reverse outputlist)))
+
+
+
+(om::defmethod! u-flat-by-voice ( (mylist list) &optional (flat-level 0))
+
+  :icon 7
+  :indoc '("a list" )
+  :outdoc '("Takes a list of lists and flats the contents by voice. Optional Flat-level=nth argument flats each voice by nth level only, which can be used to preserve sublists within a voice for items like chords, etc...") 
+  :initvals '((nil) (nil) (nil))
+  :doc "Takes a list of lists and flats the contents by voice. Optional Flat-level=nth argument flats each voice by nth level only, which can be used to preserve sublists within a voice for items like chords, etc..."
+
+   ;use regular om addition
+(let ((final-list '()))
+  (cond ((not (eql flat-level 0))
+             (loop for elem in mylist do
+                   (push (flat elem flat-level) final-list)))
+             
+        (t
+         (loop for elem in mylist do
+                   (push (flat elem) final-list))))
+             
+    
+
+(reverse final-list))
+
+)
+
+
+
+
+(om::defmethod! u-pc-trans ((mylist list) (transfer-list list))
+
+  :icon 7
+  :indoc '("a list of list of midics" "a list of of transfers in pcs")
+  :outdoc '("Applies a transfer list of pitchclasses to a list of lists of midics or of pitchclasses") 
+  :initvals '((nil) (nil))
+  :doc "Applies a transfer list of pitchclasses to a list of pitch lists"
+
+(let* ((pc-list '())
+      (pre-outputlist '())
+      (outputlist)
+      (conversion-list '())
+      (hold-list '())
+      (c-list '(0 1200 2400 3600 4800 6000 7200 8400 9600 10800 12000 13600))
+      (closest-pitch 0)
+      (pre-last-list '())
+      (very-last-list '()))
+
+
+
+(cond ((> (first (first mylist)) 99) ; check to see if it is midic-list or pc-list
+      
+       (setf pc-list (cnmat::u-midic->pc mylist))
+     
+       (print pc-list)
+
+      (loop for sublist in pc-list do
+            (loop for i from 0 to (- (length sublist) 1) do
+                  (push (nth i sublist) pre-outputlist)
+                  (loop for elem in transfer-list do
+                        (cond ((eql (nth i sublist) (first elem))
+                               (setf (first pre-outputlist) (second elem)))))
+            )
+            (push (reverse pre-outputlist) outputlist)
+            (setf pre-outputlist '()))
+
+;use the helper before outputing
+      (trans-helper mylist (reverse outputlist)))
+
+      (t 
+       (print 'got-here)
+       (loop for sublist in mylist do
+            (loop for i from 0 to (- (length sublist) 1) do
+                  (push (nth i sublist) pre-outputlist)
+                  (loop for elem in transfer-list do
+                        (cond ((eql (nth i sublist) (first elem))
+                               (setf (first pre-outputlist) (second elem)))))
+            )
+            (push (reverse pre-outputlist) outputlist)
+            (setf pre-outputlist '()))
+
+       (reverse outputlist)))
+      
+
+)
+
+)
+
+
+(defun trans-helper (midic-list pc-list)
+
+(let* ((pre-outputlist '())
+      (outputlist '())
+      (hold-elem '())
+      (hold-several-elems '())
+      (closest-pitch '()))
+  
+(loop for midic-sublist in midic-list
+      for pc-sublist in pc-list do
+      (loop for midic-elem in midic-sublist
+            for pc-elem in pc-sublist do
+            (push   (flat (cnmat::u-pc->midic  (list (list pc-elem)) midic-elem)) hold-elem)
+            (push (list (first (flat hold-elem))  (+ (first (flat hold-elem)) 1200)  (- (first (flat hold-elem)) 1200)) hold-several-elems)
+            (setf closest-pitch (first (flat hold-several-elems)))
+            
+            (loop for thing in (flat hold-several-elems) do
+                  (if (< (abs (- thing midic-elem)) (abs (- closest-pitch midic-elem))) (setf closest-pitch thing)))
+            (push closest-pitch pre-outputlist)
+            (setf hold-elem '())
+            (setf hold-severl-elems '()))
+      
+      (push  (flat pre-outputlist) outputlist)
+      (setf pre-outputlist '()))
+
+(reverse outputlist)
+
+)
+
+)
+
+
+

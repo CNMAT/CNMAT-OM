@@ -655,3 +655,67 @@
 
 
 
+;;;==================================
+;;; O-TATUM-FORMAT
+;;;==================================
+
+
+(defun tatum-format-helper (mylist)
+
+(let ((final-list '()))
+
+(loop for elem in mylist do
+      (cond ((eql elem 1) (push '(1 (4)) final-list))
+            ((eql elem 2) (push '(1 (8)) final-list))
+            ((eql elem 3) (push '(1 (12)) final-list))
+            ((eql elem 4) (push '(1 (16)) final-list))
+            ((eql elem 5) (push '(1 (20)) final-list))
+            ((eql elem 6) (push '(1 (24)) final-list))
+            ((eql elem 8) (push '(1 (32)) final-list))
+            ((eql elem 10) (push '(1 (40)) final-list))
+            ((eql elem 12) (push '(2 (6)) final-list))
+            ((eql elem 15) (push '(1 (2)) final-list))
+            ((eql elem 20) (push '(1 (1)) final-list))
+            (t (push 'nil final-list)))
+            )
+
+
+(list (reverse final-list))
+)
+
+)
+
+(defun tatum-elements-helper (mylist)
+
+(let ((outputlist '())
+      (pre-outputlist '()))
+
+  (loop for sublist in mylist do
+        (loop for elem in sublist do
+              (print elem)
+              (cond ((eql elem 20) (push 1 pre-outputlist)) ; whole notes
+                    ((eql elem 15) (push 1 pre-outputlist)) ; half notes
+                    (t (push elem pre-outputlist))))
+        
+        (push (reduce #'+ pre-outputlist) outputlist)
+        (setf pre-outputlist '()))
+        
+  (reverse outputlist)
+)
+
+)
+
+
+(om::defmethod! o-tatum-format ((mylist list) )
+
+  :icon 6
+  :indoc '("a list of lists or more lists of lists" )
+  :outdoc '("compare lists of sublists") 
+  :initvals '( nil)
+  :numouts 2
+  :doc "Converts a tatum shorthand into a notation suitable for use with tessellate objects"
+
+ (values (flat  (mapcar #'tatum-format-helper  mylist) 1) (tatum-elements-helper mylist))
+
+)
+
