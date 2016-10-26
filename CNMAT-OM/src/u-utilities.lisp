@@ -203,7 +203,7 @@
     )
 )
 
-(om::defmethod! u-+ ( (mylist list) (mynumber number) &optional (mode 0) (mod 12))
+(om::defmethod! u-+ ( (mylist list) (mynumber number) &optional  (mode 0) (mod 12))
 
   :icon 7
   :indoc '("a list" "a number" "Optional mode argument" "Optional mod argument" )
@@ -214,13 +214,19 @@
   (case mode
   
   (0
+
+   (cond ((> (first (first mylist)) 99) ; check to see if it is midic-list or pc-list
+
    ;use regular om addition
-   (om::om+ mylist mynumber) 
+         (om::om+ mylist mynumber))
+         (t  (om::om+ mylist mynumber)))
    )
 
   (1
    ;use zn+ for mod 12
-    (om::mod+ (om/ mylist 100) mynumber mod) 
+   (cond ((> (first (first mylist)) 99)
+          (om::mod+ (om/ mylist 100) mynumber mod))
+         (t (om::mod+ mylist mynumber mod)))
    )
   )
 
@@ -244,7 +250,11 @@
 
   (1
    ;use zn+ for mod 12
-   (om::mod- (om/ mylist 100) mynumber mod)
+   ;(om::mod- (om/ mylist 100) mynumber mod)
+   
+   (cond ((> (first (first mylist)) 99)
+          (om::mod- (om/ mylist 100) mynumber mod))
+         (t (om::mod- mylist mynumber mod)))
    )
   )
 
@@ -268,7 +278,10 @@
 
   (1
    ;use zn+ for mod 12
-   (om::mod* (om/ mylist 100) mynumber mod)
+   ;(om::mod* (om/ mylist 100) mynumber mod)
+   (cond ((> (first (first mylist)) 99)
+          (om::mod* (om/ mylist 100) mynumber mod))
+         (t (om::mod* mylist mynumber mod)))
    )
   )
 
@@ -295,7 +308,10 @@
     (1
 ; see list-inversion and helper-inversion functions in o-pitch.lisp
 ;divide all numbers by 100 to bring 
-     (om::mod* (om/ (mapcar (lambda (x) (list-inversion inversion-element x)) pitchlist) 100) 1 mod)
+
+     (cond ((> (first (first pitchlist)) 99)
+            (om::mod* (om/ (mapcar (lambda (x) (list-inversion inversion-element x)) pitchlist) 100) 1 mod))
+           (t (om::mod* (mapcar (lambda (x) (list-inversion inversion-element x)) pitchlist) 1 mod)))
      )
   
     )
