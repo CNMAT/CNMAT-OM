@@ -524,7 +524,7 @@
   :indoc '("list of lists to be tallied" "mode: 0 length of sublist and sum of sublist returned retaining list structure"
            "mode 1 for simple list of lists, e.g. pitch lists")
   :initvals '(((1 2 3) (3 5 5 6 7) (19 43 59) (34) (68)) ((1 2 3 4) (22 4)) 0)
-  :menuins '((1 (("sum of the list of lists per voice" 0) ("sums that preserve list structure" 1))))
+  :menuins '((1 (("list to insert" 0) ("optional mode" 1))))
   :doc "Returns a list of sums of list arguments"
 
   (case mode 
@@ -584,7 +584,7 @@
        (loop for sublist in mylist do
              (loop for elem in sublist do
                    (push (list (first elem) (om* (first elem)   (tatum-lookup (second (flat elem))))) current-list)
-                   (print current-list)
+                   ;(print current-list)
                    )
              (push (list (reduce #'+ (mapcar #'first current-list))(reduce #'+ (mapcar #'second current-list))) current-list)
              (push (reverse current-list) final-list)
@@ -598,6 +598,27 @@
      )
 )
 
+
+
+;;;==================================
+;;; O-LIST-INFO-2
+;;;==================================
+
+
+
+;;; output sums of lists of lists
+(om::defmethod! o-list-info2 ((mylist list) (tatumlist list) &optional (mode 0))
+  :icon 5
+  :indoc '("list of lists to be tallied" "a tatum list to be tallied"
+           "An optional mode argument; mode 1 for simple list of lists, e.g. pitch lists")
+  :initvals '(((1 2 3) (3 5 5 6 7) (19 43 59) (34) (68)) ((1 2 3 4) (22 4)) 0)
+  :numouts 2
+  :menuins '((1 (("sum of the list of lists per voice" 0) ("sums that preserve list structure" 1))))
+  :doc "Returns a list of sums of list input."
+
+     (values (o-list-info mylist mode) (o-list-info tatumlist 2)) 
+  
+)
 
 
 

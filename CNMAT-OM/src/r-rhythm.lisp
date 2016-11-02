@@ -180,6 +180,17 @@
 )
 
 
+(defmethod! r-duration-list ((myvoices list)) 
+
+(mapcar #'(lambda (r)  (cnmat::pulses r))  myvoices)
+
+ 
+)
+
+
+
+
+
 (defmethod! r-diminutions ((rhythm rhythmic-frame) val subs) 
   (let ((substitutions (local-substitute subs val (pulses rhythm))))
 

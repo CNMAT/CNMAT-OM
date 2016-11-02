@@ -203,7 +203,25 @@
     )
 )
 
+
 (om::defmethod! u-+ ( (mylist list) (mynumber number) &optional  (mode 0) (mod 12))
+
+  :icon 7
+  :indoc '("a list" "a number" "Optional mode argument" "Optional mod argument" )
+  :outdoc '("U-+ is a utility for quick addition/subtraction of a number to a lists of numbers.  Default mode is normal addition/subtraction. The second number determines addition/subtraction.  Optional Mode=1 is mod12-based addition.  Optional mod=12 to change mod number.") 
+  :initvals '((nil) (nil) (nil))
+  :doc "U-+ is a utility for quick addition/subtraction of a number to a lists of numbers.  Default mode is normal addition/subtraction. The second number determines addition/subtraction.  Optional Mode=1 is mod12-based addition.  Optional mod=12 to change mod number."
+
+  (print mynumber)
+  (cond ((> mynumber 0) (u-+-helper mylist mynumber mode mod))
+        (t (u--  mylist (abs mynumber) mode mod)))
+
+)
+
+
+
+;;hide this method from view
+(om::defmethod! u-+-helper ( (mylist list) (mynumber number) &optional  (mode 0) (mod 12))
 
   :icon 7
   :indoc '("a list" "a number" "Optional mode argument" "Optional mod argument" )
@@ -232,7 +250,7 @@
 
 )
 
-
+;;hide this method from view
 (om::defmethod! u-- ( (mylist list) (mynumber number) &optional (mode 0) (mod 12))
 
   :icon 7
@@ -409,7 +427,7 @@
 
 
 
-(om::defmethod! u-pc-trans ((mylist list) (transfer-list list))
+(om::defmethod! u-pc-remap ((mylist list) (transfer-list list))
 
   :icon 7
   :indoc '("a list of list of midics" "a list of of transfers in pcs")
@@ -431,10 +449,8 @@
 
 (cond ((> (first (first mylist)) 99) ; check to see if it is midic-list or pc-list
       
-       (setf pc-list (cnmat::u-midic->pc mylist))
+      (setf pc-list (cnmat::u-midic->pc mylist))
      
-       (print pc-list)
-
       (loop for sublist in pc-list do
             (loop for i from 0 to (- (length sublist) 1) do
                   (push (nth i sublist) pre-outputlist)
@@ -449,7 +465,6 @@
       (trans-helper mylist (reverse outputlist)))
 
       (t 
-       (print 'got-here)
        (loop for sublist in mylist do
             (loop for i from 0 to (- (length sublist) 1) do
                   (push (nth i sublist) pre-outputlist)
@@ -500,4 +515,42 @@
 )
 
 
+;;;==================================
+;;; U-LIST-INFO-2
+;;;==================================
 
+;;;SEE CODE FOR u-list-info in o-operations o-list-info
+
+(om::defmethod! u-list-info ((mylist list) &optional (mode 0))
+  :icon 5
+  :indoc '("list of lists to be tallied" "mode: 0 length of sublist and sum of sublist returned retaining list structure"
+           "mode 1 for simple list of lists, e.g. pitch lists")
+  :initvals '(((1 2 3) (3 5 5 6 7) (19 43 59) (34) (68)) ((1 2 3 4) (22 4)) 0)
+  :menuins '((1 (("list to insert" 0) ("optional mode" 1))))
+  :doc "Returns a list of sums of list arguments"
+
+  (o-list-info mylist mode)
+)
+
+
+;;;SEE CODE FOR u-list-info in o-operations o-list-info
+
+
+;;;==================================
+;;; U-LIST-INFO2
+;;;==================================
+
+
+
+;;; output sums of lists of lists
+(om::defmethod! u-list-info2 ((mylist list) (tatumlist list) &optional (mode 0))
+  :icon 5
+  :indoc '("list of lists to be tallied" "a tatum list to be tallied"
+           "An optional mode argument; mode 1 for simple list of lists, e.g. pitch lists")
+  :initvals '(((1 2 3) (3 5 5 6 7) (19 43 59) (34) (68)) ((1 2 3 4) (22 4)) 0)
+  :numouts 2
+  :menuins '((1 (("sum of the list of lists per voice" 0) ("sums that preserve list structure" 1))))
+  :doc "Returns a list of sums of list input."
+
+     (values (o-list-info mylist mode) (o-list-info tatumlist 2)) 
+)
