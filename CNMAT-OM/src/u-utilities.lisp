@@ -516,7 +516,7 @@
 
 
 ;;;==================================
-;;; U-LIST-INFO-2
+;;; U-LIST-INFO
 ;;;==================================
 
 ;;;SEE CODE FOR u-list-info in o-operations o-list-info
@@ -526,7 +526,7 @@
   :indoc '("list of lists to be tallied" "mode: 0 length of sublist and sum of sublist returned retaining list structure"
            "mode 1 for simple list of lists, e.g. pitch lists")
   :initvals '(((1 2 3) (3 5 5 6 7) (19 43 59) (34) (68)) ((1 2 3 4) (22 4)) 0)
-  :menuins '((1 (("list to insert" 0) ("optional mode" 1))))
+ ; :menuins '((1 (("list to insert" 0) ("optional mode" 1))))
   :doc "Returns a list of sums of list arguments"
 
   (o-list-info mylist mode)
@@ -549,7 +549,7 @@
            "An optional mode argument; mode 1 for simple list of lists, e.g. pitch lists")
   :initvals '(((1 2 3) (3 5 5 6 7) (19 43 59) (34) (68)) ((1 2 3 4) (22 4)) 0)
   :numouts 2
-  :menuins '((1 (("sum of the list of lists per voice" 0) ("sums that preserve list structure" 1))))
+ ; :menuins '((1 (("sum of the list of lists per voice" 0) ("sums that preserve list structure" 1))))
   :doc "Returns a list of sums of list input."
 
      (values (o-list-info mylist mode) (o-list-info tatumlist 2)) 

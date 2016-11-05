@@ -185,13 +185,24 @@
 )
 
 
+(defun pulse-rest-helper (rhythms)
+
+(let (output '())
+
+  (loop for rhythm in rhythms do
+      (cond ((> rhythm 0) (push (repeat-n 1 rhythm) output))
+            (t (push (repeat-n -1 (abs rhythm)) output))))
+
+  (reverse (flat output))
+
+)
 
 
-;;;;
-;;;;
-;;;;
+)
 
-(defun make-voice-cuts-pulse2 (meter durations-list tatum new-pitches tempo generated-rhythms generated-tatums)
+
+
+(defun make-voice-cuts-pulse2 (meter durations-list tatum new-pitches tempo generated-rhythms generated-tatums final-generated-rhythms)
   (let* (
 
          ;(flat-pitches (flat new-pitches))
@@ -204,9 +215,23 @@
          (rest-durations  (om* -1 (mapcar (lambda (x y) (- x y)) generated-rhythms attack-durations)))
          ;;this then created the final list of attacks with rests for the rests version of the cut-ins patch
          (attacks+rests-durations (remove 0 (flat (mapcar (lambda (x y) (list x y)) attack-durations rest-durations)))) 
-         (pulsing-pitches (pulse-pitches flat-pitches durations-list)) )
+         (pulsing-pitches (pulse-pitches flat-pitches durations-list)) 
+         (pulse-rests (pulse-rest-helper final-generated-rhythms))
+         (final-pulse-rhythm '())
+         (final-pulsing-pitches '()))
 
+(print 'pulse-rests)
+(print pulse-rests)
 
+    (loop for pulse-rest in pulse-rests
+          for tatum in generated-tatums 
+          for pitch in pulsing-pitches do
+          (cond ((< pulse-rest 0) (push (* -1 tatum) final-pulse-rhythm))
+                (t (push tatum final-pulse-rhythm)))
+          (if (> pulse-rest 0) (push pitch final-pulsing-pitches)))
+          
+(print 'final-pulse-rhythm)
+(print (reverse final-pulse-rhythm))
 
        (list
     ;;this voice is the running version
@@ -219,8 +244,10 @@
 
           (make-instance 'voice 
                    ;;use the tatums as the pulse rhythms
-                   :tree (mktree generated-tatums meter)
-                   :chords pulsing-pitches
+                  ; :tree (mktree generated-tatums meter)
+                   :tree (mktree (reverse final-pulse-rhythm) meter)
+                 ;  :chords pulsing-pitches
+                   :chords (reverse final-pulsing-pitches)
                    :tempo tempo 
                    )
        
@@ -231,7 +258,7 @@
 
 
 
-(defun make-voice-cuts-rests2 (meter durations-list tatum new-pitches tempo generated-rhythms generated-tatums)
+(defun make-voice-cuts-rests2 (meter durations-list tatum new-pitches tempo generated-rhythms generated-tatums final-generated-rhythms)
   (let* (
          ;(flat-pitches (flat new-pitches))
          (flat-pitches new-pitches)
@@ -242,11 +269,36 @@
          ;;now add the rests back in to account for the time between attacks
          (rest-durations  (om* -1 (mapcar (lambda (x y) (- x y)) generated-rhythms attack-durations)))
          ;;this then created the final list of attacks with rests for the rests version of the cut-ins patch
-         (attacks+rests-durations (remove 0 (flat (mapcar (lambda (x y) (list x y)) attack-durations rest-durations)))) )
+         (attacks+rests-durations (remove 0 (flat (mapcar (lambda (x y) (list x y)) attack-durations rest-durations)))) 
+         (final-cuts-pitches '())
+         (final-attacks+rests-durations '()))
 
-(print 'flat-pitches)
-(print flat-pitches)
 
+
+
+
+    (loop for duration in final-generated-rhythms 
+          for pitch in cuts-pitches 
+          for i from 0 to (length final-generated-rhythms) do
+              (if (< 0 duration) (push pitch final-cuts-pitches))
+              (if (> 0 duration) (setf (nth (* i 2) attacks+rests-durations) (* (nth (* i 2) attacks+rests-durations) -1)))
+              ;(cond (< 0 duration) (setf (nth (* i 2) attacks+rests-durations) (* (nth (* i 2) attacks+rests-durations) -1)))
+
+          )
+         
+
+(print 'cuts-pitches)
+(print cuts-pitches)
+          
+
+(print 'attacks-durations)
+(print attack-durations)
+
+(print 'rest-durations)
+(print rest-durations)
+
+(print 'attacks+rests-durations)
+(print attacks+rests-durations)
 
        (list
     ;;this voice is the running version
@@ -259,7 +311,10 @@
 
           (make-instance 'voice 
                    :tree (mktree attacks+rests-durations meter)
-                   :chords cuts-pitches 
+                  ; :tree (mktree (reverse final-attacks+rests-durations) meter)
+                  ; :chords cuts-pitches 
+                   :chords (reverse final-cuts-pitches)
+
                    :tempo tempo 
                    )
        
@@ -269,12 +324,27 @@
 
 
 
-(defun make-voice-cuts2 (meter durations-list tatum new-pitches tempo generated-rhythms generated-tatums)
+(defun make-voice-cuts2 (meter durations-list tatum new-pitches tempo generated-rhythms generated-tatums  final-generated-rhythms)
   (let* (
          ;(flat-pitches (flat new-pitches))
          (flat-pitches  new-pitches)
+         ;(cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0  durations-list)))))
 
-         (cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0 durations-list)))))
+         (cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0 durations-list))))
+         (final-cuts-pitches '())
+
+)
+
+(print 'durations-list)
+(print durations-list)
+(print 'cuts-pitches)
+(print cuts-pitches)
+
+
+    (loop for duration in final-generated-rhythms 
+          for pitch in cuts-pitches do
+          (if (< 0 duration) (push pitch final-cuts-pitches)))
+
     ;;return a list with both voices
        (list
     ;;this voice is the running version
@@ -286,8 +356,10 @@
     ;;; this voice is the cut in
 
           (make-instance 'voice 
-                   :tree (mktree generated-rhythms meter)
-                   :chords cuts-pitches 
+                   :tree (mktree final-generated-rhythms meter)
+                 ;  :chords cuts-pitches 
+                   :chords (reverse final-cuts-pitches)
+
                    :tempo tempo 
                    )
        
@@ -303,12 +375,12 @@
 ;;output new pitchlist for the processing
 
   (let* ((sum-rhythms (reduce '+ rhythm-list))
-        (num-events (om-round (om/ sum-rhythms (length (flat pitch-list)))))
+        (num-events (om-round (om/ sum-rhythms (length  pitch-list))))
 
         )
     
        ; (flat (repeat-n (flat pitch-list) num-events))
-        (flat (repeat-n  pitch-list num-events) 1)
+         (flat (repeat-n  pitch-list num-events ) 1)
 
    )
 
@@ -349,6 +421,38 @@
     (flat (repeat-n self n-times))
   )
 )
+
+(defun check-for-rests (durations-list generated-rhythms)
+;if the duration was originally a rest then make it a rest again.
+
+  (let ((pre-final-rhythms '())
+        (final-rhythms '()))
+  
+
+    (loop for list1voice in durations-list
+          for list2voice in generated-rhythms do
+      
+      (loop for r-list1voice in list1voice
+            for r-list2voice in list2voice do
+            
+            (cond ((> 0 r-list1voice) (push (* -1 r-list2voice) pre-final-rhythms))
+                  (t (push r-list2voice pre-final-rhythms))))
+      (push (reverse pre-final-rhythms) final-rhythms)
+      (setf pre-final-rhythms '()))
+
+    (reverse final-rhythms)
+
+)
+
+)
+
+(defun abs-rhythms (rhythms)
+
+  (print 'abs-rhythms)
+  (print (mapcar (lambda (x) (abs x)) rhythms))
+
+)
+
   
 ;;;this receieves list of durations lists (output from get-rotations)
 (om::defmethod! s-cuts2 ( (durations-list list) (meter list) (tatum-list list) (pitches list) (tempo integer) &optional (mode 0))
@@ -359,22 +463,39 @@
   :initvals '( ((1 5 7 10)) (4 4) (((1 (16)))) ((6100)) 110 0)
   :doc "Converts a rotation list into music notation using the ."
   
-  (let* (( flat-rhythm-lists (mapcar (lambda (x) (flat x)) durations-list))
+  (let* (( flat-rhythm-lists (mapcar (lambda (x) (abs-rhythms (flat x))) durations-list))
         ;(flat-pitch-lists (mapcar (lambda (x) (flat x)) pitches))
         (prepped-pitches (mapcar (lambda (x y) (check-pitchlist-vs-rhythmlist x y)) flat-rhythm-lists pitches))
         ;(prepped-pitches (mapcar (lambda (x y) (check-pitchlist-vs-rhythmlist x y)) flat-rhythm-lists flat-pitch-lists))
         (prepped-tatums (mapcar (lambda (x) (prep-tatum x)) tatum-list))
-        (generated-rhythms (mapcar (lambda (x y) (generate-rhythms x y)) durations-list prepped-tatums))
-        (generated-tatums (mapcar (lambda (x y) (generate-tatums x y)) durations-list prepped-tatums)))
+        ;(generated-rhythms (mapcar (lambda (x y) (generate-rhythms x y))  durations-list prepped-tatums))
+        (generated-rhythms (mapcar (lambda (x y) (generate-rhythms x y))  flat-rhythm-lists prepped-tatums))
+       ; (generated-tatums (mapcar (lambda (x y) (generate-tatums x y)) durations-list prepped-tatums))
+        (generated-tatums (mapcar (lambda (x y) (generate-tatums x y)) flat-rhythm-lists prepped-tatums))
+        (final-generated-rhythms (check-for-rests durations-list generated-rhythms)))
+
+
+(print 'generated-rhythms)
+(print generated-rhythms)
+(print 'durations-list)
+(print durations-list)
+(print 'final-generated-rhythms)
+(print final-generated-rhythms)
+
+
+
+
+
+
 
     
   (case mode
 
-    (0 (flat (mapcar (lambda (x y z a) (make-voice-cuts2 meter x tatum-list y tempo z a)) flat-rhythm-lists  prepped-pitches generated-rhythms generated-tatums) 1)
+    (0 (flat (mapcar (lambda (x y z a b) (make-voice-cuts2 meter x tatum-list y tempo z a b)) flat-rhythm-lists  prepped-pitches generated-rhythms generated-tatums final-generated-rhythms) 1)
        )
-    (1 (flat (mapcar (lambda (x y z a) (make-voice-cuts-rests2 meter x tatum-list y tempo z a)) flat-rhythm-lists  prepped-pitches generated-rhythms generated-tatums) 1)
+    (1 (flat (mapcar (lambda (x y z a b) (make-voice-cuts-rests2 meter x tatum-list y tempo z a b)) flat-rhythm-lists  prepped-pitches generated-rhythms generated-tatums final-generated-rhythms) 1)
        )
-    (2 (flat (mapcar (lambda (x y z a) (make-voice-cuts-pulse2 meter x tatum-list y tempo z a)) flat-rhythm-lists  prepped-pitches generated-rhythms generated-tatums) 1)
+    (2 (flat (mapcar (lambda (x y z a b) (make-voice-cuts-pulse2 meter x tatum-list y tempo z a b)) flat-rhythm-lists  prepped-pitches generated-rhythms generated-tatums durations-list) 1)
        )
        
     )
