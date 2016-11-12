@@ -83,6 +83,7 @@
               )
             )))))
 
+;;;Matt's code for rfi starts here
 
 (defmethod! r-substitute ((rhythm rhythmic-frame) val subs) 
   (make-instance 
@@ -94,4 +95,58 @@
     'prf 
     :voices (mapcar #'(lambda (r) (r-substitute r val subs)) (voices rhythm))
     ))
+
+
+
+(defun rests-positive-helper (mylist)
+  (let ((final-list '()))
+    (loop for elem in mylist do
+      (push (abs elem) final-list))
+    (reverse final-list)
+    )
+)
+
+(defun remove-rest-values-helper (durations-list intervals-list)
+
+(let ((final-list '())
+      (pre-final-list '()))
+
+;get rid of intervals corresponding with rests
+
+(loop for duration in durations-list
+      for interval in intervals-list do
+      (if (> duration 0) (push interval final-list)))
+(reverse final-list)        
+)
+
+)
+
+(defun r-merge-helper (rhythm myvoices)
+
+  (make-instance
+   'polyrhythmic-frame
+   :voices (posn-match (voices rhythm) myvoices))
+)
+
+
+
+
+(defmethod! r-merge ((rhythm polyrhythmic-frame) &optional (myvoices))
+
+
+(cond (myvoices (r-merge (r-merge-helper rhythm myvoices )))
+
+      (t 
+       (let* ((positive-rhythms  (mapcar (lambda (x) (rests-positive-helper x)) (r-duration-list (voices rhythm))) )
+              (intervals (mapcar (lambda (x) (dx->x 0 x)) positive-rhythms))
+              (intervals-butlast (mapcar (lambda (x) (butlast x)) intervals))
+              (intervals-remove-rests (mapcar (lambda (x y)  (remove-rest-values-helper x y)) positive-rhythms intervals-butlast))
+              )
+
+         (list (x->dx (sort  (remove-dup (flat (list intervals-remove-rests (reduce #'+ (first positive-rhythms)) )) 'eq 1)'<)))
+
+ 
+         )))
+
+)
 
