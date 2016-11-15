@@ -1,2 +1,3 @@
 *.lisp~
 *.*fasl
+.DS_Store
