@@ -620,30 +620,34 @@
   :initvals '( ((3 4 5) (4 5 3) (5 3 4)) (((3) (6000)) ((4) (6100)) ((5) (6200)))  0)
   :doc "Mapping in three different ways rotations->poly2 object"
   
+(flat-by-voice durations-list)
+
+
   (case mode
 
-    (0 (let* ((prepped-mapping-list (prep-mapping-list mapping-list (length (car durations-list))))
-             (resultant-pitches (mapcar (lambda (x) (one-one-pitch-map-multiples x  (clone prepped-mapping-list))) durations-list))
+    (0 (let* ((prepped-mapping-list (prep-mapping-list mapping-list (length (car (flat-by-voice durations-list)))))
+             (resultant-pitches (mapcar (lambda (x) (one-one-pitch-map-multiples x  (clone prepped-mapping-list))) (flat-by-voice durations-list)))
              )
 
-             resultant-pitches
+              resultant-pitches 
 
          )
        )
     ;;this mode not used--regular random choice no weight--can go back to this if needed
-    (3 (let ((resultant-pitches (mapcar (lambda (x) (random-from-set-pitch-map x mapping-list)) durations-list)))
+    (3 (let ((resultant-pitches (mapcar (lambda (x) (random-from-set-pitch-map x mapping-list)) (flat-by-voice durations-list))))
          
-         (check-pitch-map durations-list resultant-pitches)
+         (check-pitch-map (flat-by-voice durations-list)
+ resultant-pitches)
          )
        )
-    (1 (let ((resultant-pitches (mapcar (lambda (x) (random-from-set-pitch-map-probs x mapping-list)) durations-list)))
+    (1 (let ((resultant-pitches (mapcar (lambda (x) (random-from-set-pitch-map-probs x mapping-list)) (flat-by-voice durations-list))))
          
-         (check-pitch-map durations-list resultant-pitches)
+         (check-pitch-map (flat-by-voice durations-list) resultant-pitches)
          )
        )
-    (2 (let ((resultant-pitches (mapcar (lambda (x) (random-from-range-pitch-map x mapping-list)) durations-list)))
+    (2 (let ((resultant-pitches (mapcar (lambda (x) (random-from-range-pitch-map x mapping-list)) (flat-by-voice durations-list))))
          
-         (check-pitch-map durations-list resultant-pitches)
+         (check-pitch-map (flat-by-voice durations-list) resultant-pitches)
          )
        )
 

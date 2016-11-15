@@ -85,16 +85,52 @@
 
 ;;;Matt's code for rfi starts here
 
+;(defmethod! r-substitute ((rhythm rhythmic-frame) val subs) 
+;  (make-instance 
+;   'rhythmic-frame
+;  :pulses (flat (substitute subs val (pulses rhythm)))))
+
+
 (defmethod! r-substitute ((rhythm rhythmic-frame) val subs) 
-  (make-instance 
+  (let ((substitutions (local-substitute subs val (pulses rhythm))))
+
+    (print 'substitutions)
+    (print substitutions)
+
+    (make-instance
    'rhythmic-frame
-   :pulses (flat (substitute subs val (pulses rhythm)))))
+  ; :pulses  (flat (substitute-processing substitutions)))
+
+   :pulses  (flat substitutions))
+
+    )
+)
+
+
+
 
 (defmethod! r-substitute ((rhythm polyrhythmic-frame) val subs) 
-   (make-instance 
-    'prf 
-    :voices (mapcar #'(lambda (r) (r-substitute r val subs)) (voices rhythm))
-    ))
+
+        (if (eq 0 (car (first subs)))
+
+            (make-instance 
+             'prf 
+             :voices (mapcar #'(lambda (r s) (r-substitute r val (cdr s))) (voices rhythm) subs)
+             )
+;;Otherwise, you send the same subs list in for all the voices
+
+        (make-instance 
+            'prf 
+            :voices (mapcar #'(lambda (r) (r-substitute r val subs)) (voices rhythm))
+             )
+        )
+)
+
+
+  ; (make-instance 
+  ;  'prf 
+   ; :voices (mapcar #'(lambda (r) (r-substitute r val subs)) (voices rhythm))
+   ; ))
 
 
 

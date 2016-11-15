@@ -197,8 +197,11 @@
     ;(print 'substitutions)
     ;(print substitutions)
 
+    (make-instance
    'rhythmic-frame
    :pulses  (substitute-processing substitutions))
+
+    )
 )
   
 (defmethod! r-diminutions ((rhythm polyrhythmic-frame) val subs) 
