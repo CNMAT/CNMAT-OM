@@ -191,38 +191,41 @@
 
 
 
-(defmethod! r-diminutions ((rhythm rhythmic-frame) val subs) 
-  (let ((substitutions (local-substitute subs val (pulses rhythm))))
+(defmethod! r-diminutions ((rhythm rhythmic-frame) val subs ) 
+
+       (let ((substitutions (local-substitute subs val (pulses rhythm))))
 
     ;(print 'substitutions)
     ;(print substitutions)
 
-    (make-instance
-   'rhythmic-frame
-   :pulses  (substitute-processing substitutions))
+         (make-instance
+          'rhythmic-frame
+          :pulses  (substitute-processing substitutions))
 
-    )
+         )
 )
-  
+
+
 (defmethod! r-diminutions ((rhythm polyrhythmic-frame) val subs) 
    
 ;;if the first element of the subs is 0 then you know it is the special case
 ;;where the subs need to be sent in separately for each voice.
 ;;In this case, remove the voice designatory, e.g. "0", before sending it on
 
-    (if (eq 0 (car (first subs)))
 
-        (make-instance 
-        'prf 
-        :voices (mapcar #'(lambda (r s) (r-diminutions r val (cdr s))) (voices rhythm) subs)
-         )
+           (if (eq 0 (car (first subs)))
+
+               (make-instance 
+                'prf 
+                :voices (mapcar #'(lambda (r s) (r-diminutions r val (cdr s))) (voices rhythm) subs)
+                )
 ;;Otherwise, you send the same subs list in for all the voices
-        (make-instance 
-        'prf 
-        :voices (mapcar #'(lambda (r) (r-diminutions r val subs)) (voices rhythm))
-         )
-    )
-
+            (make-instance 
+            'prf 
+            :voices (mapcar #'(lambda (r) (r-diminutions r val subs)) (voices rhythm))
+             )
+            )
+ 
 )
 
 

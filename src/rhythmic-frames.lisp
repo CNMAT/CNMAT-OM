@@ -91,25 +91,34 @@
 ;  :pulses (flat (substitute subs val (pulses rhythm)))))
 
 
-(defmethod! r-substitute ((rhythm rhythmic-frame) val subs) 
-  (let ((substitutions (local-substitute subs val (pulses rhythm))))
+(defmethod! r-substitute ((rhythm rhythmic-frame) val subs &optional (mode 0)) 
 
-    (print 'substitutions)
-    (print substitutions)
+    (cond ((= mode 1) (r-diminutions rhythm val subs))
 
-    (make-instance
-   'rhythmic-frame
+      (t
+       (let ((substitutions (local-substitute subs val (pulses rhythm))))
+
+         (print 'substitutions)
+         (print substitutions)
+
+         (make-instance
+          'rhythmic-frame
   ; :pulses  (flat (substitute-processing substitutions)))
 
-   :pulses  (flat substitutions))
+          :pulses  (flat substitutions))
 
+         )
+       )
     )
 )
 
 
 
 
-(defmethod! r-substitute ((rhythm polyrhythmic-frame) val subs) 
+(defmethod! r-substitute ((rhythm polyrhythmic-frame) val subs &optional (mode 0)) 
+
+    (cond ((= mode 1) (r-diminutions rhythm val subs))
+      (t
 
         (if (eq 0 (car (first subs)))
 
@@ -124,8 +133,9 @@
             :voices (mapcar #'(lambda (r) (r-substitute r val subs)) (voices rhythm))
              )
         )
+        )
+    )
 )
-
 
   ; (make-instance 
   ;  'prf 
