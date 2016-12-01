@@ -145,8 +145,34 @@
 
 
 (defun rests-positive-helper (mylist)
-  (let ((final-list '()))
-    (loop for elem in mylist do
+  (let* ((minus-list '())
+        (positive-list '())
+        (final-list '())
+        (a-list '()))
+    (print mylist)
+
+  
+
+    ;;(cond ((minusp (first (last mylist))) 
+    ;;       (setf a-list (x-append (butlast (butlast mylist)) (+ (abs (first (last mylist))) (first (last (butlast mylist)))))))
+    ;;      (t
+    ;;      (setf a-list mylist)))
+
+    ;; check for negative number as last element.  In this case at that number (a rest) to the last attack
+    ;;so that you dont get a separate attack for the last rest.
+    (setf positive-list mylist)
+
+    (loop for elem in (reverse mylist)
+      until (plusp elem) 
+      do 
+      (push elem minus-list)
+      (setf positive-list (butlast positive-list)))
+
+    (push (flat (list (butlast positive-list) (+ (reduce #'+ (om* -1 minus-list)) (first (last positive-list))))) a-list)
+
+
+
+    (loop for elem in (flat a-list) do
       (push (abs elem) final-list))
     (reverse final-list)
     )
@@ -169,18 +195,34 @@
 
 (defun r-merge-helper (rhythm myvoices)
 
-  (make-instance
-   'polyrhythmic-frame
-   :voices (posn-match (voices rhythm) myvoices))
+  (cond ((listp (first myvoices))
+         (mapcar (lambda (x) (r-merge-helper rhythm x)) myvoices))
+       
+        (t
+         (print 'got-here)
+         (make-instance
+          'polyrhythmic-frame
+          :voices (posn-match (voices rhythm) myvoices))))
+)
+
+(defun r-merge-helper2 (rhythm myvoices)
+
+ (r-merge (r-merge-helper rhythm myvoices ))
+
 )
 
 
+(defmethod! r-merge ((rhythm polyrhythmic-frame) &optional myvoices me)
 
+ (print 'me)
+        (print me)
 
-(defmethod! r-merge ((rhythm polyrhythmic-frame) &optional (myvoices))
-
-
-(cond (myvoices (r-merge (r-merge-helper rhythm myvoices )))
+(cond 
+      (myvoices 
+       (cond ((listp (first myvoices))
+              (mapcar (lambda (x) (r-merge rhythm (flat x) me)) myvoices))
+             (t
+              (r-merge (r-merge-helper rhythm myvoices ) nil me))))
 
       (t 
        (let* ((positive-rhythms  (mapcar (lambda (x) (rests-positive-helper x)) (r-duration-list (voices rhythm))) )
@@ -189,10 +231,18 @@
               (intervals-remove-rests (mapcar (lambda (x y)  (remove-rest-values-helper x y)) positive-rhythms intervals-butlast))
               )
 
-         (list (x->dx (sort  (remove-dup (flat (list intervals-remove-rests (reduce #'+ (first positive-rhythms)) )) 'eq 1)'<)))
+;;if the input to myvoices was a list then output one way.  Otherwise output it as a list.
+         
+       
+        (cond (me
+               (progn (print 'nah)
+               (x->dx (sort  (remove-dup (flat (list intervals-remove-rests (reduce #'+ (first positive-rhythms)) )) 'eq 1)'<))))
 
- 
-         )))
+             (t
+             (list (x->dx (sort  (remove-dup (flat (list intervals-remove-rests (reduce #'+ (first positive-rhythms)) )) 'eq 1)'<))))
+
+         ))))
+    
 
 )
 
