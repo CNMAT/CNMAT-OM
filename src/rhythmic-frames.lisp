@@ -91,6 +91,104 @@
 ;  :pulses (flat (substitute subs val (pulses rhythm)))))
 
 
+(defun combinations-subs-children (number)
+
+  (let ((all-allowable-numbers (arithm-ser 1 number 1))
+      (pre-final-output '())
+      (final-output '()))
+
+    (push (cnmat::q-combi all-allowable-numbers number nil 2) pre-final-output)
+
+    ;this cuts out just the single digit allowable number you start with
+    (setf pre-final-output (list (butlast (car pre-final-output))))
+
+
+    (loop for combination in (flat pre-final-output 1) do
+      (push (list number combination) final-output))
+      
+    final-output
+    )
+)
+
+(defun filter-disallowed-children (mylist disallowed)
+
+  (let (( output '()))
+
+    (loop for combination in mylist do
+    ;keep the combination only if it has none of the disallowed in it
+    ;  (if   (not (x-intersect  disallowed (print (cdr combination))))
+    ;      (push combination output)))
+      (if (not (om::x-intersect (second combination) disallowed))
+          (push combination output)))
+    (reverse output)
+    )
+)
+
+
+
+(defun build-children-prf (rhythm combination)
+
+    (r-substitute rhythm (list (first combination)) (list (second combination)) 1)
+)
+
+
+
+(defun combine-children-prf (mypolys)
+
+  (let ((holdvoices '()))
+
+    (loop for myprf in mypolys do
+      (push (cnmat::voices myprf) holdvoices)
+
+      )
+
+    (make-instance
+     'cnmat::prf
+     :voices (flat (mat-trans (reverse holdvoices)))
+    )
+   )   
+)
+
+(defun combine-original+children (original-prf children-prf num-voices) 
+
+    (let ((orig-prf-voices (cnmat::voices original-prf))
+      ;(children-prf-voices (list-modulo (cnmat::voices children-prf) num-voices))
+       (children-prf-voices  (group-list (cnmat::voices children-prf) (repeat-n (/ (length (cnmat::voices children-prf)) num-voices ) num-voices) 'linear))
+
+      (all-voices '()))
+
+     (loop for orig-voice in orig-prf-voices 
+         for child-prf in children-prf-voices do
+             (push (list orig-voice child-prf) all-voices))
+
+     (flat (reverse all-voices))
+
+;(flat children-prf-voices)
+
+    )
+)
+
+
+;;;You stopped at step four in diminutions-children 2 patch
+
+(defmethod! r-substitute-children ((rhythm polyrhythmic-frame) children-desired remove-values)
+
+  (let* ((my-combinations (flat (mapcar (lambda (x)  (combinations-subs-children x)) children-desired) 1))
+      (filtered-combinations (filter-disallowed-children my-combinations remove-values))
+      (children-prfs (mapcar (lambda (x) (build-children-prf rhythm x)) filtered-combinations))
+      (full-prf (combine-children-prf children-prfs))
+      (original+children (combine-original+children rhythm full-prf (length (cnmat::voices rhythm) ))))
+
+  original+children
+  )
+
+)
+
+
+
+
+
+
 (defmethod! r-substitute ((rhythm rhythmic-frame) val subs &optional (mode 0)) 
 
     (cond ((= mode 1) (r-diminutions rhythm val subs))
@@ -111,7 +209,6 @@
        )
     )
 )
-
 
 
 
