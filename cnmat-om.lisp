@@ -7,6 +7,7 @@
   (:export 
 
 ;methods
+   :o-remove-dup-lists
 
    :combinations
    :rand-from-list

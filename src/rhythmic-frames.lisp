@@ -173,6 +173,10 @@
 
 (defmethod! r-substitute-children ((rhythm polyrhythmic-frame) children-desired remove-values)
 
+  :doc "Generate all children substitutions for a desired duration or set of durations..
+"
+  :icon 5
+
   (let* ((my-combinations (flat (mapcar (lambda (x)  (combinations-subs-children x)) children-desired) 1))
       (filtered-combinations (filter-disallowed-children my-combinations remove-values))
       (children-prfs (mapcar (lambda (x) (build-children-prf rhythm x)) filtered-combinations))
@@ -186,10 +190,11 @@
 
 
 
-
-
-
 (defmethod! r-substitute ((rhythm rhythmic-frame) val subs &optional (mode 0)) 
+
+  :doc "Replaces a rhythmic value with subset values (substitutions) that sum to the original value.
+"
+  :icon 5
 
     (cond ((= mode 1) (r-diminutions rhythm val subs))
 
@@ -311,8 +316,8 @@
 
 (defmethod! r-merge ((rhythm polyrhythmic-frame) &optional myvoices me)
 
- (print 'me)
-        (print me)
+  :doc "R-merge collapes the attacks of all rhythmic frames within a polyrhythmic frame into one rhythmic frame."
+  :icon 5
 
 (cond 
       (myvoices 
@@ -329,8 +334,7 @@
               )
 
 ;;if the input to myvoices was a list then output one way.  Otherwise output it as a list.
-         
-       
+        
         (cond (me
                (progn (print 'nah)
                (x->dx (sort  (remove-dup (flat (list intervals-remove-rests (reduce #'+ (first positive-rhythms)) )) 'eq 1)'<))))
@@ -341,5 +345,36 @@
          ))))
     
 
+)
+
+(defun r-tatum-mapping-helper (thing)
+
+  (let ((final-list '()))
+    (loop for elem in thing do
+      (cond ((eql elem 1) (push '(1 (4)) final-list))
+            ((eql elem 2) (push '(1 (8)) final-list))
+            ((eql elem 3) (push '(1 (12)) final-list))
+            ((eql elem 4) (push '(1 (16)) final-list))
+            ((eql elem 5) (push '(1 (20)) final-list))
+            ((eql elem 6) (push '(1 (24)) final-list))
+            ((eql elem 8) (push '(1 (32)) final-list))
+            ((eql elem 10) (push '(1 (40)) final-list))
+            ((eql elem 12) (push '(2 (6)) final-list))
+            ((eql elem 15) (push '(1 (2)) final-list))
+            ((eql elem 20) (push '(1 (1)) final-list))
+            (t (push 'nil final-list)))
+            )
+
+    (list (list (reverse final-list)))
+  )
+)
+
+(defmethod! r-tatum-mapping ((mything list))
+
+  :doc "Maps numbers to tatums according to a key."
+  :icon 5
+
+   (flat (mapcar (lambda (x) (r-tatum-mapping-helper x)) mything) 2)
+  
 )
 

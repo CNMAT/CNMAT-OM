@@ -92,7 +92,8 @@
   :indoc '("a list of lists" "optional mode argument")
   :outdoc '("lists that pass the canon query") 
   :initvals '( '((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1)) 0)
-  :doc "From the original lists it builds lists of lists based on a iterative operations.  Returns combinations, supplies number of overlaps, and sorts by fewest overlaps. Default returns everything. Mode 1 returns everything sorted by fewest onset overlaps.  Mode 2 returns results sorted by fewest overlaps and excluding rotations"
+  :doc "Provided with a group of lists, iteratively builds output lists returning lists built up by element for each rotation.
+.  Returns combinations, supplies number of overlaps, and sorts by fewest overlaps. Default returns everything. Mode 1 returns everything sorted by fewest onset overlaps.  Mode 2 returns results sorted by fewest overlaps and excluding rotations"
 
 
 (case mode

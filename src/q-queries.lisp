@@ -19,7 +19,7 @@
   :indoc '("a list of lists" )
   :outdoc '("lists with no rotations") 
   :initvals '(((1 2 3 4 5) (2 3 4 5 1) (3 4 5 1 2) (4 5 1 2 3) (5 1 2 3 4)))
-  :doc "Removes rotationally-related list from a lists of lists."
+  :doc "Removes rotationally-related lists from a lists of lists."
  
   (remove-duplicates mylist :test #'cnmat::is-rotation?)
 
@@ -114,7 +114,7 @@ processed-exclude
   :indoc '("a list of lists" "a list of elements" "a list of possible sums" "a list of overlaps" "excluded elements")
   :outdoc '("Filters input lists to return those lists with the elements required as specified in the lists for number of elements, possible sums, and number of overlaps.") 
   :initvals '(((1 2 3) (3 4 5)) nil  nil nil)
-  :doc "Filters input lists to return those lists with the elements required as specified in the lists for number of elements, possible sums, and number of overlaps."
+  :doc "Filters input lists to return those lists with the elements required as specified for number of elements, allowable sums, and number of overlaps."
   
  (remove nil (flat (mapcar (lambda (x) (combi-filter-helper x elems sums olaps exclude)) main-list) 4))
 
@@ -159,7 +159,7 @@ processed-exclude
   :indoc '("a list of lists" "optional mode argument")
   :outdoc '("lists that pass the canon query") 
   :initvals '((1 2 3 4 5) )
-  :doc "From the original lists it builds lists of lists based on a iterative operations.  The operation takes element a and compares with with element b.  If there are no onset overlaps, then it adds b to the list and moves on to the next element C. and so on.  This process is repeated for each successive element (list) of the original input, i.e. for every rotation of the original input list.  (It is not done for every possible permutation of the original list.)  Grouped output lists should have no synchronous onsets except for the first."
+  :doc "Builds lists of lists based on a iterative operations testing for no onset overlaps.  The operation takes element a and compares with with element b.  If there are no onset overlaps, then it adds b to the list and moves on to the next element C. and so on.  This process is repeated for each successive element (list) of the original input, i.e. for every rotation of the original input list.  (It is not done for every possible permutation of the original list.)  Grouped output lists will have no synchronous onsets except for the first."
 
 
   (let* ((mylist-rotations (get-rotations mylist))
@@ -369,7 +369,7 @@ processed-exclude
   :indoc '("a list of elements" "ordered variable number" "mode: 0, 1, 2, 3 or 4")
   :outdoc '("a list") 
   :initvals '( (1 2 3 4 5 6 8 10 12) 0 2)
-  :doc "Mode=0 is all combinations.  Mode=1 is only combinations that fit the canon query. Mode=2 all combinations in order of number of elements
+  :doc "Finds combinations of <n> elements that sum up to any one of the elements provided and provides all rotations of these combinations. Mode=0 is all combinations. Mode=1 is only combinations that fit the canon query. Mode=2 all combinations in order of number of elements
 Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in order of overlaps"
   
   (let* (( combis (mapcar (lambda (x) (q-combi elements-list x nil ordered)) elements-list))
@@ -517,9 +517,7 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
                  ("unordered with repetitions" 2)
                  ("ordered with repetitions" 3))))
   :doc "Computes and returns the list of all combinations of <num> elements in <dur-space> which sum up to <sum>.
-<mode> (0, 1 or 2) determines whether or not the list must remain ordered and if repetitions are allowed in the results.
-
-<num> can be a signle number or a list of integers. If <num> = NIL all number of elements will be searched."
+<mode> (0, 1 or 2) determines whether or not the list must remain ordered and if repetitions are allowed in the results. <num> can be a signle number or a list of integers. If <num> = NIL all number of elements will be searched."
   
   (let ((sorted-space (sort dur-space '<)))
     (remove nil 

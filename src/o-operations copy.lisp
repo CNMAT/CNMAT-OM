@@ -7,29 +7,8 @@
 
 
 
-;;;==================================
-;;; O-REMOVE-DUP-LISTS
-;;;==================================
 
-(om::defmethod! o-remove-dup-lists ((elements-list list))
-   :icon 6
-   :indoc '("a list of lists")
-   :outdoc '("a list of lists with repeated lists removed")
-   :initvals '(((1 2 3 4) (1 2 3 4)))
-   :doc "This function removes repeated lists from a lists of lists"
-   
-  (let ((final-list (list (first elements-list)))
-       (test-elem 't))
 
-  (loop for elem in (rest elements-list) do
-       (loop for thing in final-list do
-           (if (equal elem thing) (setf test-elem 'nil)))
-       (if test-elem (push elem final-list))
-       (setf test-elem 't))
-
-  (reverse final-list))
-
-)
 
 
 ;;;==================================

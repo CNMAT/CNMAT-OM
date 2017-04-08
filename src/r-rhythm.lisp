@@ -44,7 +44,7 @@
   :indoc '("a list of lists" )
   :outdoc '("returns rhythm lists combined by voice") 
   :initvals '((1/16 1/16 1/8 1/16 1/16 1/16 1/8) (nil))
-  :doc "Scatter the attacks of a rhythmic sequence randomly over n-voices"
+  :doc "Scatters the attacks of a rhythm sequence randomly across a specified number of voices."
 
   (let* ((final-list '())
         (random-voice 0)
@@ -181,7 +181,8 @@
 
 
 (defmethod! r-duration-list ((myvoices list)) 
-
+:doc "Returns the durations of all rhythmic frame voices. Resulting lists may be."
+:icon 5
 (mapcar #'(lambda (r)  (cnmat::pulses r))  myvoices)
 
  
@@ -212,6 +213,9 @@
 ;;where the subs need to be sent in separately for each voice.
 ;;In this case, remove the voice designatory, e.g. "0", before sending it on
 
+  :doc "Replaces a rhythmic value with subset values (diminutions) that sum to the original value."
+  :icon 5
+
 
            (if (eq 0 (car (first subs)))
 
@@ -240,23 +244,18 @@
 
 (in-package :cnmat)
 
-;;;create all of the rotations of a rhythm
-;;;uses get-rotations method/function
+
 (defmethod r-interleave (rhythm-parent   &rest rest )
   :initvals '(nil) 
   :indoc '("first element" "second element" "additional elements")
-  :icon 1
-  :doc "Interleaves rhythmic frames."
+  :icon 2
+  :doc "Interleaves a parent and a child polyrhythmic frame.."
   (let* ((my-stuff (mapcar (lambda (x) (list x)) rest))
         (all-stuff (flat (mat-trans (cons rhythm-parent rest)))))
   
   ;(print 'all-stuff)
-  ;this print call below is necessary--dont delete!
+  ;this print call below is necessary--do not delete it!
   (print all-stuff)
-
-
-
-
   )
 )
 
