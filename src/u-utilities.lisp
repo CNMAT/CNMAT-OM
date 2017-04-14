@@ -74,7 +74,7 @@
   :outdoc '("Returns a list of lists containing pitches, rhythms and no. items (pitches). Connect 'self' output of poly or voice" "and another thing") 
   :initvals '(nil)
   :numouts 5
-  :doc "Returns a list of lists containing pitches, rhythms and no. items (pitches)"
+  :doc "Returns a list of lists containing meter list, pitches, rhythms, tatum lists, and no. of elements."
 
   (let ((rhythms '())
         (pitches '())
@@ -313,7 +313,7 @@
   :indoc '("a list of pitch lists" "a pitch to invert around")
   :outdoc '("Returns a list of lists of pitches inverted around a given pitch. With optional mode=1 toconvert to mod12. And with optional mod input to change mod12 to another number.") 
   :initvals '(((7000 7100 8000) (6000 6800 7000)) 7100)
-  :doc "Returns a list of lists of elements from the source lists chosen by index number"
+  :doc "Invert a list of pitches around a provided  pitch."
 
 
   (case mode
@@ -553,4 +553,38 @@
   :doc "Returns a list of sums of list input."
 
      (values (o-list-info mylist mode) (o-list-info tatumlist 2)) 
+)
+
+
+
+;;;SEE CODE FOR u-list-info in o-operations o-list-info
+
+
+;;;==================================
+;;; U-Divisors
+;;;==================================
+
+
+
+(om::defmethod! u-divisors ((input number) )
+  :icon 5
+  :indoc '("list of lists to be tallied" "a tatum list to be tallied"
+           "An optional mode argument; mode 1 for simple list of lists, e.g. pitch lists")
+  :initvals '(20)
+  :numouts 1
+ ; :menuins '((1 (("sum of the list of lists per voice" 0) ("sums that preserve list structure" 1))))
+  :doc "Takes an integer as input and returns a list of integer divisors with along with the sum of these divisors."
+
+(let ((numbers (arithm-ser 1 input 1))
+      (pre-final-list '())
+      (final-list))
+
+(loop for number in numbers do
+      (if (integerp (/ input number)) (push (list number (/ input number)) pre-final-list)))
+
+(setf final-list (sort (remove-dup (flat pre-final-list) 'eq 1) '<))
+
+(list final-list (list (reduce #'+ final-list)))
+
+)
 )

@@ -19,7 +19,7 @@
   :indoc '("a voice object" "a second voice object")
   :outdoc '("Joins (concatenates) one voice to another.") 
   :initvals '('(nil) '(nil))
-  :doc "Joins one voice to another. Use this when the concat object won't work, i.e. when segments of music dont end tidly at the end of a bar. Joins voices according to these rules: If the last rhythm is a rest then this last rest is deleted and the new voice is joined snug with the last pitch.Takes tempo and legato from the first voice."
+  :doc "Combines voice scores. Use this when the concat object won't work, i.e. when segments of music dont end tidly at the end of a bar. Joins voices according to these rules: If the last rhythm is a rest then this last rest is deleted and the new voice is joined snug with the last pitch.Takes tempo and legato from the first voice."
 
 (let* ((rhythms1 (om::tree2ratio (om::tree voice1)))
       (rhythms1-tested (get-rid-of-rests rhythms1))

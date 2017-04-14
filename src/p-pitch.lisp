@@ -16,7 +16,7 @@
   :indoc '("a chor-seq" "an optional argument specifying the numnber of pitches to return based on highest partial amplitude")
   :outdoc '("lists") 
   :initvals '( '(nil) 0)
-  :doc "Returns a chord object notating partials from the analysis.  Option argument returns n-pitches from the partials based on highest amplitudes."
+  :doc "Returns a chord object notating partials from a partial-tracking analysis.  Option argument returns n-pitches from the partials based on highest amplitudes."
  (let* ((pitches  (flat (om::lmidic mychordseq)))
             (velocities  (flat (om::lvel mychordseq)))
             (pairs (mapcar (lambda (x y) (list x y)) pitches velocities))
@@ -121,11 +121,7 @@
 
         (mapcar (lambda (x) (if (<= (nth 0 x) (nth 0 smallest-difference)) (setq smallest-difference x))) differences)
 
-       (nth 1 smallest-difference)
-
-
-
-     )
+       (nth 1 smallest-difference))
 
 
 )
@@ -138,7 +134,7 @@
   :indoc '("a bpf-lib of two bpfs" "a list of list of attacks, in rotations or other specification" " a pitch collection from which to draw pitches" "mode: 0 = n/a")
   :outdoc '("a list of pitces mapped from the bpf to the pitch-collection") 
   :initvals '( nil ((1 2 3 4)(2 3 4 5))  (6000 6600 7200 7500))
-  :doc "Returns random pitch samples from a collection provided. The pitches sampled are determed following the contour of the bpf pitch bands provided "
+  :doc "Returns random pitch samples from a collection, with pitches following the contour of the bpf pitch bands provided."
   
   (case mode
 
@@ -275,7 +271,7 @@
   :indoc '("a bpf-lib of two bpfs" "a list of list of attacks, in rotations or other specification" " a collection of allowable pitchclasses" "mode: 0 = n/a")
   :outdoc '("a list of pitces mapped from the bpf to the pitch-collection") 
   :initvals '( nil ((1 2 3 4)(2 3 4 5))  (0 1 5))
-  :doc "Returns random pitch samples that conforms to a list of allowable pitchclasses. The pitches sampled are determed following the contour of the bpf pitch bands provided "
+  :doc "Assigns pitches from a set of allowable pitchclasses and following the contour of bpf pitchbands."
   
   (case mode
 
@@ -368,7 +364,7 @@
   :indoc '("a bpf-lib of two bpfs" "a list of list of attacks, in rotations or other specification" "mode: 0 = n/a; mode=1 for multiple pitch list input")
   :outdoc '("a list of pitces mapped from the bpf to the pitch-collection") 
   :initvals '( nil '(6000 6000 6000 6000)  0)
-  :doc "Returns random pitch samples that conforms to a list of allowable pitchclasses. The pitches sampled are determed following the contour of the bpf pitch bands provided. Optional Mode=1 will take in multiple pitchlists."
+  :doc "Registrates a pitch sequence within the registral bands determined by a bpf. Random pitch samples conform to a list of allowable pitchclasses and are determed following the contour of the bpf pitch bands provided. Optional Mode=1 will take in multiple pitchlists."
   
   (case mode
 
@@ -429,7 +425,7 @@
   :indoc '("a list of pitch lists" "a pitch to invert around")
   :outdoc '("Returns a list of lists of pitches inverted around a given pitch") 
   :initvals '(((7000 7100 8000) (6000 6800 7000)) 7100)
-  :doc "Returns a list of lists of elements from the source lists chosen by index number"
+  :doc "Invert a list of pitches around a provided  pitch."
 
   
 ; see list-inversion and helper-inversion functions in o-pitch.lisp
@@ -505,7 +501,7 @@
 
 ;;do a one to one pitch mapping for each list of rhythms
 ;;go through each element in rhythmlist 
-;;test the elemtn until you find a match in the key-list
+;;test the element until you find a match in the key-list
 ;;then return the corresponding value
 
    (flat 
@@ -541,10 +537,7 @@
 
                     ;; now make 1 random choice from the elements to return using the probabilities
 
-		  collect (o-list-rand (nth 1 elem) 1))
-
-
-       )
+		  collect (o-list-rand (nth 1 elem) 1)))
     )
   
 )
@@ -552,8 +545,6 @@
 (defun prep-mapping-list (mapping-list numattacks)
   (let* ((mylist (mapcar (lambda (x) ( flat (repeat-n (cdr x) numattacks))) mapping-list))
         (mylist-with-keys (mapcar (lambda (x y) (list (car x) y)) mapping-list mylist)))
-    
-    
     
     mylist-with-keys
 
@@ -618,7 +609,7 @@
   :indoc '("a list of rhythm lists" "a list of mappings in midics" "mode: 0 = 1-1 mapping; 1 = map to random choice from set; 2 = map to random choice in a range of choices. (Use two midic pitches to designate the bottom and top of range")
   :outdoc '("a list of pitch mappings to use with") 
   :initvals '( ((3 4 5) (4 5 3) (5 3 4)) (((3) (6000)) ((4) (6100)) ((5) (6200)))  0)
-  :doc "Mapping in three different ways rotations->poly2 object"
+  :doc "Ways to map pitches to rhythmic sequences when generating scores, including: 1-1 mapping, random mapping from collections, and random mapping from ranges. Includes probabilistic weighted choice."
   
 (flat-by-voice durations-list)
 
@@ -695,7 +686,7 @@
   :indoc '("a list of rhythm lists (list of lists)" "a list (or list of lists) for pitch collections" "mode: 0 = random choice from a pitch collection; 1 = random choice from a range of pitches")
   :outdoc '("a list of pitch mappings to use with") 
   :initvals '( ((3 4 5) (4 5 3) (5 3 4)) (7200 7300 7500 7700)  0)
-  :doc "Pitch mapping for each attack in each voice using random choice from a provided pitch collection.  In mode 1, random pitch selection from individual pitch collections, one for each voice.  In this case, provide a list of lists for wach voice pitch collection"
+  :doc "Similar to pmap1 but with different features and allowing for chords. In mode 1, random pitch selection from individual pitch collections, one for each voice.  In Mode 2, selects random pitch from pitch range with one shared pitch range for all voices."
   
   (case mode
 
@@ -726,7 +717,6 @@
                ;;this is the version when there are a list of list of pitch-collections
                (let* ( (length-durations (mapcar (lambda (x) (length x)) durations-list))
                        (resultant-pitches (mapcar (lambda (x y) (o-list-rand x y))  pitch-collection length-durations )))
-
 
              (flat resultant-pitches 1)
              ))

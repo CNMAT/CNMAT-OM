@@ -27,7 +27,7 @@
   :indoc '("a  bpf" "number of samples desired" "list A" "list B" "optional mode")
   :outdoc '("a sequence of random elements of n-length transitioning between the given lists") 
   :initvals '(nil 10 '(6000 6100 6200) '(7200 7300 7400) 0)
-  :doc "Return a random element from listA or listB using a bpf to guide the the probability of which list is chosen from. Within each list, elem  ents have equal proability of being chosen."
+  :doc "Creates transitions between two lists following a bpf trajectory. Return a random element from listA or listB using a bpf to guide the the probability of which list is chosen from. Within each list, elem  ents have equal proability of being chosen."
  
 (case mode 
   (0

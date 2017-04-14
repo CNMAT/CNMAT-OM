@@ -21,7 +21,7 @@
   :indoc '("a poly object" "a second poly object")
   :outdoc '("Joins (concatenates) one poly to another. Outputs a poly object.") 
   :initvals '('(nil) '(nil))
-  :doc "Joins one poly to another. Use this when the concat object won't work, i.e. when segments of music don't end tidly at the end of a bar. Joins voices in the poly according to these rules: If the last rhythm is a rest then this last rest is deleted and the new voice is joined snug with the last pitch.Takes tempo and legato from the first voice. Outputs a poly object."
+  :doc "Combine poly scores. Use this when the concat object won't work, i.e. when segments of music don't end tidly at the end of a bar. Joins voices in the poly according to these rules: If the last rhythm is a rest then this last rest is deleted and the new voice is joined snug with the last pitch.Takes tempo and legato from the first voice. Outputs a poly object."
 
   (let* ((combined-voices (mapcar (lambda (x y) (s-combine-voices x y)) (om::voices poly1) (om::voices poly2))))
 
@@ -128,7 +128,7 @@
   :indoc '("a list for the meter" "a list of lists for durations" "a tatum specified as a fraction" "a list of lists of pitches" "a tempo as integer" "mode: 0 = sustain mode output; 1 = rests mode output")
   :outdoc '("a poly") 
   :initvals '( ((1 5 7 10)) (4 4) 1/16 ((6100)) 110 0)
-  :doc "Converts a rotation list into music notation using the ."
+  :doc "Cuts-style score creation."
   
   (let* (( flat-rhythm-lists (mapcar (lambda (x) (flat x)) durations-list))
         (flat-pitch-lists (mapcar (lambda (x) (flat x)) pitches))
@@ -461,7 +461,7 @@
   :indoc '("a list for the meter" "a list of lists for durations" "list of lists of tatums for each voice" "a list of lists of pitches" "a tempo as integer" "mode: 0 = sustain mode output; 1 = rests mode output")
   :outdoc '("a poly") 
   :initvals '( ((1 5 7 10)) (4 4) (((1 (16)))) ((6100)) 110 0)
-  :doc "Converts a rotation list into music notation using the ."
+  :doc "Cuts-style score creation using a changeable tatum list."
   
   (let* (( flat-rhythm-lists (mapcar (lambda (x) (abs-rhythms (flat x))) durations-list))
         ;(flat-pitch-lists (mapcar (lambda (x) (flat x)) pitches))
@@ -483,12 +483,6 @@
 (print final-generated-rhythms)
 
 
-
-
-
-
-
-    
   (case mode
 
     (0 (flat (mapcar (lambda (x y z a b) (make-voice-cuts2 meter x tatum-list y tempo z a b)) flat-rhythm-lists  prepped-pitches generated-rhythms generated-tatums final-generated-rhythms) 1)
@@ -574,7 +568,6 @@
 )
 
 
-
   
 ;;;this receives list of durations lists (output from get-rotations)
 (om::defmethod! s-poly ( (durations-list list) (meter list) (tatum number) (pitches list) (tempo integer) &optional (mode 0))
@@ -583,7 +576,7 @@
   :indoc '("a list for the meter" "a list of lists for durations" "a tatum specified as a fraction" "a list of lists of pitches" "a tempo as integer" "mode: 0 = sustain mode output; 1 = rests mode output")
   :outdoc '("a poly") 
   :initvals '( ((1 5 7 10)) (4 4) 1/16 ((6100)) 110 0)
-  :doc "Converts a rotation list into music notation."
+  :doc "Creates scores from input (for use with a static tatum)."
 
 ;;create pitches for sublist versions, modes 2 & 3
   (let ((sublist-pitches  (sublist-pitch-processing durations-list pitches)))
@@ -642,7 +635,7 @@
   :indoc '("A poly object--make sure that it is locked." "mode:0 = notes truncated on following attacks; mode: 1 = notes sustained for original durations.")
   :outdoc '("A voice object") 
   :initvals '('(nil) 0)
-  :doc "Does a simple conversion from a poly to a voice.  Be sure to lock the input poly object.  Mode 0 truncates note durations on the following attack.  Mode 1 sustains notes through attacks using the original durations. In OM6.10.1 mode 1 requires a special patch to remedy a bug"
+  :doc "Score conversion from poly to voice. Mode 0 truncates note durations on the following attack.  Mode 1 sustains notes through attacks using the original durations. In OM6.10.1 mode 1 requires a special patch to remedy a bug"
 
   (case mode
     (0  (let ((my-chordseq ( poly->chordseq mypoly))
@@ -930,7 +923,7 @@
   :indoc '("a list for the meter" "a list of lists for durations" "a tatum specified as a fraction" "a list of lists of pitches" "a tempo as integer" "mode: 0 = sustain mode output; 1 = rests mode output")
   :outdoc '("a poly") 
   :initvals '( ((1 5 7 10)) (4 4) (((1(16)) (2(20)))) ((6100)) 110 0)
-  :doc "Converts a rotation list into music notation."
+  :doc "Creates scores from input (for use with a changing tatum)."
   
   (let (( preped-meter (prep-meter meter))
         (my-durations-list (flat-by-voice durations-list))

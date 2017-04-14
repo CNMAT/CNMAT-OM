@@ -7,29 +7,6 @@
 
 
 
-;;;==================================
-;;; O-REMOVE-DUP-LISTS
-;;;==================================
-
-(om::defmethod! o-remove-dup-lists ((elements-list list))
-   :icon 6
-   :indoc '("a list of lists")
-   :outdoc '("a list of lists with repeated lists removed")
-   :initvals '(((1 2 3 4) (1 2 3 4)))
-   :doc "This function removes repeated lists from a lists of lists"
-   
-  (let ((final-list (list (first elements-list)))
-       (test-elem 't))
-
-  (loop for elem in (rest elements-list) do
-       (loop for thing in final-list do
-           (if (equal elem thing) (setf test-elem 'nil)))
-       (if test-elem (push elem final-list))
-       (setf test-elem 't))
-
-  (reverse final-list))
-
-)
 
 
 ;;;==================================
@@ -70,7 +47,6 @@
 ;;;==================================
 ;;; O-COUNT-TRUNC
 ;;;==================================
-;;;A COMPLETE LISTING OF 0-OPERATIONS CODE
 
 
 ;;;COUNT-TRUNC
@@ -92,7 +68,7 @@
   :indoc '("a  list of lists" "the desired length in elements of each list")
   :outdoc '("list of lists with elements of the desired length") 
   :initvals '(((1 2 3)) 2)
-  :doc "As necessary, truncates all lists to the length of desired elements"
+  :doc "As necessary, truncates all lists to the length of desired elements."
 
   (let ((lengths (mapcar #'list-lengths my-list)))
     (mapcar (lambda (x y) (list-truncate x y length-desired)) my-list lengths)
@@ -189,7 +165,7 @@
   :outdoc '("Returns a list of lists of elements from the source lists chosen by index number") 
   :initvals '(((3 4 5 1 2)) ((0 1 2 3 4)) 0)
   :menuins '((2 (("multiple source lists with index list" 0) ("single source list, multiple index lists" 1) )))
-  :doc "Returns a list of lists of elements from the source lists chosen by index number"
+  :doc "Returns a list of lists of elements from the source lists chosen by index number."
   
   (case mode
     (0  (mapcar (lambda (x) (get-position x (flat index-lists 1))) source)
@@ -478,7 +454,7 @@
   :indoc '("list of lists to be summed" "mode: 0 = sum all numbers; 1 = sum numbers and retain list structure")
   :initvals '(((1 2 3) (4 5 6)) 0)
   :menuins '((1 (("sum of the list of lists per voice" 0) ("sums that preserve list structure" 1))))
-  :doc "Returns a list of sums of list arguments"
+  :doc "Sums all sublists and returns the result. Returns a list of sums of list arguments."
 
   (case mode 
     ;;;sum of the lists of lists per voice
@@ -546,7 +522,7 @@
            "mode 1 for simple list of lists, e.g. pitch lists")
   :initvals '(((1 2 3) (3 5 5 6 7) (19 43 59) (34) (68)) ((1 2 3 4) (22 4)) 0)
   :menuins '((1 (("list to insert" 0) ("optional mode" 1))))
-  :doc "Returns a list of sums of list arguments"
+  :doc "Returns a list of sums of list arguments."
 
   (case mode 
     ;;;sum of the lists of lists per voice
@@ -755,7 +731,7 @@
   :outdoc '("compare lists of sublists") 
   :initvals '( nil)
   :numouts 2
-  :doc "Converts a tatum shorthand into a notation suitable for use with tessellate objects"
+  :doc "Converts a tatum shorthand into a notation suitable for use with Tessellate."
 
  (values (flat  (mapcar #'tatum-format-helper  mylist) 1) (tatum-elements-helper mylist))
 
