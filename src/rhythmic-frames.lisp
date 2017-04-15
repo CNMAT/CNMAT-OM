@@ -85,10 +85,6 @@
 
 ;;;Matt's code for rfi starts here
 
-;(defmethod! r-substitute ((rhythm rhythmic-frame) val subs) 
-;  (make-instance 
-;   'rhythmic-frame
-;  :pulses (flat (substitute subs val (pulses rhythm)))))
 
 
 (defun combinations-subs-children (number)
@@ -99,13 +95,11 @@
 
     (push (cnmat::q-combi all-allowable-numbers number nil 2) pre-final-output)
 
-    ;this cuts out just the single digit allowable number you start with
+    ;;;this cuts out just the single digit allowable number you start with
     (setf pre-final-output (list (butlast (car pre-final-output))))
-
 
     (loop for combination in (flat pre-final-output 1) do
       (push (list number combination) final-output))
-      
     final-output
     )
 )
@@ -113,11 +107,10 @@
 (defun filter-disallowed-children (mylist disallowed)
 
   (let (( output '()))
-
     (loop for combination in mylist do
-    ;keep the combination only if it has none of the disallowed in it
-    ;  (if   (not (x-intersect  disallowed (print (cdr combination))))
-    ;      (push combination output)))
+    ;;;keep the combination only if it has none of the disallowed in it
+    ;;;  (if   (not (x-intersect  disallowed (print (cdr combination))))
+    ;;;      (push combination output)))
       (if (not (om::x-intersect (second combination) disallowed))
           (push combination output)))
     (reverse output)
@@ -138,9 +131,7 @@
   (let ((holdvoices '()))
 
     (loop for myprf in mypolys do
-      (push (cnmat::voices myprf) holdvoices)
-
-      )
+      (push (cnmat::voices myprf) holdvoices))
 
     (make-instance
      'cnmat::prf
@@ -152,7 +143,7 @@
 (defun combine-original+children (original-prf children-prf num-voices) 
 
     (let ((orig-prf-voices (cnmat::voices original-prf))
-      ;(children-prf-voices (list-modulo (cnmat::voices children-prf) num-voices))
+     
        (children-prf-voices  (group-list (cnmat::voices children-prf) (repeat-n (/ (length (cnmat::voices children-prf)) num-voices ) num-voices) 'linear))
 
       (all-voices '()))
@@ -162,14 +153,9 @@
              (push (list orig-voice child-prf) all-voices))
 
      (flat (reverse all-voices))
-
-;(flat children-prf-voices)
-
     )
 )
 
-
-;;;You stopped at step four in diminutions-children 2 patch
 
 (defmethod! r-substitute-children ((rhythm polyrhythmic-frame) children-desired remove-values)
 
@@ -183,7 +169,7 @@
       (full-prf (combine-children-prf children-prfs))
       (original+children (combine-original+children rhythm full-prf (length (cnmat::voices rhythm) ))))
 
-  original+children
+      original+children
   )
 
 )
@@ -206,13 +192,8 @@
 
          (make-instance
           'rhythmic-frame
-  ; :pulses  (flat (substitute-processing substitutions)))
 
-          :pulses  (flat substitutions))
-
-         )
-       )
-    )
+          :pulses  (flat substitutions)))))
 )
 
 
@@ -228,22 +209,13 @@
              'prf 
              :voices (mapcar #'(lambda (r s) (r-substitute r val (cdr s))) (voices rhythm) subs)
              )
-;;Otherwise, you send the same subs list in for all the voices
+          ;;Otherwise, you send the same subs list in for all the voices
 
         (make-instance 
             'prf 
             :voices (mapcar #'(lambda (r) (r-substitute r val subs)) (voices rhythm))
-             )
-        )
-        )
-    )
+             ))))
 )
-
-  ; (make-instance 
-  ;  'prf 
-   ; :voices (mapcar #'(lambda (r) (r-substitute r val subs)) (voices rhythm))
-   ; ))
-
 
 
 (defun rests-positive-helper (mylist)
@@ -252,13 +224,6 @@
         (final-list '())
         (a-list '()))
     (print mylist)
-
-  
-
-    ;;(cond ((minusp (first (last mylist))) 
-    ;;       (setf a-list (x-append (butlast (butlast mylist)) (+ (abs (first (last mylist))) (first (last (butlast mylist)))))))
-    ;;      (t
-    ;;      (setf a-list mylist)))
 
     ;; check for negative number as last element.  In this case at that number (a rest) to the last attack
     ;;so that you dont get a separate attack for the last rest.
@@ -272,8 +237,6 @@
 
     (push (flat (list (butlast positive-list) (+ (reduce #'+ (om* -1 minus-list)) (first (last positive-list))))) a-list)
 
-
-
     (loop for elem in (flat a-list) do
       (push (abs elem) final-list))
     (reverse final-list)
@@ -282,16 +245,15 @@
 
 (defun remove-rest-values-helper (durations-list intervals-list)
 
-(let ((final-list '())
+   (let ((final-list '())
       (pre-final-list '()))
 
 ;get rid of intervals corresponding with rests
 
-(loop for duration in durations-list
+    (loop for duration in durations-list
       for interval in intervals-list do
       (if (> duration 0) (push interval final-list)))
-(reverse final-list)        
-)
+    (reverse final-list))
 
 )
 
@@ -308,9 +270,7 @@
 )
 
 (defun r-merge-helper2 (rhythm myvoices)
-
- (r-merge (r-merge-helper rhythm myvoices ))
-
+   (r-merge (r-merge-helper rhythm myvoices ))
 )
 
 
@@ -319,7 +279,7 @@
   :doc "R-merge collapes the attacks of all rhythmic frames within a polyrhythmic frame into one rhythmic frame."
   :icon 5
 
-(cond 
+  (cond 
       (myvoices 
        (cond ((listp (first myvoices))
               (mapcar (lambda (x) (r-merge rhythm (flat x) me)) myvoices))
@@ -343,8 +303,6 @@
              (list (x->dx (sort  (remove-dup (flat (list intervals-remove-rests (reduce #'+ (first positive-rhythms)) )) 'eq 1)'<))))
 
          ))))
-    
-
 )
 
 (defun r-tatum-mapping-helper (thing)
@@ -365,8 +323,7 @@
             (t (push 'nil final-list)))
             )
 
-    (list (list (reverse final-list)))
-  )
+    (list (list (reverse final-list))))
 )
 
 (defmethod! r-tatum-mapping ((mything list))

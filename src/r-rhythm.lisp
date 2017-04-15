@@ -17,20 +17,16 @@
         (current-voice (random numvoices))
         (prev-voice nil))
 
-    ;;make sure it is not the same voice as the last time
+    ;;;make sure it is not the same voice as the last time
     
-
     (loop for i from 0 to (length rhythmlist) do
           (setf current-voice (random numvoices))
           (loop while (eq current-voice prev-voice) do
                   (setf current-voice (random numvoices)))
           (setf prev-voice current-voice)
           (push current-voice final-list))
-
-    (print 'final-list)
-    (print final-list)
-
-)
+  
+    final-list)
 
 )
 
@@ -55,7 +51,6 @@
         (push '() final-list))
 
   ;assign either a rest or an attack for every element in rhythmlist
-
   (loop for attack in rhythmlist
         for j from 0 to (length rhythmlist) do
         (setf random-voice (nth j sequence))
@@ -65,27 +60,21 @@
                   (push attack (nth i final-list))
                   (push (* -1 attack) (nth i final-list)))))
 
-  (mapcar 'reverse final-list)
-
-  )
+  (mapcar #'reverse final-list))
  
 )
 
 
-;;;R-combine-lists is deprecated
 
 ;;;==================================
 ;;; R-COMBINE-LISTS
 ;;;==================================
+;;;R-combine-lists is deprecated
 
 (in-package :cnmat)
 
 (defun rhythm-append (lista listb)
-  
-  ;;;or simply use x-append here
-
   (flat (list lista listb))
-
 )
 
 
@@ -98,13 +87,6 @@
   :doc "This object appends rhythm lists across an arbitrary number of voices and converts them into one (long) list of lists by voice. Add as many inputs to the combine-rhythm-lists object as desired for lists. (Use shift-alt right-arrow to add inputs and shift-alt left-arrow to subtract inputs). Requires formatting rhythms by voice as lists of lists. Each list of lists must be the same length (i.e. same number of voices)."
 
   (let ((big-list (mat-trans   (x-append (list my-list) rest-list))))
-
-   ; (print 'rest-list)
-   ; (print rest-list)
-   ; (print 'my-list)
-   ; (print my-list)
-
-
     (mapcar (lambda (x) (reduce 'rhythm-append x)) big-list)
   ) 
 
@@ -122,15 +104,15 @@
 
 (defun substitute-processing (mylist)
 
-(let ((final-list '())
+   (let ((final-list '())
       (collection '()))
 
-  ;we just want the substitute vales to appear in the final lists
-  ;if it is a list then just add it to final-list
-  ;otherwise put it in collection and output it
-  ;as a rest when we need it
+  ;;;we just want the substitute vales to appear in the final lists
+  ;;;if it is a list then just add it to final-list
+  ;;;otherwise put it in collection and output it
+  ;;;as a rest when we need it
   
-  (loop for elem in mylist do
+     (loop for elem in mylist do
       (if (listp elem)
           (progn (push (reduce #'+ collection) final-list)
                  (setq collection '())
@@ -138,34 +120,16 @@
         
           (push (* -1 elem) collection)))
 
-  ;get any leftover elements
+  ;;;get any leftover elements
   (push collection final-list)
 
-  ;output the list in the right order
-   (remove 0 (remove 'nil (reverse (flat final-list))))
+  ;;;output the list in the right order
+      (remove 0 (remove 'nil (reverse (flat final-list))))
 
  )
 
 )
 
-
-
-;;BELOW IS THE OLD VERSION OF r-diminutions
-;;(defmethod! r-diminutions ((rhythm rhythmic-frame) val subs) 
-;;  (let ((substitutions (substitute subs val (pulses rhythm))))
-
-;;   'rhythmic-frame
-;;   :pulses  (substitute-processing substitutions))
-;;)
-  
-;;(defmethod! r-diminutions ((rhythm polyrhythmic-frame) val subs) 
-;;  (make-instance 
-;;   'prf 
-;;  :voices (mapcar #'(lambda (r) (r-diminutions r val subs)) (voices rhythm))
-;;   ))
-
-
-;;BELOW IS THE NEW VERSION OF r-diminutions
 
 (defun local-substitute (subs val mylist)
   (let ((final-list mylist ))
@@ -173,19 +137,14 @@
           for value in val do
           (setq final-list (substitute mysub value final-list)))
   
-    final-list
-
-)
-
+    final-list)
 )
 
 
 (defmethod! r-duration-list ((myvoices list)) 
 :doc "Returns the durations of all rhythmic frame voices. Resulting lists may be."
 :icon 5
-(mapcar #'(lambda (r)  (cnmat::pulses r))  myvoices)
-
- 
+    (mapcar #'(lambda (r)  (cnmat::pulses r))  myvoices)
 )
 
 
@@ -195,21 +154,15 @@
 (defmethod! r-diminutions ((rhythm rhythmic-frame) val subs ) 
 
        (let ((substitutions (local-substitute subs val (pulses rhythm))))
-
-    ;(print 'substitutions)
-    ;(print substitutions)
-
          (make-instance
           'rhythmic-frame
-          :pulses  (substitute-processing substitutions))
-
-         )
+          :pulses  (substitute-processing substitutions)))
 )
 
 
 (defmethod! r-diminutions ((rhythm polyrhythmic-frame) val subs) 
    
-;;if the first element of the subs is 0 then you know it is the special case
+;;If the first element of the subs is 0 then you know it is the special case
 ;;where the subs need to be sent in separately for each voice.
 ;;In this case, remove the voice designatory, e.g. "0", before sending it on
 
@@ -223,7 +176,7 @@
                 'prf 
                 :voices (mapcar #'(lambda (r s) (r-diminutions r val (cdr s))) (voices rhythm) subs)
                 )
-;;Otherwise, you send the same subs list in for all the voices
+           ;;;Otherwise, you send the same subs list in for all the voices
             (make-instance 
             'prf 
             :voices (mapcar #'(lambda (r) (r-diminutions r val subs)) (voices rhythm))
@@ -231,10 +184,6 @@
             )
  
 )
-
-
-
-
 
 
 
@@ -252,7 +201,7 @@
   :doc "Interleaves a parent and a child polyrhythmic frame.."
   (let* ((my-stuff (mapcar (lambda (x) (list x)) rest))
         (all-stuff (flat (mat-trans (cons rhythm-parent rest)))))
-  
+ 
   ;(print 'all-stuff)
   ;this print call below is necessary--do not delete it!
   (print all-stuff)
@@ -292,7 +241,6 @@
 
   
 (om::defmethod! r-retro-canon? ((my-list list))
-
   :icon 7
   :indoc '("Tests canon-query on list combined with its retrograde")
   :outdoc '("If true, returns list. If false, returns nil") 
@@ -306,7 +254,5 @@
 
         (if (eq (cnmat::q-canon combo-list) 't) 
             combo-list
-            'nil)
-   )
-
+            'nil))
 )

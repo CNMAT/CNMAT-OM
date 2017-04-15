@@ -53,9 +53,9 @@
 
          (cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0 durations-list))))
          (cuts-events (mapcar (lambda (x) (cuts-rests x tatum)) (om* durations-list tatum))))
-    ;;return a list with both voices
+       ;;;return a list with both voices
        (list
-    ;;this voice is the running version
+       ;;;this voice is the running version
          (make-instance 'voice 
                    :tree (mktree (repeat-n tatum (length flat-pitches)) meter)
                    :chords flat-pitches 
@@ -82,8 +82,6 @@
          (cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0 durations-list)))))
 
 
-(print 'new-pitches)
-(print new-pitches)
     ;;return a list with both voices
        (list
     ;;this voice is the running version
@@ -99,17 +97,16 @@
                    :chords cuts-pitches 
                    :tempo tempo 
                    )
-       
         )
     )
 )
 
 (defun check-pitchlist-vs-rhythmlist (rhythm-list pitch-list)
 
-;;For each voice, if the sum of rhythm-list > len(pitchlist) then repeat the pitchlist until it
-;;fills the length of the rhythm list
+  ;;;For each voice, if the sum of rhythm-list > len(pitchlist) then repeat the pitchlist until it
+  ;;;fills the length of the rhythm list
 
-;;output new pitchlist for the processing
+  ;;;output new pitchlist for the processing
 
   (let* ((sum-rhythms (reduce '+ rhythm-list))
         (num-events (om-round (om/ sum-rhythms (length pitch-list)))))
@@ -134,8 +131,6 @@
         (flat-pitch-lists (mapcar (lambda (x) (flat x)) pitches))
         (prepped-pitches (mapcar (lambda (x y) (check-pitchlist-vs-rhythmlist x y)) flat-rhythm-lists pitches)))
 
-
-    
   (case mode
 
     (0 (flat (mapcar (lambda (x y) (make-voice-cuts meter x tatum y tempo)) flat-rhythm-lists  prepped-pitches) 1)
@@ -153,8 +148,6 @@
   (let ((durations (mapcar 'pulses (voices durations-list))))
     (make-voice-cuts durations meter tatum pitches tempo mode)))
 
-;;;make mode 1 2 3 for sustain, rest, pulses
-;;;
 
 
 
@@ -187,17 +180,15 @@
 
 (defun pulse-rest-helper (rhythms)
 
-(let (output '())
+    (let (output '())
 
-  (loop for rhythm in rhythms do
+     (loop for rhythm in rhythms do
       (cond ((> rhythm 0) (push (repeat-n 1 rhythm) output))
             (t (push (repeat-n -1 (abs rhythm)) output))))
 
-  (reverse (flat output))
+     (reverse (flat output))
 
-)
-
-
+    )
 )
 
 
@@ -220,9 +211,6 @@
          (final-pulse-rhythm '())
          (final-pulsing-pitches '()))
 
-(print 'pulse-rests)
-(print pulse-rests)
-
     (loop for pulse-rest in pulse-rests
           for tatum in generated-tatums 
           for pitch in pulsing-pitches do
@@ -230,9 +218,6 @@
                 (t (push tatum final-pulse-rhythm)))
           (if (> pulse-rest 0) (push pitch final-pulsing-pitches)))
           
-(print 'final-pulse-rhythm)
-(print (reverse final-pulse-rhythm))
-
        (list
     ;;this voice is the running version
          (make-instance 'voice 
@@ -273,32 +258,14 @@
          (final-cuts-pitches '())
          (final-attacks+rests-durations '()))
 
-
-
-
-
     (loop for duration in final-generated-rhythms 
           for pitch in cuts-pitches 
           for i from 0 to (length final-generated-rhythms) do
               (if (< 0 duration) (push pitch final-cuts-pitches))
               (if (> 0 duration) (setf (nth (* i 2) attacks+rests-durations) (* (nth (* i 2) attacks+rests-durations) -1)))
-              ;(cond (< 0 duration) (setf (nth (* i 2) attacks+rests-durations) (* (nth (* i 2) attacks+rests-durations) -1)))
-
+              
           )
          
-
-(print 'cuts-pitches)
-(print cuts-pitches)
-          
-
-(print 'attacks-durations)
-(print attack-durations)
-
-(print 'rest-durations)
-(print rest-durations)
-
-(print 'attacks+rests-durations)
-(print attacks+rests-durations)
 
        (list
     ;;this voice is the running version
@@ -335,11 +302,6 @@
 
 )
 
-(print 'durations-list)
-(print durations-list)
-(print 'cuts-pitches)
-(print cuts-pitches)
-
 
     (loop for duration in final-generated-rhythms 
           for pitch in cuts-pitches do
@@ -362,17 +324,15 @@
 
                    :tempo tempo 
                    )
-       
         )
     )
 )
 
 (defun check-pitchlist-vs-rhythmlist (rhythm-list pitch-list)
 
-;;For each voice, if the sum of rhythm-list > len(pitchlist) then repeat the pitchlist until it
-;;fills the length of the rhythm list
-
-;;output new pitchlist for the processing
+    ;;;For each voice, if the sum of rhythm-list > len(pitchlist) then repeat the pitchlist until it
+    ;;;fills the length of the rhythm list
+    ;;;output new pitchlist for the processing
 
   (let* ((sum-rhythms (reduce '+ rhythm-list))
         (num-events (om-round (om/ sum-rhythms (length  pitch-list))))
@@ -380,9 +340,7 @@
         )
     
        ; (flat (repeat-n (flat pitch-list) num-events))
-         (flat (repeat-n  pitch-list num-events ) 1)
-
-   )
+         (flat (repeat-n  pitch-list num-events ) 1))
 
 )
 
@@ -398,8 +356,8 @@
 
 
 (defun prep-tatum (tatum-list)
-;; map through each voice
-     (flat (mapcar (lambda (x) (prep-tatum-helper x)) tatum-list))
+    ;; map through each voice
+    (flat (mapcar (lambda (x) (prep-tatum-helper x)) tatum-list))
 
 )
 
@@ -423,12 +381,9 @@
 )
 
 (defun check-for-rests (durations-list generated-rhythms)
-;if the duration was originally a rest then make it a rest again.
-
+   ;if the duration was originally a rest then make it a rest again.
   (let ((pre-final-rhythms '())
         (final-rhythms '()))
-  
-
     (loop for list1voice in durations-list
           for list2voice in generated-rhythms do
       
@@ -440,10 +395,7 @@
       (push (reverse pre-final-rhythms) final-rhythms)
       (setf pre-final-rhythms '()))
 
-    (reverse final-rhythms)
-
-)
-
+    (reverse final-rhythms))
 )
 
 (defun abs-rhythms (rhythms)
@@ -464,24 +416,15 @@
   :doc "Cuts-style score creation using a changeable tatum list."
   
   (let* (( flat-rhythm-lists (mapcar (lambda (x) (abs-rhythms (flat x))) durations-list))
-        ;(flat-pitch-lists (mapcar (lambda (x) (flat x)) pitches))
+        ;;;(flat-pitch-lists (mapcar (lambda (x) (flat x)) pitches))
         (prepped-pitches (mapcar (lambda (x y) (check-pitchlist-vs-rhythmlist x y)) flat-rhythm-lists pitches))
-        ;(prepped-pitches (mapcar (lambda (x y) (check-pitchlist-vs-rhythmlist x y)) flat-rhythm-lists flat-pitch-lists))
+        ;;;(prepped-pitches (mapcar (lambda (x y) (check-pitchlist-vs-rhythmlist x y)) flat-rhythm-lists flat-pitch-lists))
         (prepped-tatums (mapcar (lambda (x) (prep-tatum x)) tatum-list))
-        ;(generated-rhythms (mapcar (lambda (x y) (generate-rhythms x y))  durations-list prepped-tatums))
+        ;;;(generated-rhythms (mapcar (lambda (x y) (generate-rhythms x y))  durations-list prepped-tatums))
         (generated-rhythms (mapcar (lambda (x y) (generate-rhythms x y))  flat-rhythm-lists prepped-tatums))
-       ; (generated-tatums (mapcar (lambda (x y) (generate-tatums x y)) durations-list prepped-tatums))
+        ;;;(generated-tatums (mapcar (lambda (x y) (generate-tatums x y)) durations-list prepped-tatums))
         (generated-tatums (mapcar (lambda (x y) (generate-tatums x y)) flat-rhythm-lists prepped-tatums))
         (final-generated-rhythms (check-for-rests durations-list generated-rhythms)))
-
-
-(print 'generated-rhythms)
-(print generated-rhythms)
-(print 'durations-list)
-(print durations-list)
-(print 'final-generated-rhythms)
-(print final-generated-rhythms)
-
 
   (case mode
 
@@ -532,14 +475,12 @@
                    :tree (mktree (remove 0 (flat rhythm-list)) meter)
                    :chords pitches 
                    :tempo tempo 
-                   )
-    )
-  )
+                   ))
+)
 
 (defun prep-rests (durations-list tatum)
   (let ((hold-durs (om::om* durations-list tatum)))
-    (mapcar (lambda (x) (flat (list tatum (om::om* (om- x tatum) -1))))  hold-durs)
-    )
+    (mapcar (lambda (x) (flat (list tatum (om::om* (om- x tatum) -1))))  hold-durs))
 )
 
 (defun sublist-pitch-processing (rhythms pitches)
@@ -558,13 +499,8 @@
       (push  (reverse current-list)  final-list))
 
     (setq absolute-final-list (reverse  (mapcar (lambda (x) (flat x 1)) final-list)))
-   
-   ; (print 'sublist-pitches)
-   ; (print absolute-final-list)
-
-    absolute-final-list
-   
-   )
+  
+    absolute-final-list)
 )
 
 
@@ -578,7 +514,7 @@
   :initvals '( ((1 5 7 10)) (4 4) 1/16 ((6100)) 110 0)
   :doc "Creates scores from input (for use with a static tatum)."
 
-;;create pitches for sublist versions, modes 2 & 3
+  ;;;create pitches for sublist versions, modes 2 & 3
   (let ((sublist-pitches  (sublist-pitch-processing durations-list pitches)))
 
   (case mode
@@ -602,12 +538,6 @@
 (om::defmethod! s-poly ( (durations-list prf) (meter list) (tatum number) (pitches list) (tempo integer) &optional (mode 0))
   (let ((durations (mapcar 'pulses (voices durations-list))))
     (s-poly durations meter tatum pitches tempo mode)))
-
-;;;make mode 1 2 3 for sustain, rest, pulses
-;;;
-
-
-
 
 
 ;;;==================================
@@ -641,20 +571,14 @@
     (0  (let ((my-chordseq ( poly->chordseq mypoly))
           (my-tempo-map (get-tempomap (nth 0 (om::voices mypoly)))))
 
-      (cseq+tempo->voice my-chordseq my-tempo-map)
-    
-      )
+      (cseq+tempo->voice my-chordseq my-tempo-map))
      )
      
     (1 (reduce 'merger (om::voices mypoly))
      )
   )
-
-
 )
   
-
-
 
 ;;;==================================
 ;;; ROTATIONS->POLY2
@@ -668,81 +592,42 @@
  
   (let* ((abs-durations (mapcar #'abs durations-list))
         (this-duration-sum (reduce #'+ (flat abs-durations))))
-       ; (this-duration-sum (reduce #'+ (flat durations-list))))
 
-
-    ;CHANGE THIS BACK IF PITCHES STOP WORKING
-   ;(print (flat (repeat-n (flat pitches) (ceiling this-duration-sum (length pitches)))))
-   
-    (flat (repeat-n  pitches (ceiling this-duration-sum (length pitches))) 1)
-
- )
+    (flat (repeat-n  pitches (ceiling this-duration-sum (length pitches))) 1))
 )
 
 (defun prep-pitches-pulse (pitches durations-list)
  
   (let* ((abs-durations (mapcar #'abs durations-list))
-         ;(this-duration-sum (reduce #'+ (flat durations-list)))
          (this-duration-sum (reduce #'+ (flat abs-durations)))
-
-    ;CHANGE THIS BACK IF PITCHES STOP WORKING
-
-        ;(these-pitches (flat (repeat-n (flat pitches) (ceiling this-duration-sum (length pitches))))))
-    
          (these-pitches (flat (repeat-n  pitches (ceiling this-duration-sum (length pitches))) 1)))
-
-    ;(print these-pitches)
-
-    ;(flat (mapcar (lambda (x y) (repeat-n x y)) these-pitches (flat durations-list)))
-    ;Change this back to regular complete flat if problem with pitches
-      (flat (mapcar (lambda (x y) (repeat-n x y)) these-pitches (flat abs-durations)) 1)
-
-
-
-
-    )
-    
+      (flat (mapcar (lambda (x y) (repeat-n x y)) these-pitches (flat abs-durations)) 1)) 
 )
 
 (defun prep-pitches-rest (preped-pitches durations-list)
  
   (let* ((abs-durations (mapcar #'abs durations-list))
         (attacks (butlast (dx->x 0 (flat abs-durations)))))
-        ;(attacks (butlast (dx->x 0 (flat durations-list)))))
-
   
-    (mapcar (lambda (x) (nth x preped-pitches)) attacks)
-    )
-    
+    (mapcar (lambda (x) (nth x preped-pitches)) attacks))   
 )
 
 (defun prep-group-rhythms (durations-list prepared-tatums)
  
   (let* ((abs-durations (mapcar (lambda (x) (abs x)) durations-list))
-         
         (this-duration-sum (reduce #'+  (flat abs-durations))))
-        ;(this-duration-sum (reduce #'+  (flat durations-list))))
-
-
-    (ceiling this-duration-sum (length (flat prepared-tatums)))
-    )
+    (ceiling this-duration-sum (length (flat prepared-tatums))))
 )
 
 (defun prep-rhythms-rest (grouped-list durations-list)
  
   (let* ((abs-rhythms (mapcar #'abs grouped-list))
-         (abs-durations-list (mapcar #'abs durations-list))
-         (neg-rhythms (om* abs-rhythms -1))
+        (abs-durations-list (mapcar #'abs durations-list))
+        (neg-rhythms (om* abs-rhythms -1))
         (flat-durations-list (butlast(dx->x 0 (flat abs-durations-list))))
         (rhythm-values (mapcar (lambda (x) (nth x  (flat neg-rhythms))) flat-durations-list))
         (multiplied-rhythm-values (om* rhythm-values -1)))
-   
-    
-    
-   
-     (subs-posn (flat neg-rhythms) flat-durations-list multiplied-rhythm-values)
-
-    )
+     (subs-posn (flat neg-rhythms) flat-durations-list multiplied-rhythm-values))
 )
 
 (defun return-pos-neg (elements-list durations-list)
@@ -753,8 +638,7 @@
         (if (> duration 0) (push elem hold-list) (push (om::om* -1 elem) hold-list))
         )
 
-  (reverse hold-list)
-)
+  (reverse hold-list))
 
 )
 
@@ -778,8 +662,6 @@
   (let* ( (list-to-group (flat (repeat-n (flat prepared-tatums) (prep-group-rhythms durations-list prepared-tatums))))
          (abs-duration-list (mapcar #'abs durations-list))
         (add-input (reduce #'+ (flat abs-duration-list))))
-
-
   (om::subseq list-to-group 0 add-input )
  )
 )
@@ -787,25 +669,20 @@
 
 
 (defun subdivide-helper (pulse)
-
   (cond ((< pulse 4) 1)
         (t (/ pulse 4)))
 )
 
 (defun subdivide-tatums (tatum)
-
   (let ((n-times (first (flat tatum)))
         (self (repeat-n (/ 1 (second (flat tatum))) (subdivide-helper (second (flat tatum))))))
-
   (flat (repeat-n self n-times ))
   )
 )
 
 
 (defun prep-tatums (tatum-list durations-list)
-
   (flat (mapcar (lambda (x) (subdivide-tatums x))  tatum-list))
- 
 )
 
 
@@ -819,16 +696,14 @@
                    :tree (mktree final-rhythms meter)
                    :chords preped-pitches 
                    :tempo tempo 
-                   )
-    )
-  )
+                   ))
+)
 
 (defun last-pulsed-rhythms (grouped-list durations-list)
   (let* ((abs-durations-list (mapcar #'abs durations-list))
         (abs-dx (dx->x 0 abs-durations-list))
         (abs-dur-subseq (mapcar (lambda (x y) (subseq grouped-list x y))  abs-dx (cdr abs-dx)))
         (last-pulsed-rhythms '()))
-
 
     (loop for duration in durations-list
           for list-subseq in abs-dur-subseq do
@@ -837,7 +712,6 @@
 
               (push list-subseq last-pulsed-rhythms))
           )
-
     (flat (reverse last-pulsed-rhythms))
     )
 )
@@ -852,9 +726,8 @@
                    :tree (mktree final-rhythms meter)
                    :chords preped-pitches 
                    :tempo tempo 
-                   )
-    )
-  )
+                   ))
+)
 
 (defun make-voice-and-rests2 (meter durations-list tatum new-pitches tempo)
   (let* ((prepared-tatums (prep-tatums tatum durations-list))
@@ -864,8 +737,6 @@
            (final-rhythms-pulse (prep-rhythms-rest grouped-list durations-list))
            (last-final-rhythms (last-rests durations-list final-rhythms-pulse))
            )
-
-
     (make-instance 'voice 
                    ;:tree (mktree final-rhythms-pulse meter)
                    :tree (mktree last-final-rhythms meter)
@@ -873,25 +744,20 @@
                    :tempo tempo 
                    )
     )
-  )
+ )
 
 (defun last-rests (durations-list final-rhythms-pulse)
-;get those last rests in if you use negative numbers in your durations-list
+  ;get those last rests in if you use negative numbers in your durations-list
   (let* ((last-final-rhythms final-rhythms-pulse)
         (abs-durations-list (mapcar #'abs durations-list))
         (negs (dx->x 0 abs-durations-list)))
-    
-
-
     (loop for duration in durations-list 
           for neg in (om::butlast negs) do
           (if (<  duration 0) 
             (setf (nth neg last-final-rhythms) (- (nth neg final-rhythms-pulse)))
             ))
 
-    last-final-rhythms
-  )
-
+    last-final-rhythms)
 )
 
 (defun prep-rests (durations-list tatum)
@@ -901,7 +767,6 @@
 )
 
 (defun prep-meter (meter)
-
   (if  (equal (second meter) nil)
       (flat (car meter))
     meter)
@@ -928,10 +793,6 @@
   (let (( preped-meter (prep-meter meter))
         (my-durations-list (flat-by-voice durations-list))
         (sublist-pitches  (sublist-pitch-processing durations-list pitches)))
-
-    
-
-    
   (case mode
 
     (0 (mapcar (lambda (x y z) (make-voice2 preped-meter x y z tempo)) my-durations-list tatum pitches)
@@ -995,15 +856,13 @@
                    :tree (mktree (flat tatum-durs) meter)
                    :chords pitches 
                    :tempo tempo 
-                   )
-    )
-  )
+                   ))
+)
 
 
 (defun make-poly (myvoices)
     (make-instance 'poly
-                   :voices myvoices
-                   )
+                   :voices myvoices)
 )
 
 (defun make-chord-seq (mypoly)
@@ -1033,9 +892,7 @@
 
   (let ((my-chordseq (make-chord-seq (make-poly (mapcar (lambda (x y) (make-voice meter x tatum y tempo)) durations-list pitches ))))
         (my-tempo-map (get-tempo-map (make-voice meter (first durations-list) tatum (first pitches) tempo))))
-    
     (reduce-to-one-voice my-chordseq my-tempo-map)
-
     )
 )
 
@@ -1044,9 +901,6 @@
 (om::defmethod! s-voice ( (durations-list prf) (meter list) (tatum number) (pitches list) (tempo integer))
   (let ((durations (mapcar 'pulses (voices durations-list))))
     (rotations->voice durations meter tatum pitches tempo)))
-
-;;;make mode 1 2 3 for sustain, rest, pulses
-;;;
 
 
 

@@ -24,42 +24,21 @@
             (final-pairs '()))
 
    (if (eq numpitches 0)
-    
-        ;gather all pitches and velocities and make a big harmonic field
-
-
+       ;;;gather all pitches and velocities and make a big harmonic field
        (make-instance 'chord
                       :lmidic pitches
                       :lvel velocities)
-   
-
-   ; otherwise, return n-pitches based on velocities
   
-
+        ;;;otherwise, return n-pitches based on velocities
           (progn (loop for i from 0 to (- numpitches 1) do
                 (push (nth i sorted-list) final-pairs))
           
             (make-instance 'chord
                       :lmidic (mapcar (lambda (x) (first x)) final-pairs)
                       :lvel (mapcar (lambda (x) (second x)) final-pairs)))
- 
-   )
-
+   ))
 
 )
-
-
-
-)
-
-
-
-
-
-
-
-
-
 
 
 
@@ -70,12 +49,10 @@
 (in-package :cnmat)
 
 (defun random-pitch-from-bands (lower-limit upper-limit)
+    ;;return a random pitch from upper and lower bounds
+    ;; add the random value returned to the lower of the two pitches 
 
-;;return a random pitch from upper and lower bounds
-;; add the random value returned to the lower of the two pitches 
-
-(om+ (min lower-limit upper-limit) (om* (round (om/ (random (abs(- lower-limit upper-limit))) 100)) 100))
-
+    (om+ (min lower-limit upper-limit) (om* (round (om/ (random (abs(- lower-limit upper-limit))) 100)) 100))
 )
 
 
@@ -94,17 +71,10 @@
 
 (defun sample-from-bands (bpf-lib attacks-voice)
 
-  (let 
-
-    ;;for each bpf sample it for the number of attacks
-    ;;this is where I need to change the code
-    ;;if ever desired, revert to previous version by switching out the next two lines of code\
-
-    ((bpf-samps (mapcar (lambda (x) (scaled-bpf-samples x attacks-voice)) bpf-lib)))
+  (let ((bpf-samps (mapcar (lambda (x) (scaled-bpf-samples x attacks-voice)) bpf-lib)))
 
     (mapcar (lambda (x y) (random-pitch-from-bands x y)) (nth 0 bpf-samps) (nth 1 bpf-samps))
     )
-
 )
 
 
@@ -119,11 +89,9 @@
      (let* ((differences (mapcar (lambda (x y) (list (abs (- pitch x)) y)) pitch-collection pitch-collection))
       (smallest-difference (nth 0 differences)))
 
-        (mapcar (lambda (x) (if (<= (nth 0 x) (nth 0 smallest-difference)) (setq smallest-difference x))) differences)
+      (mapcar (lambda (x) (if (<= (nth 0 x) (nth 0 smallest-difference)) (setq smallest-difference x))) differences)
 
-       (nth 1 smallest-difference))
-
-
+      (nth 1 smallest-difference))
 )
 
   
@@ -145,7 +113,6 @@
          (let ((prelim-sample-pitches (mapcar (lambda (x) (sample-from-bands bpf-lib x))  attacks-voices)))
          (mapcar (lambda (x y) (get-pitch-from-collection-by-voice x (flat y ))) prelim-sample-pitches pitch-collection)))
         
-
          ; do this in the case that there is only one pitchlist defined
          (t (let ((prelim-sample-pitches (mapcar (lambda (x) (sample-from-bands bpf-lib x))  attacks-voices)))
          (mapcar (lambda (x) (get-pitch-from-collection-by-voice x (flat pitch-collection))) prelim-sample-pitches)
@@ -174,22 +141,17 @@
 (defun get-pitchclasses-helper (pitch-samples)
 
       (mapcar (lambda (x) (* (round (/ x 100)) 100)) pitch-samples)  
-
 )
 
 (defun get-pitchclasses-helper2 (rounded-results)
 
-       (mapcar (lambda (x) (list (rem (/ x 100) 12) x)) rounded-results)
-
+      (mapcar (lambda (x) (list (rem (/ x 100) 12) x)) rounded-results)
 )
 
 (defun get-pitchclasses (pitch-samples)
      
    (let ((rounded-results (mapcar (lambda (x) (get-pitchclasses-helper x)) pitch-samples)))
-
-         (mapcar (lambda (x) (get-pitchclasses-helper2 x)) rounded-results)
-
-         )
+         (mapcar (lambda (x) (get-pitchclasses-helper2 x)) rounded-results))
 
 )
 
@@ -199,7 +161,6 @@
   (loop for elem in pitch-and-pitchclasses
            if (member (nth 0 elem) allowable-pitchclasses)
            return elem)
-
 )
 
 
@@ -207,26 +168,23 @@
   (let* ((pitch-and-pitchclasses (get-pitchclasses pitch-samples))
        (list-of-allowable-pitches (mapcar (lambda (x) (get-allowable-pitches-helper x allowable-pitchclasses)) pitch-and-pitchclasses)))
 
-    (mapcar (lambda (x) (nth 1 x)) list-of-allowable-pitches)
-
-  )
+    (mapcar (lambda (x) (nth 1 x)) list-of-allowable-pitches))
 
 )
 
 (defun get-sample-from-bpfs (lower-limit upper-limit)
 
-;;rounding pitches here to nearest semitone
-(om+ (min lower-limit upper-limit) (om* (round (om/ (random (abs(- lower-limit upper-limit))) 100)) 100))
+    ;;rounding pitches here to nearest semitone
+    (om+ (min lower-limit upper-limit) (om* (round (om/ (random (abs(- lower-limit upper-limit))) 100)) 100))
 
 )
 
 (defun random-pitch-from-bands-pitchclass (lower-limit upper-limit)
 
-;;return a random pitch from upper and lower bounds
-;; add the random value returned to the lower of the two pitches 
-;;return 100 choices for each pitch to try and get one that conforms to pitchclass requirements
-
-;;not-used--(repeat-n (get-sample-from-bpfs lower-limit upper-limit) 100)
+    ;;return a random pitch from upper and lower bounds
+    ;; add the random value returned to the lower of the two pitches 
+    ;;return 100 choices for each pitch to try and get one that conforms to pitchclass requirements
+    ;;not-used--(repeat-n (get-sample-from-bpfs lower-limit upper-limit) 100)
 
      (loop for i from 1 to 100
            collect (get-sample-from-bpfs lower-limit upper-limit))
@@ -249,15 +207,9 @@
 (defun sample-from-bands-pitchclass (bpf-lib attacks-voice)
 
 ;;for each bpf sample it for the number of attacks
-  (let 
-    ;;this is where I need to change the code--changed
-    ;;if ever desired, revert to previous version by switching out the next two lines of code\
+  (let ((bpf-samps (mapcar (lambda (x) (scaled-bpf-samples x attacks-voice)) bpf-lib)))
 
-    ((bpf-samps (mapcar (lambda (x) (scaled-bpf-samples x attacks-voice)) bpf-lib)))
-
-    (mapcar (lambda (x y) (random-pitch-from-bands-pitchclass x y)) (nth 0 bpf-samps) (nth 1 bpf-samps))
-    
-    )
+    (mapcar (lambda (x y) (random-pitch-from-bands-pitchclass x y)) (nth 0 bpf-samps) (nth 1 bpf-samps)))
 
 )
 
@@ -279,10 +231,8 @@
               (checked-bpf-pitch-samples (mapcar (lambda (x) (check-pitches allowable-pitchclasses x)) bpf-pitch-samples)))
          
          checked-bpf-pitch-samples
-         
          )
        )
-
       )
 
 
@@ -329,7 +279,7 @@
          (low-pitches (om::om- series (- pitch 1200))
          (all-pitches (append hi-pitches low-pitches)))
 
-  all-pitches
+         all-pitches
   ))
 )
 
@@ -341,7 +291,7 @@
          (low-pitches (arithm-ser (- pitch 1200) 100 -1200))
          (all-pitches (append hi-pitches low-pitches)))
 
-  all-pitches
+        all-pitches
   )
 )
 
@@ -515,12 +465,9 @@
 
                           collect (nth 
                              (random (length (arithm-ser (car (nth 1 elem)) (car (cdr (nth 1 elem))) 100))) 
-                                 (arithm-ser (car (nth 1 elem)) (car (cdr (nth 1 elem))) 100))))
-
-    )
+                                 (arithm-ser (car (nth 1 elem)) (car (cdr (nth 1 elem))) 100)))))
   
 )
-
 
 
 (defun random-from-set-pitch-map-probs (rhythm-list key-list)
@@ -537,9 +484,7 @@
 
                     ;; now make 1 random choice from the elements to return using the probabilities
 
-		  collect (o-list-rand (nth 1 elem) 1)))
-    )
-  
+		  collect (o-list-rand (nth 1 elem) 1))))
 )
 
 (defun prep-mapping-list (mapping-list numattacks)
@@ -564,8 +509,7 @@
     (loop for attack in rhythm-list
           collect (loop for elem in key-list
                         if (eq attack (car (car elem))) 
-                        collect (car (cdr elem))) )
-  )
+                        collect (car (cdr elem))) ))
   
 )
 
@@ -584,14 +528,12 @@
                         collect (pop (car (cdr elem)))
                         ;;moves you to the next mapping number
                         
-                        ))
-  )
+                        )))
 )
 
-;;THIS CHECKING CODE DOESNT WORK YET
 (defun check-pitch-map (rotations-list mapped-pitch-list)
 
-;;if there are more attacks than mapped pitches send out an error message
+           ;;if there are more attacks than mapped pitches send out an error message
 
            (if (eq (length (flat rotations-list)) (length (flat mapped-pitch-list)))
                  mapped-pitch-list
@@ -675,8 +617,8 @@
 (defun get-random-pitch-from-range (pitch-collection durations-list)
   (loop for attack in durations-list
         collect (nth 
-                             (random (length (arithm-ser (car pitch-collection) (car (cdr pitch-collection)) 100))) 
-                                 (arithm-ser (car pitch-collection) (car (cdr pitch-collection)) 100))) 
+                    (random (length (arithm-ser (car pitch-collection) (car (cdr pitch-collection)) 100))) 
+                    (arithm-ser (car pitch-collection) (car (cdr pitch-collection)) 100))) 
 )
   
 ;;;this receieves list of durations lists (output from get-rotations)

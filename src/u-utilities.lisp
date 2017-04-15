@@ -14,41 +14,35 @@
            ((< (length pitch) 2) (push  pitch final-pitches))
            (t (push (list pitch) final-pitches))))
 
-     (reverse (flat final-pitches 1))
-     )
-  )
+     (reverse (flat final-pitches 1)))
+)
 
 (defun info-get-rhythms-and-tatums (rhythms)
-
  (let* ((output-rhythms '())
        (abs-beat '())
        (pre-output-tatums '())
        (output-tatums '()))
-
-;get down to the internal beat subdivisions and list them as tatums
-
-;takes us down to the list of measures
+    ;;;get down to the internal beat subdivisions and list them as tatums
+    ;;;takes us down to the list of measures
        (loop for group in (flat (rest rhythms) 1) do
              (loop for subdivision in (rest group) do
-                   ;takes us down to each individual measure
+                   ;;;takes us down to each individual measure
                    (loop for beat in subdivision do
-                         ;if it is a full beat grab the rhythms
+                         ;;;if it is a full beat grab the rhythms
                          (cond ((listp beat) (push (reverse (flat (cdr beat) 1)) output-rhythms))
-                               ;otherwise, grab the rest and put it in list, too
+                               ;;;otherwise, grab the rest and put it in list, too
                                (t (push (list beat) output-rhythms)))
                          ;put a sum into abs-beat for the absolute value duration number of subdivisions in a beat
                          (cond ((listp beat) (progn (push (mapcar #'abs (flat (cdr beat) 1)) abs-beat)
-                                                   ;put the abs total for the beat into output tatums)
+                                                   ;;;put the abs total for the beat into output tatums)
                                                     (push (reduce #'+  (flat abs-beat)) pre-output-tatums)))
-                               ;it's a rest, so push 1 thing in
-                               ;(t (push (abs beat) pre-output-tatums)))
+                               ;;;it's a rest, so push 1 thing in
+                               ;;;(t (push (abs beat) pre-output-tatums)))
                                (t (push  (repeat-n 1 (abs beat)) pre-output-tatums)))
-                         ;reset abs-beat
+                         ;;;reset abs-beat
                          (setf abs-beat '())
                          )))
 
-       ;(print 'pre-output-tatums)
-       ;(print pre-output-tatums)
        ;now convert the pre-output tatums list into a correct tatums list for output
        (loop for elem in (flat pre-output-tatums) do
              (cond ((= elem 1) (push '(1 (4)) output-tatums))  ;quarters
@@ -61,7 +55,7 @@
                    ((= elem 8) (push '(1 (32)) output-tatums))
                    (t nil))) ;thirty-secods
 
-       ;output the tatums
+       ;;;output the tatums
        (list (reverse (flat output-rhythms))  output-tatums)
   )
 
@@ -102,8 +96,6 @@
 
    ;(flat output 1)
    (values (flat meters 1) pitches rhythms tatums (list (list (length (flat rhythms 1)))))
-
-
    )
 )
 
@@ -178,7 +170,6 @@
 
  
   (case mode
-
     (0
 
      (let ((outputlist '()))
@@ -186,10 +177,7 @@
              (push (reverse elem) outputlist))
        (reverse outputlist))
      )
-
-
     (1
-
      (let ((outputlist '())
       (pre-outputlist '()))
 
@@ -198,8 +186,7 @@
                    (push (reverse sublist) pre-outputlist))
              (push (reverse pre-outputlist) outputlist)
              (setf pre-outputlist '()))
-       (reverse outputlist))
-    )
+       (reverse outputlist)))
     )
 )
 
@@ -220,7 +207,7 @@
 
 
 
-;;hide this method from view
+;;;hide this method from view
 (om::defmethod! u-+-helper ( (mylist list) (mynumber number) &optional  (mode 0) (mod 12))
 
   :icon 7
@@ -232,9 +219,7 @@
   (case mode
   
   (0
-
    (cond ((> (first (first mylist)) 99) ; check to see if it is midic-list or pc-list
-
    ;use regular om addition
          (om::om+ mylist mynumber))
          (t  (om::om+ mylist mynumber)))
@@ -250,7 +235,7 @@
 
 )
 
-;;hide this method from view
+;;;hide this method from view
 (om::defmethod! u-- ( (mylist list) (mynumber number) &optional (mode 0) (mod 12))
 
   :icon 7
@@ -317,15 +302,14 @@
 
 
   (case mode
-    
     (0
-; see list-inversion and helper-inversion functions in o-pitch.lisp
+    ;;; see list-inversion and helper-inversion functions in o-pitch.lisp
      (list (mapcar (lambda (x) (list-inversion inversion-element x)) pitchlist))
      )
 
     (1
-; see list-inversion and helper-inversion functions in o-pitch.lisp
-;divide all numbers by 100 to bring 
+    ;;;see list-inversion and helper-inversion functions in o-pitch.lisp
+    ;;;divide all numbers by 100 to bring 
 
      (cond ((> (first (first pitchlist)) 99)
             (om::mod* (om/ (mapcar (lambda (x) (list-inversion inversion-element x)) pitchlist) 100) 1 mod))
@@ -344,7 +328,7 @@
   :doc "U-midics->mod12 takes in a list of list of midics and converts them to lists of pitch class sets"
 
  ;assumes input is midics list of lists
-(let ((outputlist '())
+    (let ((outputlist '())
       (subelemlist '()))
 
     (loop for elem in mylist do
@@ -356,8 +340,7 @@
                 
                 (t (push (om::mod+ (om/ elem 100) 0 12) outputlist))))
 
-(reverse outputlist)
-)
+    (reverse outputlist))
 )
 
 
@@ -370,21 +353,20 @@
   :initvals '((nil) (nil) (nil))
   :doc "U-pc->midic takes in a list of list of pcs and converts them to lists of midics using a reference pitch to set the register."
 
- ;assumes input is midics list of lists
-
-(let ((c-list '(0 1200 2400 3600 4800 6000 7200 8400 9600 10800 12000 13600))
+ ;;;assumes input is midics list of lists
+    (let ((c-list '(0 1200 2400 3600 4800 6000 7200 8400 9600 10800 12000 13600))
       (closest-c 000)
       (outputlist '())
       (pre-outputlist '())
       (subelemlist '()))
 
-(loop for elem in c-list do
+    (loop for elem in c-list do
       (if (< (abs (- reference-pitch elem)) (abs (- reference-pitch closest-c)))
           (setf closest-c elem)))
 
-;;must take in a list of lists
+;;;must take in a list of lists
 
-(loop for sublist in mylist do
+    (loop for sublist in mylist do
       (loop for elem in sublist do
           (cond ((listp elem) 
                 (progn (loop for subelem in elem do
@@ -396,8 +378,8 @@
           (push (reverse pre-outputlist) outputlist)
           (setf pre-outputlist '()))
           
-(reverse outputlist)))
-
+    (reverse outputlist))
+)
 
 
 (om::defmethod! u-flat-by-voice ( (mylist list) &optional (flat-level 0))
@@ -408,20 +390,17 @@
   :initvals '((nil) (nil) (nil))
   :doc "Takes a list of lists and flats the contents by voice. Optional Flat-level=nth argument flats each voice by nth level only, which can be used to preserve sublists within a voice for items like chords, etc..."
 
-   ;use regular om addition
-(let ((final-list '()))
-  (cond ((not (eql flat-level 0))
+   ;;;use regular om addition
+   (let ((final-list '()))
+     (cond ((not (eql flat-level 0))
              (loop for elem in mylist do
                    (push (flat elem flat-level) final-list)))
-             
+
         (t
          (loop for elem in mylist do
                    (push (flat elem) final-list))))
              
-    
-
-(reverse final-list))
-
+     (reverse final-list))
 )
 
 
@@ -445,9 +424,7 @@
       (pre-last-list '())
       (very-last-list '()))
 
-
-
-(cond ((> (first (first mylist)) 99) ; check to see if it is midic-list or pc-list
+  (cond ((> (first (first mylist)) 99) ; check to see if it is midic-list or pc-list
       
       (setf pc-list (cnmat::u-midic->pc mylist))
      
@@ -461,7 +438,7 @@
             (push (reverse pre-outputlist) outputlist)
             (setf pre-outputlist '()))
 
-;use the helper before outputing
+      ;;;use the helper before outputing
       (trans-helper mylist (reverse outputlist)))
 
       (t 
@@ -476,10 +453,7 @@
             (setf pre-outputlist '()))
 
        (reverse outputlist)))
-      
-
-)
-
+      )
 )
 
 
@@ -575,16 +549,14 @@
  ; :menuins '((1 (("sum of the list of lists per voice" 0) ("sums that preserve list structure" 1))))
   :doc "Takes an integer as input and returns a list of integer divisors with along with the sum of these divisors."
 
-(let ((numbers (arithm-ser 1 input 1))
+  (let ((numbers (arithm-ser 1 input 1))
       (pre-final-list '())
       (final-list))
 
-(loop for number in numbers do
+    (loop for number in numbers do
       (if (integerp (/ input number)) (push (list number (/ input number)) pre-final-list)))
 
-(setf final-list (sort (remove-dup (flat pre-final-list) 'eq 1) '<))
+    (setf final-list (sort (remove-dup (flat pre-final-list) 'eq 1) '<))
 
-(list final-list (list (reduce #'+ final-list)))
-
-)
+    (list final-list (list (reduce #'+ final-list))))
 )

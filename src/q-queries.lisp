@@ -66,45 +66,29 @@
        (processed-olaps '())
        (processed-exclude '()))
 
-
-;if no number of elements is given
-;then pass them all into the processed-elems
-;list otherwise check and see if it is member of the 
-(cond ((eq num-elems nil) (push mylist processed-elems))
+    ;;;if no number of elements is given
+    ;;;then pass them all into the processed-elems
+    ;;;list otherwise check and see if it is member of the 
+    (cond ((eq num-elems nil) (push mylist processed-elems))
       ((member (second (last-elem mylist)) num-elems) (push mylist processed-elems)))
 
+    ;;;if no sums is given
+    ;;;then pass everything in processed-elems into the processed-sums
+    ;;;list otherwise check
+    (cond ((eq sums nil) (push processed-elems processed-sums))
+        ((member  (fourth (last-elem mylist)) sums) (push processed-elems processed-sums)))
 
-
-
-;if no sums is given
-;then pass everything in processed-elems into the processed-sums
-;list otherwise check
-(cond ((eq sums nil) (push processed-elems processed-sums))
-      ((member  (fourth (last-elem mylist)) sums) (push processed-elems processed-sums)))
-
-(print 'processed-sums)
-(print processed-sums)
-
-;if no overlaps is given
-;then pass everything in processed-sums into the processed-olaps
-;list otherwise check
-(cond ((eq olaps nil) (push processed-sums processed-olaps))
+    ;;;if no overlaps is given
+    ;;;then pass everything in processed-sums into the processed-olaps
+    ;;;list otherwise check
+    (cond ((eq olaps nil) (push processed-sums processed-olaps))
       ((member (sixth (last-elem mylist)) olaps) (push processed-sums processed-olaps)))
 
-;old end of function
-;processed-olaps
-
-
-;get everything except if it includes a deny
-(cond ((eq exclude nil) (push  processed-olaps processed-exclude))
+    ;;;get everything except if it includes a deny
+    (cond ((eq exclude nil) (push  processed-olaps processed-exclude))
       ((not (x-intersect (flat (butlast mylist)) exclude)) (push processed-olaps processed-exclude)))
 
-(print '(flat (butlast mylist)))
-(print (flat (butlast mylist)))
-
-processed-exclude
-
-)
+    processed-exclude)
 )
 
 
@@ -116,16 +100,9 @@ processed-exclude
   :initvals '(((1 2 3) (3 4 5)) nil  nil nil)
   :doc "Filters input lists to return those lists with the elements required as specified for number of elements, allowable sums, and number of overlaps."
   
- (remove nil (flat (mapcar (lambda (x) (combi-filter-helper x elems sums olaps exclude)) main-list) 4))
+    (remove nil (flat (mapcar (lambda (x) (combi-filter-helper x elems sums olaps exclude)) main-list) 4))
 
 )
-
-
-
-
-
-
-
 
 
 
@@ -140,16 +117,16 @@ processed-exclude
 
 (defun canon-growth-test (mylist)
 
-;; iteratively add elements from the list and include them if they pass the canon-query test
-  (let* ((outputlist '()))
-    (loop for elem in mylist do
+    ;; iteratively add elements from the list and include them if they pass the canon-query test
+    (let* ((outputlist '()))
+      (loop for elem in mylist do
           (let* ((test (cons elem outputlist)))
               (if (q-canon test) (push elem outputlist))
             ))
 
-;return the list in the order that elements were added
+    ;return the list in the order that elements were added
    (reverse outputlist)
-  )
+    )
 )
   
 
@@ -164,17 +141,9 @@ processed-exclude
 
   (let* ((mylist-rotations (get-rotations mylist))
          (final-list (mapcar (lambda (x) (canon-growth-test x)) mylist-rotations)))
-               
       
-;return the final list
-     ;final-list
-
-    (mapcar (lambda (x) (count-overlaps-sum-num-elems  x))  final-list)
-
-    )
-
-
-
+    ;;;return the final list
+    (mapcar (lambda (x) (count-overlaps-sum-num-elems  x))  final-list))
 )
 
 
@@ -191,14 +160,16 @@ processed-exclude
     (loop for elem in (cdr mylist) do
           (if (canon-query (cons elem canon))
               (push elem canon)))
-    (reverse canon)))
+    (reverse canon))
+)
 
 (defun is-rotation? (l1 l2)
   (let ((ok nil))
     (loop for i from 0 to (1- (length l1))
           while (not ok)
           do (setf ok (equal (rotate l1 i) l2)))
-    ok))
+    ok)
+)
 
 
 (om::defmethod! q-permute+remove-dup-rotations ((main-list list))
@@ -214,14 +185,7 @@ processed-exclude
     (mapcar (lambda (x) (reverse x)) results)
 
     )
-
 )
-
-
-
-
-
-
 
 
 
@@ -229,11 +193,9 @@ processed-exclude
 ;;; Q-PERMUTATIONS+CANON-UTILITY
 ;;;==================================
 
-
-
-;;default: return result from permutations+canon-growth excluding all rotations. 
-;;mode1: return result from permutations+canon-growth-all sorted by fewest overlaps
-;;mode2: return result from permutations+canon-growth-all sorted by fewest overlaps and excluding rotations
+    ;;;default: return result from permutations+canon-growth excluding all rotations. 
+    ;;;mode1: return result from permutations+canon-growth-all sorted by fewest overlaps
+    ;;;mode2: return result from permutations+canon-growth-all sorted by fewest overlaps and excluding rotations
 
 
 (om::defmethod! q-permutations+canon-utility ((mylist list) &optional (mode 0))
@@ -245,76 +207,56 @@ processed-exclude
   :doc "Utility for the permutations+canon-growth and permutations+canon-growth-all objects. Default: return result from permutations+canon-growth excluding all rotations. Mode1: return result from permutations+canon-growth-all sorted by fewest overlaps. Mode2: return result from permutations+canon-growth-all sorted by fewest overlaps and excluding rotations "
 
 
-(case mode
+    (case mode
     
-    (0 ; DEFAULT
-    ;now return the final-list
+      (0 ; DEFAULT
+    ;;;now return the final-list
 
- (let* ((final-list '()))
-    (loop for elem in mylist do
+       (let* ((final-list '()))
+         (loop for elem in mylist do
             (unless (find  (butlast elem) final-list :test #'cnmat::is-rotation?)
               (push elem final-list)))
                
-      
-;return the final list
+    ;;;return the final list
     (reverse final-list)
     )
 
    )
 
-
-    
- 
-
- (1 ; CASE 1 return all sorted by fewest overlaps
+      (1 ; CASE 1 return all sorted by fewest overlaps
 
  
-(let* (
-       ;(reversed-list (mapcar (lambda (x) (reverse x)) mylist))
-       (sorted-list  (sort mylist #'< :key #'(lambda (x) (sixth (last-elem x))))))
-       ;re-order the output list and send it out
-       ;(pre-final-list   (mapcar (lambda (x) (reverse x)) sorted-list)))
-       ;remove duplicates
-  (remove-dup sorted-list 'eq 2)
-)
+         (let* (
+           ;;;(reversed-list (mapcar (lambda (x) (reverse x)) mylist))
+           (sorted-list  (sort mylist #'< :key #'(lambda (x) (sixth (last-elem x))))))
+           ;;;re-order the output list and send it out
+           ;;;(pre-final-list   (mapcar (lambda (x) (reverse x)) sorted-list)))
+           ;;;remove duplicates
+           (remove-dup sorted-list 'eq 2)
+         )
    )
 
-(2 ; CASE 2 return all sorted by fewest overlaps and excluding rotations
+      (2 ; CASE 2 return all sorted by fewest overlaps and excluding rotations
 
-(let* (
-       ;(reversed-list (mapcar (lambda (x) (reverse x)) mylist))
-       ;(sorted-list  (sort reversed-list #'< :key #'car))
-       ;re-order the output list and send it out
-       (sorted-list  (sort mylist #'< :key #'(lambda (x) (sixth (last-elem x)))))
-       (pre-final-list   (mapcar (lambda (x) (reverse x)) sorted-list))
-       ;remove duplicates
-      ( mylist_x (remove-dup sorted-list 'eq 2))
-      (final-list '()))
-  
-  (print 'mylist_x)
-  (print mylist_x)
+          (let* (
 
-    (loop for elem in mylist_x do
+          ;;;re-order the output list and send it out
+            (sorted-list  (sort mylist #'< :key #'(lambda (x) (sixth (last-elem x)))))
+            (pre-final-list   (mapcar (lambda (x) (reverse x)) sorted-list))
+          ;;;remove duplicates
+            (mylist_x (remove-dup sorted-list 'eq 2))
+            (final-list '()))
+
+
+          (loop for elem in mylist_x do
             (unless (find  (butlast elem) final-list :test #'cnmat::is-rotation-special?)
               (push elem final-list)))
                
       
-;return the final list
-    (reverse final-list)
-    )
-
-
-
-)
-
-
-
-       
-
-
+           ;;;return the final list
+          (reverse final-list))
+        )
    )
-
-
 )
 
 
@@ -333,31 +275,30 @@ processed-exclude
 
     (let ((no-dupes-list (print (om::remove-dup flat-list 'eq 1)))
           (count 0))
-;count the times a certain number appears in the list
+   ;;;count the times a certain number appears in the list
       (loop for test-number in no-dupes-list do
         (let ((little-count 0))
         (loop for elem in flat-list do
               
               (if (eq test-number elem) (setq little-count (+ little-count 1))))
 
-        ;if little-count is > 1 then add it to count
-        ;then set little-count to 0 and continue
+        ;;if little-count is > 1 then add it to count
+        ;;;then set little-count to 0 and continue
         (if (> little-count 1) (setq count (+ count little-count)))
 
         ))
 
-      ;return a list of the original list and a count of overlaps list
+      ;;;return a list of the original list and a count of overlaps list
        (flat (list mylist  (list (list "elems" (length (first mylist)) "sum" (reduce #'+ (first mylist)) "olaps" count))) 1)
       )
   )
-
 )
 
 
 
 
 (defun q-combi-local-helper (elem)
-(if (cnmat::q-canon elem) elem)
+    (if (cnmat::q-canon elem) elem)
 )
 
 
@@ -396,7 +337,7 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
 
     (4 (sort all-combis+data  #'< :key #'(lambda (x) (sixth (last-elem x))))
        )
-       )
+    )
   )
 )
 
@@ -427,8 +368,7 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
   :doc "Tests all permutations of a canon and only returns those with no overlaps."
   
   (let ((rotated-permutations-list (get-rotations (cdr (permutations main-list)))))
-    (remove nil (mapcar (lambda (x) (perm-canon x main-list)) rotated-permutations-list))
-    )
+    (remove nil (mapcar (lambda (x) (perm-canon x main-list)) rotated-permutations-list)))
 )
 
 
@@ -476,7 +416,6 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
                     (search-n-sum-r (append base (list (car restcdr))) restcdr n sum)))
     )))
 
-
 ;;; recursive search function (not ordered without repetitions)
 (defun search-n-sum-u (base rest n sum)
   (let ((curr-sum (apply '+ base)))
@@ -488,8 +427,8 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
       ;;; 'rest' never changes but repetitions are not considered
       (remove nil 
               (loop for elem in (remove-if #'(lambda (x) (find x base :test '=)) rest)
-                    append (search-n-sum-u (append base (list elem)) rest n sum)))
-      )))
+                    append (search-n-sum-u (append base (list elem)) rest n sum)))))
+)
 
 
 
@@ -602,8 +541,7 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
               (progn (push test final-list) (setq count (+ count 1))))))
                
       
-;return the final list
-    final-list
-    )
+    ;;;return the final list
+    final-list)
 
 )

@@ -27,7 +27,7 @@
 
     (let ((no-dupes-list (print (om::remove-dup flat-list 'eq 1)))
           (count 0))
-;count the times a certain number appears in the list
+      ;count the times a certain number appears in the list
       (loop for test-number in no-dupes-list do
         (let ((little-count 0))
         (loop for elem in flat-list do
@@ -58,9 +58,7 @@
         (progn (push (cons first-element holding-list) masterlist)
                (setq holding-list (rotate holding-list 1))))
 
-  (reverse masterlist)
-
-  )
+  (reverse masterlist))
 
 )
 
@@ -71,16 +69,13 @@
        (all-groupings '())
       (this-grouping '()))
 
-;build a list with all of the groupings in this rotation
-  
+     ;build a list with all of the groupings in this rotation
       (loop for elem in mylist-rotations do
         ;;here is where you get all the permutations of every grouping
         (progn (push elem this-grouping))
         (push (reverse this-grouping) all-groupings))
 
-  (reverse all-groupings)
-
-  )
+  (reverse all-groupings))
         
 )
   
@@ -99,17 +94,17 @@
 (case mode
     
     (0 ; DEFAULT
-    ;now return the final-list
+    ;;;now return the final-list
 
   (let* ((mylist-rotations  (get-rotations mylist))
          (mylist-exploded  (print (flat (mapcar (lambda (x) (get-every-grouping-helper x)) mylist-rotations) 1)))
 
          (iterative-list   (mapcar (lambda (x) (get-every-grouping x)) mylist-exploded))
-         ;dont do the first element because it is just 1 list, instead of 2 or more lists
+         ;;;dont do the first element because it is just 1 list, instead of 2 or more lists
          (pre-final-list (mapcar (lambda (x) (count-overlaps x)) (flat iterative-list 1)))
          (final-list '())
          )
-; get rid of lists that have only 1 list of attacks because they dont matter    
+    ;;; get rid of lists that have only 1 list of attacks because they dont matter    
 
     (loop for elem in pre-final-list do
           (if (> (length elem) 2) (push elem final-list))

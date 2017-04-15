@@ -77,8 +77,6 @@
  
    (let ((final-list '()))
 
-    
-   
    (loop for i from 1 to num-times do
            (push (o-list-trans-helper mybpf num-samples listA listB mode) final-list))
    
