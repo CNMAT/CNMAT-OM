@@ -627,7 +627,7 @@
         (flat-durations-list (butlast(dx->x 0 (flat abs-durations-list))))
         (rhythm-values (mapcar (lambda (x) (nth x  (flat neg-rhythms))) flat-durations-list))
         (multiplied-rhythm-values (om* rhythm-values -1)))
-     (subs-posn (flat neg-rhythms) flat-durations-list multiplied-rhythm-values))
+        (subs-posn (flat neg-rhythms) flat-durations-list multiplied-rhythm-values))
 )
 
 (defun return-pos-neg (elements-list durations-list)
@@ -771,6 +771,57 @@
       (flat (car meter))
     meter)
 )
+
+
+
+
+;;;THIS IS WHERE rotations->poly2 was added.  This may be old/unused.
+
+;;;this receieves list of durations lists (output from get-rotations)
+(om::defmethod! rotations->poly2 ( (durations-list list) (meter list) (tatum list) (pitches list) (tempo integer) &optional (mode 0))
+
+  :icon 2
+  :indoc '("a list for the meter" "a list of lists for durations" "a tatum specified as a fraction" "a list of lists of pitches" "a tempo as integer" "mode: 0 = sustain mode output; 1 = rests mode output")
+  :outdoc '("a poly") 
+  :initvals '( ((1 5 7 10)) (4 4) (((1(16)) (2(20)))) ((6100)) 110 0)
+  :doc "Converts a rotation list into music notation."
+  
+  (let (( preped-meter (prep-meter meter)))
+
+  (case mode
+
+    (0 (mapcar (lambda (x y z) (make-voice2 preped-meter x y z tempo)) durations-list tatum pitches)
+       )
+    (1 (mapcar (lambda (x y z) (make-voice-and-rests2 preped-meter x y z tempo)) durations-list tatum pitches)
+       )
+
+    (2 (mapcar (lambda (x y z) (make-voice-pulse2 preped-meter x y z tempo)) durations-list tatum pitches)
+       )
+    )
+  )
+  
+
+)
+
+
+;;;this receives from rfi object
+(om::defmethod! rotations->poly2 ((durations-list prf) (meter list) (tatum list) (pitches list) (tempo integer) &optional (mode 0))
+  (let ((durations (mapcar 'pulses (flat-voices durations-list))))
+
+    (s-poly2 durations meter tatum pitches tempo mode))
+
+)
+
+;;;make mode 1 2 3 for sustain, rest, pulses
+;;;
+;;;;This is where rotations->poly code was finished being added.
+
+
+
+
+
+
+
 
 (defun flat-by-voice (mylist)
   (let ((final-list '()))
