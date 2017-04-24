@@ -6,6 +6,40 @@
 (in-package :cnmat)
 
 
+(defun sort-by-first-elem (elem)
+    (car (car elem))
+)
+
+
+
+(om::defmethod! rand-from-list ((mylist list) (num-return-vals number))
+
+  :icon 7
+  :indoc '("a list with or without random weights" "desired length of output sequence")
+  :outdoc '("a sequence of random elements of n-length from a list") 
+  :initvals '((7100 (7200 0.9) 7300 7400 7800) 20)
+  :doc "Returns a sequence of random elements of n-length from a list. Provide probability weights as desired for any element in the list.Format as follows (element probability) where the sum of the probabilities is < 1.0. Any elements without designated p robabilities will be assigned equal probabilities from the remainder, adding to 1.0"
+  
+  (let* ((built-weights (build-random-weights mylist))
+         (output-list '())
+         (final-list '()))
+ 
+      (loop for x from 1 to num-return-vals do
+         ( push (build-sequence built-weights) output-list))
+   
+      (reverse output-list)
+
+      (loop for elem in output-list do
+         (if (eq 'nil (cdr elem)) (push (car elem) final-list) (push  elem final-list) ))
+
+      (list (reverse final-list)))
+
+)
+
+
+
+
+
 ;;;==================================
 ;;; R-SCATTER-ATTACKS
 ;;;==================================
@@ -125,9 +159,7 @@
 
   ;;;output the list in the right order
       (remove 0 (remove 'nil (reverse (flat final-list))))
-
  )
-
 )
 
 
@@ -162,13 +194,12 @@
 
 (defmethod! r-diminutions ((rhythm polyrhythmic-frame) val subs) 
    
-;;If the first element of the subs is 0 then you know it is the special case
-;;where the subs need to be sent in separately for each voice.
-;;In this case, remove the voice designatory, e.g. "0", before sending it on
+  ;;;If the first element of the subs is 0 then you know it is the special case
+  ;;;where the subs need to be sent in separately for each voice.
+  ;;;In this case, remove the voice designatory, e.g. "0", before sending it on
 
   :doc "Replaces a rhythmic value with subset values (diminutions) that sum to the original value."
   :icon 5
-
 
            (if (eq 0 (car (first subs)))
 
@@ -195,14 +226,13 @@
 
 
 (defmethod r-interleave (rhythm-parent   &rest rest )
+  :icon 3
   :initvals '(nil) 
   :indoc '("first element" "second element" "additional elements")
-  :icon 2
   :doc "Interleaves a parent and a child polyrhythmic frame.."
   (let* ((my-stuff (mapcar (lambda (x) (list x)) rest))
         (all-stuff (flat (mat-trans (cons rhythm-parent rest)))))
- 
-  ;(print 'all-stuff)
+
   ;this print call below is necessary--do not delete it!
   (print all-stuff)
   )
@@ -251,7 +281,6 @@
          (combo-list (list my-list retrograde-list )))
     
     ;;now test the canon query on the list and its retrograde
-
         (if (eq (cnmat::q-canon combo-list) 't) 
             combo-list
             'nil))

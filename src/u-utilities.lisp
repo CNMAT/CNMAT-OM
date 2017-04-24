@@ -22,17 +22,17 @@
        (abs-beat '())
        (pre-output-tatums '())
        (output-tatums '()))
-    ;;;get down to the internal beat subdivisions and list them as tatums
-    ;;;takes us down to the list of measures
+    ;;;Get down to the internal beat subdivisions and list them as tatums.
+    ;;;Takes us down to the list of measures
        (loop for group in (flat (rest rhythms) 1) do
              (loop for subdivision in (rest group) do
-                   ;;;takes us down to each individual measure
+                   ;;;Takes us down to each individual measure
                    (loop for beat in subdivision do
-                         ;;;if it is a full beat grab the rhythms
+                         ;;;If it is a full beat grab the rhythms
                          (cond ((listp beat) (push (reverse (flat (cdr beat) 1)) output-rhythms))
-                               ;;;otherwise, grab the rest and put it in list, too
+                               ;;;Otherwise, grab the rest and put it in list, too
                                (t (push (list beat) output-rhythms)))
-                         ;put a sum into abs-beat for the absolute value duration number of subdivisions in a beat
+                         ;Put a sum into abs-beat for the absolute value duration number of subdivisions in a beat
                          (cond ((listp beat) (progn (push (mapcar #'abs (flat (cdr beat) 1)) abs-beat)
                                                    ;;;put the abs total for the beat into output tatums)
                                                     (push (reduce #'+  (flat abs-beat)) pre-output-tatums)))
@@ -53,7 +53,7 @@
                    ((= elem 6) (push '(1 (24)) output-tatums)) ;sextuplets
                    ((= elem 6) (push '(1 (28)) output-tatums)) ;septuplets
                    ((= elem 8) (push '(1 (32)) output-tatums))
-                   (t nil))) ;thirty-secods
+                   (t nil))) ;thirty-seconds
 
        ;;;output the tatums
        (list (reverse (flat output-rhythms))  output-tatums)
@@ -78,12 +78,8 @@
         )
 
    ; get the rhythms & tatums
-   ;(push (tree2ratio (om::tree my-thing)) rhythms)
    (push (first (info-get-rhythms-and-tatums (om::tree my-thing))) rhythms)
    (push (second (info-get-rhythms-and-tatums (om::tree my-thing))) tatums)
-
-   ; get the durations
-   ;(push (om/ (tree2ratio (om::tree my-thing)) this-tatum) durations)
 
    ;get pitch
    (push (info-get-pitches  (make-instance 'chord-seq
@@ -109,13 +105,6 @@
   :numouts 5
   :doc "Returns a list of lists containing pitches, rhythms and no. items (pitches)"
 
- ; (let* ((stuff (mapcar (lambda (x) (u-info x)) (om::voices my-thing)))
- ;      (organized (mat-trans stuff)))
-        
-    ;(print 'stuff)
-    ;(print stuff)
-
-       ;(values (first organized) organized (third organized))
 
   (let* ((voices (om::voices my-thing))
          (rhythms '())
@@ -134,11 +123,6 @@
          (push (first (info-get-rhythms-and-tatums (om::tree voice))) rhythms)
          (push (second (info-get-rhythms-and-tatums (om::tree voice))) tatums))
 
-(print 'rhythms)
-(print rhythms)
-   
-   ;(loop for voice in voices do
-   ;      (push (om/ (tree2ratio (om::tree voice)) this-tatum) durations))
 
    ;get pitch
    (loop for voice in voices do
@@ -207,7 +191,7 @@
 
 
 
-;;;hide this method from view
+
 (om::defmethod! u-+-helper ( (mylist list) (mynumber number) &optional  (mode 0) (mod 12))
 
   :icon 7
@@ -235,7 +219,7 @@
 
 )
 
-;;;hide this method from view
+
 (om::defmethod! u-- ( (mylist list) (mynumber number) &optional (mode 0) (mod 12))
 
   :icon 7
@@ -252,9 +236,7 @@
    )
 
   (1
-   ;use zn+ for mod 12
-   ;(om::mod- (om/ mylist 100) mynumber mod)
-   
+  
    (cond ((> (first (first mylist)) 99)
           (om::mod- (om/ mylist 100) mynumber mod))
          (t (om::mod- mylist mynumber mod)))
@@ -280,8 +262,7 @@
    )
 
   (1
-   ;use zn+ for mod 12
-   ;(om::mod* (om/ mylist 100) mynumber mod)
+
    (cond ((> (first (first mylist)) 99)
           (om::mod* (om/ mylist 100) mynumber mod))
          (t (om::mod* mylist mynumber mod)))
@@ -365,7 +346,6 @@
           (setf closest-c elem)))
 
 ;;;must take in a list of lists
-
     (loop for sublist in mylist do
       (loop for elem in sublist do
           (cond ((listp elem) 

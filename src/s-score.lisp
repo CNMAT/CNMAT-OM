@@ -3,10 +3,6 @@
 ;;;==================================
 
 
-
-
-
-
 ;;;==================================
 ;;; S-COMBINE-POLYS
 ;;;==================================
@@ -49,8 +45,6 @@
 (defun make-voice-cuts-rests (meter durations-list tatum new-pitches tempo)
   (let* (
          (flat-pitches new-pitches)
-         ;(flat-pitches (flat new-pitches))
-
          (cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0 durations-list))))
          (cuts-events (mapcar (lambda (x) (cuts-rests x tatum)) (om* durations-list tatum))))
        ;;;return a list with both voices
@@ -61,7 +55,7 @@
                    :chords flat-pitches 
                    :tempo tempo 
                    )
-    ;;; this voice is the cut in
+         ;;; this voice is the cut in
 
           (make-instance 'voice 
                    :tree (mktree (remove 0 (flat cuts-events)) meter)
@@ -78,19 +72,18 @@
 (defun make-voice-cuts (meter durations-list tatum new-pitches tempo)
   (let* (
          (flat-pitches  new-pitches)
-         ;(flat-pitches (flat new-pitches))
          (cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0 durations-list)))))
 
 
-    ;;return a list with both voices
+       ;;return a list with both voices
        (list
-    ;;this voice is the running version
+         ;;this voice is the running version
          (make-instance 'voice 
                    :tree (mktree (repeat-n tatum (length flat-pitches)) meter)
                    :chords flat-pitches 
                    :tempo tempo 
                    )
-    ;;; this voice is the cut in
+          ;;; this voice is the cut in
 
           (make-instance 'voice 
                    :tree (mktree (om* durations-list tatum) meter)
@@ -195,8 +188,6 @@
 
 (defun make-voice-cuts-pulse2 (meter durations-list tatum new-pitches tempo generated-rhythms generated-tatums final-generated-rhythms)
   (let* (
-
-         ;(flat-pitches (flat new-pitches))
          (flat-pitches  new-pitches)
          (cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0 durations-list))))
          (cuts-events (mapcar (lambda (x) (cuts-rests x tatum)) (om* durations-list tatum)))
@@ -229,9 +220,7 @@
 
           (make-instance 'voice 
                    ;;use the tatums as the pulse rhythms
-                  ; :tree (mktree generated-tatums meter)
                    :tree (mktree (reverse final-pulse-rhythm) meter)
-                 ;  :chords pulsing-pitches
                    :chords (reverse final-pulsing-pitches)
                    :tempo tempo 
                    )
@@ -277,11 +266,8 @@
     ;;; this voice is the cut in
 
           (make-instance 'voice 
-                   :tree (mktree attacks+rests-durations meter)
-                  ; :tree (mktree (reverse final-attacks+rests-durations) meter)
-                  ; :chords cuts-pitches 
+                   :tree (mktree attacks+rests-durations meter) 
                    :chords (reverse final-cuts-pitches)
-
                    :tempo tempo 
                    )
        
@@ -293,10 +279,8 @@
 
 (defun make-voice-cuts2 (meter durations-list tatum new-pitches tempo generated-rhythms generated-tatums  final-generated-rhythms)
   (let* (
-         ;(flat-pitches (flat new-pitches))
+         
          (flat-pitches  new-pitches)
-         ;(cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0  durations-list)))))
-
          (cuts-pitches (remove 'nil (posn-match flat-pitches (dx->x 0 durations-list))))
          (final-cuts-pitches '())
 
@@ -318,10 +302,8 @@
     ;;; this voice is the cut in
 
           (make-instance 'voice 
-                   :tree (mktree final-generated-rhythms meter)
-                 ;  :chords cuts-pitches 
+                   :tree (mktree final-generated-rhythms meter) 
                    :chords (reverse final-cuts-pitches)
-
                    :tempo tempo 
                    )
         )
@@ -336,10 +318,8 @@
 
   (let* ((sum-rhythms (reduce '+ rhythm-list))
         (num-events (om-round (om/ sum-rhythms (length  pitch-list))))
-
         )
-    
-       ; (flat (repeat-n (flat pitch-list) num-events))
+
          (flat (repeat-n  pitch-list num-events ) 1))
 
 )
@@ -416,13 +396,9 @@
   :doc "Cuts-style score creation using a changeable tatum list."
   
   (let* (( flat-rhythm-lists (mapcar (lambda (x) (abs-rhythms (flat x))) durations-list))
-        ;;;(flat-pitch-lists (mapcar (lambda (x) (flat x)) pitches))
         (prepped-pitches (mapcar (lambda (x y) (check-pitchlist-vs-rhythmlist x y)) flat-rhythm-lists pitches))
-        ;;;(prepped-pitches (mapcar (lambda (x y) (check-pitchlist-vs-rhythmlist x y)) flat-rhythm-lists flat-pitch-lists))
         (prepped-tatums (mapcar (lambda (x) (prep-tatum x)) tatum-list))
-        ;;;(generated-rhythms (mapcar (lambda (x y) (generate-rhythms x y))  durations-list prepped-tatums))
         (generated-rhythms (mapcar (lambda (x y) (generate-rhythms x y))  flat-rhythm-lists prepped-tatums))
-        ;;;(generated-tatums (mapcar (lambda (x y) (generate-tatums x y)) durations-list prepped-tatums))
         (generated-tatums (mapcar (lambda (x y) (generate-tatums x y)) flat-rhythm-lists prepped-tatums))
         (final-generated-rhythms (check-for-rests durations-list generated-rhythms)))
 
@@ -447,8 +423,7 @@
   (let ((durations (mapcar 'pulses (voices durations-list))))
     (make-voice-cuts durations meter tatum pitches tempo mode)))
 
-;;;make mode 1 2 3 for sustain, rest, pulses
-;;;
+
 
 
 ;;;==================================
@@ -738,7 +713,6 @@
            (last-final-rhythms (last-rests durations-list final-rhythms-pulse))
            )
     (make-instance 'voice 
-                   ;:tree (mktree final-rhythms-pulse meter)
                    :tree (mktree last-final-rhythms meter)
                    :chords final-pitches 
                    :tempo tempo 
@@ -812,16 +786,6 @@
 
 )
 
-;;;make mode 1 2 3 for sustain, rest, pulses
-;;;
-;;;;This is where rotations->poly code was finished being added.
-
-
-
-
-
-
-
 
 (defun flat-by-voice (mylist)
   (let ((final-list '()))
@@ -871,11 +835,7 @@
 ;;;this receives from rfi object
 (om::defmethod! s-poly2 ((durations-list prf) (meter list) (tatum list) (pitches list) (tempo integer) &optional (mode 0))
   (let (
-        (durations (mapcar 'pulses (voices durations-list)))
-        ;wrong....below
-        ;(durations (mapcar 'pulses (flat-by-voice durations-list)))
-        ;(durations (mapcar 'pulses  durations-list))
-        )
+        (durations (mapcar 'pulses (voices durations-list))))
 
     (s-poly2 durations meter tatum pitches tempo mode)
     )
@@ -887,8 +847,6 @@
     (s-poly durations meter tatum pitches tempo mode))
 )
 
-;;;make mode 1 2 3 for sustain, rest, pulses
-;;;
 
 
 

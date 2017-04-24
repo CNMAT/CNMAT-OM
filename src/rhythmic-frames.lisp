@@ -85,8 +85,6 @@
 
 ;;;Matt's code for rfi starts here
 
-
-
 (defun combinations-subs-children (number)
 
   (let ((all-allowable-numbers (arithm-ser 1 number 1))
@@ -109,8 +107,7 @@
   (let (( output '()))
     (loop for combination in mylist do
     ;;;keep the combination only if it has none of the disallowed in it
-    ;;;  (if   (not (x-intersect  disallowed (print (cdr combination))))
-    ;;;      (push combination output)))
+
       (if (not (om::x-intersect (second combination) disallowed))
           (push combination output)))
     (reverse output)
@@ -248,8 +245,7 @@
    (let ((final-list '())
       (pre-final-list '()))
 
-;get rid of intervals corresponding with rests
-
+    ;get rid of intervals corresponding with rests
     (loop for duration in durations-list
       for interval in intervals-list do
       (if (> duration 0) (push interval final-list)))
@@ -293,7 +289,7 @@
               (intervals-remove-rests (mapcar (lambda (x y)  (remove-rest-values-helper x y)) positive-rhythms intervals-butlast))
               )
 
-;;if the input to myvoices was a list then output one way.  Otherwise output it as a list.
+        ;;;if the input to myvoices was a list then output one way.  Otherwise output it as a list.
         
         (cond (me
                (progn (print 'nah)

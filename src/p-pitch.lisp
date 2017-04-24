@@ -182,7 +182,7 @@
 (defun random-pitch-from-bands-pitchclass (lower-limit upper-limit)
 
     ;;return a random pitch from upper and lower bounds
-    ;; add the random value returned to the lower of the two pitches 
+    ;;add the random value returned to the lower of the two pitches 
     ;;return 100 choices for each pitch to try and get one that conforms to pitchclass requirements
     ;;not-used--(repeat-n (get-sample-from-bpfs lower-limit upper-limit) 100)
 
@@ -206,7 +206,7 @@
 
 (defun sample-from-bands-pitchclass (bpf-lib attacks-voice)
 
-;;for each bpf sample it for the number of attacks
+  ;;;for each bpf sample it for the number of attacks
   (let ((bpf-samps (mapcar (lambda (x) (scaled-bpf-samples x attacks-voice)) bpf-lib)))
 
     (mapcar (lambda (x y) (random-pitch-from-bands-pitchclass x y)) (nth 0 bpf-samps) (nth 1 bpf-samps)))
@@ -249,7 +249,7 @@
 
   
   (let ((hold-samples (om::bpf-sample my-bpf 'nil 'nil (length pitches))))
-    ;round them
+    ;;;round them
     (om::om* (om::om-round (om::om/ hold-samples 100.00)) 100)
 
     )
@@ -271,8 +271,8 @@
 
 
 (defun get-registrated-pitches-useless (pitch)
-  ;make series below and above by octave to add to note
-  ;this function could be more precise....
+  ;;;make series below and above by octave to add to note
+  ;;;this function could be more precise....
   (let* ((series (om::om* (arithm-ser 0 20 1) 1200))
          (hi-pitches (om::om+ series pitch))
          ;;dont include given pitch this time
@@ -284,8 +284,8 @@
 )
 
 (defun get-registrated-pitches (pitch)
-  ;make series below and above by octave to add to note
-  ;this function could be more precise....
+  ;;;make series below and above by octave to add to note
+  ;;;this function could be more precise....
   (let* (
          (hi-pitches (arithm-ser pitch 12800 1200))
          (low-pitches (arithm-ser (- pitch 1200) 100 -1200))
@@ -298,8 +298,8 @@
 
 (defun get-possible-registrated-pitches (organized-bpf-samples all-possible-pitches)
 
-;;collect any registration of the original pitch
-;;if it falls within the sampled bpfband
+;;;collect any registration of the original pitch
+;;;if it falls within the sampled bpfband
 ( loop for elem in all-possible-pitches
        collect (if (and (>= elem (nth 0 organized-bpf-samples))
                         (<= elem (nth 1 organized-bpf-samples))) elem))
@@ -320,15 +320,15 @@
 
     (0 
         (let* ((bpf-samples (mapcar (lambda (x) (scaled-bpf-samples-registration x pitches)) bpf-lib))
-               ;;put these bpf samples into high-low pairs
+              ;;;put these bpf samples into high-low pairs
               (organized-bpf-samples (mat-trans bpf-samples))
-              ;;now get all of the possibly relevant pitches
+              ;;;now get all of the possibly relevant pitches
               (all-possible-pitches (mapcar (lambda (x) (get-registrated-pitches x )) pitches))
               (pitches-fitting-registration (mapcar (lambda (x y) (get-possible-registrated-pitches x y)) organized-bpf-samples all-possible-pitches))
               (right-pitches-no-nils (mapcar (lambda (x) (remove nil x)) pitches-fitting-registration)))
 
-          ;;now return a random pitch from the pool of possible pitches for each pitch 
-          ;;originally provided in the pitches list
+          ;;;now return a random pitch from the pool of possible pitches for each pitch 
+          ;;;originally provided in the pitches list
 
           (mapcar (lambda (x)  (nth (om-random 0 (- (length x) 1)) x)) right-pitches-no-nils)
           )
@@ -336,7 +336,7 @@
           )
 
     (1
-     ;this mode deals with many-voiced-rhythm-lists
+     ;;;this mode deals with many-voiced-rhythm-lists
      (mapcar (lambda (x) (p-bands-register bpf-lib x)) pitches)
      
      )
@@ -351,22 +351,17 @@
 
 (in-package :cnmat)
 
-
-
 (defun list-inversion (inversion-element elements-list)
 
  (mapcar (lambda (x) (helper-inversion inversion-element x)) (flat elements-list))
 
 )
 
-
 (defun helper-inversion (inversion element)
 
   (cond ((> element inversion) (- inversion  (- element inversion) ))
       (t (+ (- inversion element) inversion)))
 )
-
-
 
 
 (om::defmethod! p-inversion ((pitchlist list) (inversion-element integer))
@@ -376,15 +371,12 @@
   :outdoc '("Returns a list of lists of pitches inverted around a given pitch") 
   :initvals '(((7000 7100 8000) (6000 6800 7000)) 7100)
   :doc "Invert a list of pitches around a provided  pitch."
-
   
-; see list-inversion and helper-inversion functions in o-pitch.lisp
+  ;;; see list-inversion and helper-inversion functions in o-pitch.lisp
   (list (mapcar (lambda (x) (list-inversion inversion-element x)) pitchlist))
 
   
 )
-
-
 
 
 
@@ -437,8 +429,6 @@
 )
 
 
-
-
 ;;;==================================
 ;;; P-MAP1
 ;;;==================================
@@ -449,19 +439,19 @@
 
 (defun random-from-range-pitch-map (rhythm-list key-list)
 
-;;do a one to one pitch mapping for each list of rhythms
-;;go through each element in rhythmlist 
-;;test the element until you find a match in the key-list
-;;then return the corresponding value
+;;;do a one to one pitch mapping for each list of rhythms
+;;;go through each element in rhythmlist 
+;;;test the element until you find a match in the key-list
+;;;then return the corresponding value
 
    (flat 
         (loop for attack in rhythm-list
               collect (loop for elem in key-list
                     if (eq attack (car (car elem))) 
 
-;; now make a random choice to return from the elements 
-;; from the range from one note to the other 
-;;(nth (random (length my-list)) my-list)
+;;; now make a random choice to return from the elements 
+;;; from the range from one note to the other 
+;;;(nth (random (length my-list)) my-list)
 
                           collect (nth 
                              (random (length (arithm-ser (car (nth 1 elem)) (car (cdr (nth 1 elem))) 100))) 
@@ -472,10 +462,10 @@
 
 (defun random-from-set-pitch-map-probs (rhythm-list key-list)
 
-;;do a one to one pitch mapping for each list of rhythms
-;;go through each element in rhythmlist 
-;;test the elemtn until you find a match in the key-list
-;;then return the corresponding value
+;;;do a one to one pitch mapping for each list of rhythms
+;;;go through each element in rhythmlist 
+;;;test the elemtn until you find a match in the key-list
+;;;then return the corresponding value
 
    (flat 
       (loop for attack in rhythm-list
@@ -566,7 +556,7 @@
 
          )
        )
-    ;;this mode not used--regular random choice no weight--can go back to this if needed
+    ;;;this mode not used--regular random choice no weight--can go back to this if needed
     (3 (let ((resultant-pitches (mapcar (lambda (x) (random-from-set-pitch-map x mapping-list)) (flat-by-voice durations-list))))
          
          (check-pitch-map (flat-by-voice durations-list)
@@ -606,7 +596,6 @@
 (in-package :cnmat)
 
 ;;;mapping pitches onto the rhythmic lists in three different ways
-
 
 (defun get-random-pitch (pitch-collection durations-list)
   (loop for attack in durations-list

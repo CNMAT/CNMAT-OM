@@ -7,17 +7,12 @@
   (:export 
 
 
-
-
-
-   
    :combinations
    :rand-from-list
    :get-rotations
    :rotations->poly2
    :pitch->bands-collection
  
-
    :o-operations
    :o-list-trans
    :o-index
@@ -30,8 +25,6 @@
    :o-list-info
    :o-list-info2
    :o-tatum-maker
-
-
 
    :p-inversion
    :p-map1
@@ -78,7 +71,6 @@
    :u-score-lists
 
 
-
    ))
 
 
@@ -93,20 +85,20 @@
 (compile&load (om-relative-path '("src") "rhythmic-frames"))
 (compile&load (om-relative-path '("src") "prf-editor"))
 (compile&load (om-relative-path '("src") "combinations"))
-(compile&load (om-relative-path '("src") "rand-from-list"))
+;(compile&load (om-relative-path '("src") "rand-from-list"))
 ;(compile&load (om-relative-path '("src") "make-bands"))
 ;(compile&load (om-relative-path '("src") "rotations->poly2"))
 ;(compile&load (om-relative-path '("src") "combine-polys"))
 
 (compile&load (om-relative-path '("src") "o-operations"))
-(compile&load (om-relative-path '("src") "o-list-trans"))
+;(compile&load (om-relative-path '("src") "o-list-trans"))
 
 (compile&load (om-relative-path '("src") "p-pitch"))
 
 (compile&load (om-relative-path '("src") "r-rhythm"))
 
 (compile&load (om-relative-path '("src") "q-queries"))
-(compile&load (om-relative-path '("src") "q-permutations+canon-all"))
+;(compile&load (om-relative-path '("src") "q-permutations+canon-all"))
 
 (compile&load (om-relative-path '("src") "s-score"))
 (compile&load (om-relative-path '("src") "s-combine-voices"))

@@ -5,6 +5,99 @@
 (in-package :cnmat)
 
 
+
+;;;==================================
+;;; O-LIST-TRANS
+;;;==================================
+
+;;;REQUIRES ALEA LIBRARY TO WORK
+
+
+(in-package :cnmat)
+
+(defun bpf-probabilities (mybpf num-samples)
+
+  (let* ((samples (om::bpf-sample mybpf 'nil 'nil num-samples))
+        (listA-probabilities (om::om- 1.0 (om::om/ samples 100)))
+        (listB-probabilities (om::om- 1.0 listA-probabilities))
+        )
+   
+    (mat-trans (list listA-probabilities listB-probabilities))
+    )
+)
+
+
+
+(om::defmethod! o-list-trans-helper ((mybpf bpf) (num-samples number) (listA list) (listB list) &optional (mode 0))
+
+  :icon 7
+  :indoc '("a  bpf" "number of samples desired" "list A" "list B" "optional mode")
+  :outdoc '("a sequence of random elements of n-length transitioning between the given lists") 
+  :initvals '(nil 10 '(6000 6100 6200) '(7200 7300 7400) 0)
+  :doc "Creates transitions between two lists following a bpf trajectory. Return a random element from listA or listB using a bpf to guide the the probability of which list is chosen from. Within each list, elem  ents have equal proability of being chosen."
+ 
+(case mode 
+  (0
+   (let* ((bpf-probabilities (bpf-probabilities mybpf num-samples)))
+
+         (loop for n from 1 to num-samples
+               for lp in bpf-probabilities
+               collect (alea::choixmultiple 
+                     lp 
+                     ;returns a random element with equal proability
+                     ;of being chosen
+                     (nth (random (length listA)) listA) 
+                     (nth (random (length listB)) listB) 
+                     ))
+         )
+   )
+
+  (1
+
+    (let* ((bpf-probabilities (bpf-probabilities mybpf num-samples)))
+
+         (flat 
+          (loop for n from 1 to num-samples
+               for lp in bpf-probabilities
+               collect  (alea::choixmultiple 
+                     lp 
+                     ;returns a random element with equal proability
+                     ;of being chosen
+                     (rand-from-list listA 1)
+                     (rand-from-list listB 1)                   
+                     )) 
+          2)
+         )
+
+   )
+
+)
+)
+
+(om::defmethod! o-list-trans ((mybpf bpf) (num-times number) (num-samples number) (listA list) (listB list) &optional (mode 0))
+
+  :icon 7
+  :indoc '("a  bpf" "number of output lists deisred" "number of samples desired" "list A" "list B" "optional mode")
+  :outdoc '("a sequence of random elements of n-length transitioning between the given lists") 
+  :initvals '(nil 1 10 '(6000 6100 6200) '(7200 7300 7400) 0)
+  :doc "Return a random element from listA or listB using a bpf to guide the the probability of which list is chosen from. Within each list, elem  ents have equal proability of being chosen."
+ 
+   (let ((final-list '()))
+
+   (loop for i from 1 to num-times do
+           (push (o-list-trans-helper mybpf num-samples listA listB mode) final-list))
+   
+   (reverse final-list))       
+)
+
+
+
+
+
+
+
+
+
 ;;;==================================
 ;;; O-LIST-LENGTHS
 ;;;==================================
@@ -35,14 +128,10 @@
   )
    
 
-
-
 ;;;==================================
 ;;; O-COUNT-TRUNC
 ;;;==================================
 
-
-;;;COUNT-TRUNC
 ;;;truncate a list if it is too long
 
 (defun list-lengths (my-list)
@@ -66,8 +155,6 @@
   (let ((lengths (mapcar #'list-lengths my-list)))
     (mapcar (lambda (x y) (list-truncate x y length-desired)) my-list lengths))
 )
-
-
 
 
 ;;;==================================
@@ -101,7 +188,6 @@
 )
 
 
-
 ;;;==================================
 ;;; O-EQUAL-PROB
 ;;;==================================
@@ -129,8 +215,6 @@
 
 
 
-
-
 ;;;==================================
 ;;; O-INDEX
 ;;;==================================
@@ -138,12 +222,10 @@
 (in-package :cnmat)
 
 
-
 (defun get-position (source-list index-list)
 
   (mapcar #'posn-match source-list index-list)
 )
-
 
 
 (om::defmethod! o-index ((source list) (index-lists list) &optional (mode 0))
@@ -162,11 +244,7 @@
     (1 (list (mapcar (lambda (x) (posn-match (flat source) x)) (flat index-lists 1)))
      )
   )
-
 )
-
-
-
 
 
 
@@ -187,32 +265,29 @@
       (all-probabilities '())
       (dxs '()))
 
-;;;put the elements with probability.  Test to check if there is a chord or not. If the number is a float, then it is a
+      ;;;put the elements with probability.  Test to check if there is a chord or not. If the number is a float, then it is a
       (mapcar (lambda (x) (if (and (listp x) (floatp (second x))) (progn (push x final-list ) (setq start-list (remove x start-list))))) mylist)
 
-;;now add up the probabilities that were given originally
+      ;;now add up the probabilities that were given originally
       (setq given-probabilities-sum (reduce '+ (mapcar (lambda (x) (second x)) final-list)) )
      
-;;now subtract 1-given-probabilities sum and divide the result by number
-;;of elements left over, i.e. ones without given probabilities
+      ;;;now subtract 1-given-probabilities sum and divide the result by number
+      ;;;of elements left over, i.e. ones without given probabilities
      
       (cond ((< given-probabilities-sum 1.0)
             (setq remaining-probabilities (/ (- 1.0  given-probabilities-sum) (round (length start-list)))))
             (t (setq remaining-probabilities 0)))
 
-;;assign remaining-probabilities to the remaining elements in start-list
-
+      ;;;assign remaining-probabilities to the remaining elements in start-list
       (setq calculated-probabilities (mapcar (lambda (x) (list x remaining-probabilities)) start-list))
 
-;;add calculated probabilities to the final list
+      ;;;add calculated probabilities to the final list
       (mapcar (lambda (x) (push x final-list)) calculated-probabilities)
 
-
-;;now bundle the isolated pitches in final-list as needed for the sorting to follow
+      ;;;now bundle the isolated pitches in final-list as needed for the sorting to follow
       (loop for i from 0 to (- (length final-list) 1) do
             (if (not (listp (car (nth i final-list)))) (setf (nth i final-list) (list (list (car (nth i final-list))) (flat (cdr (nth i final-list)))))))
             
-
 
 (defun sort-by-first-elem (elem)
   
@@ -220,8 +295,7 @@
 )
 
 
-;;now push in all the probabilities together in pitch order low to high
-      
+    ;;;now push in all the probabilities together in pitch order low to high
       (setq final-list (sort final-list #'< :key #'sort-by-first-elem))
 
 ;;make a list of all the probabilities
@@ -250,11 +324,9 @@
   ;;go through and get all values that have probability less than
   ;;the given randnum
      (prelim-results (mapcar (lambda (x) (if (<= randnum (third x)) (first x))) mylist))
-     ;;(secondary-results (mapcar (lambda (x) (remove nil x)) prelim-results);;) 
      )
 
-;;then just return the first one that is not a nil
-
+    ;;then just return the first one that is not a nil
       (first (remove nil prelim-results)))
 )
 
@@ -285,8 +357,6 @@
 )
 
 
-
-
 ;;;==================================
 ;;; O-LIST-REPEAT
 ;;;==================================
@@ -298,8 +368,6 @@
 
       (mapcar (lambda (x)   (flat (repeat-n x no-times))) my-list) 
 )
-
-
 
 (om::defmethod! o-list-repeat ((mylist list) (desired-length integer)  &optional (mode 0))
 
@@ -332,7 +400,6 @@
             (no-nils-very-final-list '()))
 
       ;;;(list make-repeats final-lengths)
-
        (loop for currlist in make-repeats do
              (loop for elem in currlist do
                    (push (length elem) list-pre-group))
@@ -361,14 +428,12 @@
              (push  (group-list currlist currgrouping 'linear) very-final-list))
 
        ;;get rid of any nils
-
        (loop for currlist in very-final-list do
              (loop for elem in currlist do
                    (push (remove nil elem) hold))
              (push (reverse hold) no-nils-very-final-list)
              (setf hold '()))
-       
-                     
+                           
        (list no-nils-very-final-list final-lengths))))
 
 )
@@ -424,7 +489,6 @@
 
      )
    
-
     (1 (let ((hold-sublist '())
              (final-list '()))
                
@@ -445,7 +509,6 @@
 ;;;==================================
 ;;; O-LIST-INFO
 ;;;==================================
-
 
 (defun tatum-lookup (tatum)
   ;;returns number of tatums per beat
@@ -534,17 +597,13 @@
        )
      )
 
-
      )
 )
-
 
 
 ;;;==================================
 ;;; O-LIST-INFO-2
 ;;;==================================
-
-
 
 ;;; output sums of lists of lists
 (om::defmethod! o-list-info2 ((mylist list) (tatumlist list) &optional (mode 0))
@@ -561,15 +620,11 @@
 )
 
 
-
-
 ;;;==================================
 ;;; O-LIST-TRANS
 ;;;==================================
 
 ;;;REQUIRES ALEA LIBRARY TO WORK
-
-
 
 (in-package :cnmat)
 
@@ -589,8 +644,6 @@
 ;;;==================================
 ;;; O-TATUM-MAKER
 ;;;==================================
-
-
 
 (om::defmethod! o-tatum-maker ((mylist list) )
 
@@ -615,11 +668,9 @@
 )
 
 
-
 ;;;==================================
 ;;; O-TATUM-FORMAT
 ;;;==================================
-
 
 (defun tatum-format-helper (mylist)
 
