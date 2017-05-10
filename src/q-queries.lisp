@@ -502,7 +502,7 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
   (let* ((final-list '())
          (count 0))
     (loop while (< count num-results) do
-          (print 'got-here)
+          ;(print 'got-here)
           (let* ((test (om::permut-random mylist)))
             (unless (find test final-list :test #'cnmat::is-rotation?)
               (progn (push test final-list) (setq count (+ count 1))))))

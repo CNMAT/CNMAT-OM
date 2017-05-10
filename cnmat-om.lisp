@@ -6,6 +6,7 @@
   (:use "COMMON-LISP" "OM")
   (:export 
 
+   :make-spat-room
 
    :combinations
    :rand-from-list
@@ -69,8 +70,16 @@
 
    :u-info
    :u-score-lists
-
-
+   :u-retro
+   :u-+
+   :u--
+   :u-*
+   :u-inversion
+   :u-midic->pc
+   :u-flat-by-voice
+   :u-pc-remap
+   :u-divisors
+ 
    ))
 
 
@@ -83,31 +92,24 @@
 
 
 (compile&load (om-relative-path '("src") "rhythmic-frames"))
+
 (compile&load (om-relative-path '("src") "prf-editor"))
+
 (compile&load (om-relative-path '("src") "combinations"))
-;(compile&load (om-relative-path '("src") "rand-from-list"))
-;(compile&load (om-relative-path '("src") "make-bands"))
-;(compile&load (om-relative-path '("src") "rotations->poly2"))
-;(compile&load (om-relative-path '("src") "combine-polys"))
 
 (compile&load (om-relative-path '("src") "o-operations"))
-;(compile&load (om-relative-path '("src") "o-list-trans"))
 
 (compile&load (om-relative-path '("src") "p-pitch"))
 
 (compile&load (om-relative-path '("src") "r-rhythm"))
 
 (compile&load (om-relative-path '("src") "q-queries"))
-;(compile&load (om-relative-path '("src") "q-permutations+canon-all"))
 
 (compile&load (om-relative-path '("src") "s-score"))
+
 (compile&load (om-relative-path '("src") "s-combine-voices"))
 
 (compile&load (om-relative-path '("src") "u-utilities"))
-
-
-
-
 
 
 (set-lib-release 0.1 (om::find-library "CNMAT-OM"))
@@ -136,22 +138,23 @@
 (om::fill-library  
  '((NIL 
     (("Tessellate" 
-     (("database" nil nil (q-combi q-combi-filter q-canon q-rotations  q-permute+remove-dup-rotations q-n-permutations-no-rotations q-permutations+canon q-permutations+canon-utility q-permutations+canon-all q-rotation-canon? q-canon-permutations-no-overlaps q-combi-from-elements q-random-permutations-no-dups q-remove-rotations r-retro-canon?) nil)
-      ("pitch" nil nil (p-map1 p-inversion p-map2 p-make-bands p-bands-collection p-bands-pitchclass p-bands-register p-harmony-from-analysis) nil)
-      ("operations" nil nil ( o-operations o-list-trans o-index o-count-trunc o-cribs o-equal-prob o-index o-list-rand o-list-repeat o-sum-lists o-list-trans rand-from-list o-tatum-maker) nil)
-      
-      ("duration" nil (prf) (prf rhythmic-frames r-diminutions r-interleave r-duration-list r-merge r-combine-lists r-retro-canon? r-substitute r-substitute-children r-tatum-mapping r-scatter-attacks) nil)
-      
-      ("score" () nil (s-poly s-poly->voice s-voice s-poly2 s-cuts s-cuts2 s-poly s-combine-voices s-combine-polys rotations->poly2 ) nil)
 
-)
+     (("database" nil nil (q-combi q-combi-filter q-canon q-rotations  q-permute+remove-dup-rotations q-n-permutations-no-rotations q-permutations+canon q-permutations+canon-utility q-permutations+canon-all q-rotation-canon? q-canon-permutations-no-overlaps q-combi-from-elements q-random-permutations-no-dups q-remove-rotations ) nil)
+
+      ("operations" nil nil ( o-operations o-list-trans o-index o-count-trunc o-cribs o-equal-prob o-index o-list-rand o-list-repeat o-sum-lists  o-list-rand o-list-info o-tatum-format) nil)
+
+      ("pitch" nil nil (p-map1 p-inversion p-map2 p-make-bands p-bands-collection p-bands-pitchclass p-bands-register p-harmony-from-analysis) nil)
+
+      ("rhythm" nil (prf) (prf rhythmic-frames r-diminutions r-interleave r-duration-list r-merge r-combine-lists r-retro-canon? r-substitute r-substitute-children r-tatum-mapping r-scatter-attacks r-retro-canon?) nil)
+      
+      ("score" () nil (s-poly s-poly->voice s-poly2 s-cuts s-cuts2 s-combine-voices s-combine-polys) nil)
+
+      ("utilities" nil nil ( u-info u-score-lists u-retro-canon? u-+ u-- u-* u-inversion u-midic->pc u-flat-by-voice u-pc-remap u-divisors) nil))
      nil ;; classes
      (combinations) ;; functions
      nil))
     NIL NIL NIL)
    
-
-;   pitch->bands-collection
    ;;use lines below for sub-sub menus, if needed
    ;;("queries-database" (("subpack1" nil (prf) (get-combi get-rotations canon-query sum-lists get-index) nil)
    ;;         )

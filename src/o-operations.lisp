@@ -5,6 +5,58 @@
 (in-package :cnmat)
 
 
+;;;==================================
+;;; MAKE-SPAT-ROOM
+;;;==================================
+
+
+
+(om::defmethod! make-spat-room ((room-size number) (room-index number))
+
+  :icon 7
+  :indoc '("room-size" "room-index")
+  :outdoc '("a spat-room") 
+  :initvals '( 10 1)
+  :doc "Quick and dirty way t create a spat-room providing a room size value."
+
+(let (
+      (times (list 0 1))
+      ;(index 1)
+      ;; for each parameter
+      ;;scale between the two values for the small and large rooms
+      (early-start (om-scale room-size 1.53 7.98 10 10000))
+      (early-end (om-scale room-size 2.53 97.98 10 10000))
+      (early-dist (om-scale room-size 0.4 0.46 10 10000))
+      (cluster-start (om-scale room-size 2.5 88.18 10 10000))
+      (cluster-end (om-scale room-size 7.2 300 10 10000))
+      (cluster-dist (om-scale room-size 7.2 300 10 10000))
+      (reverb-start (om-scale room-size 6.55 349 10 10000))
+      (modal-density (om-scale room-size 3.13 0.2 10 10000))
+      (global-decay (om-scale room-size 0.5 10.0 10 10000)))
+
+  
+  ;; CREATE THE SPAT-ROOM OBJECT HERE
+
+                    
+       (om::om-make-array 'om::spat-room 
+                      '(0 1) ; times
+                      room-index ; index
+                      :early-start early-start
+                      :early-end early-end
+                      :early-dist early-dist
+                      :cluster-start cluster-start
+                      :cluster-end cluster-end
+                      :cluster-dist cluster-dist
+                      :reverb-start reverb-start
+                      :modal-density modal-density
+                      :global-decay global-decay))
+)
+
+
+
+
+
+
 
 ;;;==================================
 ;;; O-LIST-TRANS
