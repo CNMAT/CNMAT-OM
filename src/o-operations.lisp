@@ -5,58 +5,6 @@
 (in-package :cnmat)
 
 
-;;;==================================
-;;; MAKE-SPAT-ROOM
-;;;==================================
-
-
-
-(om::defmethod! make-spat-room ((room-size number) (room-index number))
-
-  :icon 7
-  :indoc '("room-size" "room-index")
-  :outdoc '("a spat-room") 
-  :initvals '( 10 1)
-  :doc "Quick and dirty way t create a spat-room providing a room size value."
-
-(let (
-      (times (list 0 1))
-      ;(index 1)
-      ;; for each parameter
-      ;;scale between the two values for the small and large rooms
-      (early-start (om-scale room-size 1.53 7.98 10 10000))
-      (early-end (om-scale room-size 2.53 97.98 10 10000))
-      (early-dist (om-scale room-size 0.4 0.46 10 10000))
-      (cluster-start (om-scale room-size 2.5 88.18 10 10000))
-      (cluster-end (om-scale room-size 7.2 300 10 10000))
-      (cluster-dist (om-scale room-size 7.2 300 10 10000))
-      (reverb-start (om-scale room-size 6.55 349 10 10000))
-      (modal-density (om-scale room-size 3.13 0.2 10 10000))
-      (global-decay (om-scale room-size 0.5 10.0 10 10000)))
-
-  
-  ;; CREATE THE SPAT-ROOM OBJECT HERE
-
-                    
-       (om::om-make-array 'om::spat-room 
-                      '(0 1) ; times
-                      room-index ; index
-                      :early-start early-start
-                      :early-end early-end
-                      :early-dist early-dist
-                      :cluster-start cluster-start
-                      :cluster-end cluster-end
-                      :cluster-dist cluster-dist
-                      :reverb-start reverb-start
-                      :modal-density modal-density
-                      :global-decay global-decay))
-)
-
-
-
-
-
-
 
 ;;;==================================
 ;;; O-LIST-TRANS
@@ -80,33 +28,15 @@
 
 
 
-(om::defmethod! o-list-trans-helper ((mybpf bpf) (num-samples number) (listA list) (listB list) &optional (mode 0))
+(om::defmethod! o-list-trans-helper ((mybpf bpf) (num-samples number) (listA list) (listB list))
 
   :icon 7
-  :indoc '("a  bpf" "number of samples desired" "list A" "list B" "optional mode")
+  :indoc '("a  bpf" "number of samples desired" "list A" "list B" )
   :outdoc '("a sequence of random elements of n-length transitioning between the given lists") 
-  :initvals '(nil 10 '(6000 6100 6200) '(7200 7300 7400) 0)
-  :doc "Creates transitions between two lists following a bpf trajectory. Return a random element from listA or listB using a bpf to guide the the probability of which list is chosen from. Within each list, elem  ents have equal proability of being chosen."
+  :initvals '(nil 10 '(6000 6100 6200) '(7200 7300 7400))
+  :doc "Creates transitions between two lists following a bpf trajectory. Return a random element from listA or listB using a bpf to guide the the probability of which list is chosen from. Within each list, elements have equal proability of being chosen. Or supply weights to affect probabilities."
  
-(case mode 
-  (0
-   (let* ((bpf-probabilities (bpf-probabilities mybpf num-samples)))
-
-         (loop for n from 1 to num-samples
-               for lp in bpf-probabilities
-               collect (alea::choixmultiple 
-                     lp 
-                     ;returns a random element with equal proability
-                     ;of being chosen
-                     (nth (random (length listA)) listA) 
-                     (nth (random (length listB)) listB) 
-                     ))
-         )
-   )
-
-  (1
-
-    (let* ((bpf-probabilities (bpf-probabilities mybpf num-samples)))
+(let* ((bpf-probabilities (bpf-probabilities mybpf num-samples)))
 
          (flat 
           (loop for n from 1 to num-samples
@@ -119,25 +49,24 @@
                      (rand-from-list listB 1)                   
                      )) 
           2)
-         )
-
-   )
+  )
 
 )
-)
 
-(om::defmethod! o-list-trans ((mybpf bpf) (num-times number) (num-samples number) (listA list) (listB list) &optional (mode 0))
+
+
+(om::defmethod! o-list-trans ((mybpf bpf) (num-times number) (num-samples number) (listA list) (listB list))
 
   :icon 7
-  :indoc '("a  bpf" "number of output lists deisred" "number of samples desired" "list A" "list B" "optional mode")
+  :indoc '("a  bpf" "number of output lists deisred" "number of samples desired" "list A" "list B")
   :outdoc '("a sequence of random elements of n-length transitioning between the given lists") 
-  :initvals '(nil 1 10 '(6000 6100 6200) '(7200 7300 7400) 0)
+  :initvals '(nil 1 10 '(6000 6100 6200) '(7200 7300 7400))
   :doc "Return a random element from listA or listB using a bpf to guide the the probability of which list is chosen from. Within each list, elem  ents have equal proability of being chosen."
  
    (let ((final-list '()))
 
    (loop for i from 1 to num-times do
-           (push (o-list-trans-helper mybpf num-samples listA listB mode) final-list))
+           (push (o-list-trans-helper mybpf num-samples listA listB) final-list))
    
    (reverse final-list))       
 )

@@ -540,3 +540,53 @@
 
     (list final-list (list (reduce #'+ final-list))))
 )
+
+
+;;;==================================
+;;; U-TATUM-FORMAT
+;;;==================================
+
+;;;SEE CODE FOR u-list-info in o-operations o-list-info
+
+(om::defmethod! u-tatum-format ((mylist list) )
+
+  :icon 6
+  :indoc '("a list of lists or more lists of lists" )
+  :outdoc '("compare lists of sublists") 
+  :initvals '( nil)
+  :numouts 2
+  :doc "Converts a tatum shorthand into a notation suitable for use with Tessellate."
+
+
+  (o-tatum-format mylist)
+)
+
+
+
+;;;==================================
+;;; U-LIST-DUPLICATOR
+;;;==================================
+
+;;;SEE CODE FOR u-list-info in o-operations o-list-info
+
+(om::defmethod! u-list-duplicator ((mylist list) (duplicates number))
+
+  :icon 6
+  :indoc '("a list of lists" "number of duplicates")
+  :outdoc '("duplicate lists") 
+  :initvals '( nil nil)
+  :numouts 1
+  :doc "Duplicates a list <duplicates> times."
+
+
+(let ((final-list '()))
+
+(loop for elem in mylist do
+     (loop for i from 1 to duplicates do
+          (push elem final-list)))
+
+(reverse final-list)
+     
+)
+     
+)
