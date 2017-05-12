@@ -15,7 +15,7 @@
 
 (om::defmethod! s-combine-voices ((voice1 voice) (voice2 voice))
 
-  :icon 7
+  :icon 1
   :indoc '("a voice object" "a second voice object")
   :outdoc '("Joins (concatenates) one voice to another.") 
   :initvals '('(nil) '(nil))

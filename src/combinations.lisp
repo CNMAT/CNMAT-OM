@@ -74,7 +74,7 @@
 
 
 (om::defmethod! get-rotations ((durations list))
-  :icon 2
+  :icon 1
   :indoc '("a list of values")
   :outdoc '("list of rotations (circular permutations)") 
   :initvals '((1 2 3))
@@ -83,7 +83,7 @@
   
 
 (om::defmethod! canon-query ((voices list))
-  :icon 3
+  :icon 1
   :indoc '("a list of list of durations")
   :outdoc '("T if the voices tile with no simultaneous attacks") 
   :initvals '(((1 2 3) (2 3 1) (3 1 2)))
@@ -100,7 +100,7 @@
 
 
 (om::defmethod! rotation-canon-query ((voice list) &optional print)
-  :icon 4
+  :icon 1
   :indoc '("a list of durations" "print flag")
   :outdoc '("Returns the list if the voice rotations makes a conon, or NIL otherwise") 
   :initvals '((1 2 3) nil)

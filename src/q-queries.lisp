@@ -13,7 +13,7 @@
 
 (om::defmethod! q-remove-rotations ((mylist list))
 
-  :icon 2
+  :icon 1
   :indoc '("a list of lists" )
   :outdoc '("lists with no rotations") 
   :initvals '(((1 2 3 4 5) (2 3 4 5 1) (3 4 5 1 2) (4 5 1 2 3) (5 1 2 3 4)))
@@ -31,7 +31,7 @@
 
 (om::defmethod! q-random-permutations-no-dups ((mylist list) (no-times number) )
 
-  :icon 2
+  :icon 1
   :indoc '("a list of lists" "number of permutations to generate")
   :outdoc '("lists that pass the canon query") 
   :initvals '((1 2 3 4 5) 5 )
@@ -89,7 +89,7 @@
 
 (om::defmethod! q-combi-filter ((main-list list) (elems list) (sums list) (olaps list) &optional (exclude nil))
 
-  :icon 2
+  :icon 1
   :indoc '("a list of lists" "a list of elements" "a list of possible sums" "a list of overlaps" "excluded elements")
   :outdoc '("Filters input lists to return those lists with the elements required as specified in the lists for number of elements, possible sums, and number of overlaps.") 
   :initvals '(((1 2 3) (3 4 5)) nil  nil nil)
@@ -125,7 +125,7 @@
 
 (om::defmethod! q-permutations+canon ((mylist list) )
 
-  :icon 2
+  :icon 1
   :indoc '("a list of lists" "optional mode argument")
   :outdoc '("lists that pass the canon query") 
   :initvals '((1 2 3 4 5) )
@@ -163,7 +163,7 @@
 
 (om::defmethod! q-permute+remove-dup-rotations ((main-list list))
 
-  :icon 3
+  :icon 1
   :indoc '("a list of lists")
   :outdoc '("Tests all permutations of a list, checking it for duplicates in the form of rotations.") 
   :initvals '((1 2 3))
@@ -187,7 +187,7 @@
 
 (om::defmethod! q-permutations+canon-utility ((mylist list) &optional (mode 0))
 
-  :icon 2
+  :icon 1
   :indoc '("a list of lists" "a mode argument")
   :outdoc '("lists") 
   :initvals '( '((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1)) 0)
@@ -285,7 +285,7 @@
 ;;;this receieves list of durations lists (output from get-rotations)
 (om::defmethod! q-combi-from-elements ( (elements-list list) (ordered number)  &optional (mode 2))
 
-  :icon 2
+  :icon 1
   :indoc '("a list of elements" "ordered variable number" "mode: 0, 1, 2, 3 or 4")
   :outdoc '("a list") 
   :initvals '( (1 2 3 4 5 6 8 10 12) 0 2)
@@ -333,7 +333,7 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
 
 (om::defmethod! q-canon-permutations-no-overlaps ((main-list list))
 
-  :icon 3
+  :icon 1
   :indoc '("a list of lists")
   :outdoc '("Tests all permutations of a canon and only returns those with no overlaps.") 
   :initvals '((1 2 7 12))
@@ -447,7 +447,7 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
 
 
 (om::defmethod! q-rotations ((durations list))
-  :icon 2
+  :icon 1
   :indoc '("a list of values")
   :outdoc '("list of rotations (circular permutations)") 
   :initvals '((1 2 3))
@@ -456,7 +456,7 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
   
 
 (om::defmethod! q-canon ((voices list) &optional print)
-  :icon 3
+  :icon 1
   :indoc '("a list of list of durations")
   :outdoc '("T if the voices tile with no simultaneous attacks") 
   :initvals '(((1 2 3) (2 3 1) (3 1 2)))
@@ -473,7 +473,7 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
 
 
 (om::defmethod! q-rotation-canon? ((voice list) &optional print)
-  :icon 4
+  :icon 1
   :indoc '("a list of durations" "print flag")
   :outdoc '("Returns the list if the voice rotations makes a conon, or NIL otherwise") 
   :initvals '((1 2 3) nil)
@@ -493,7 +493,7 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
 
 (om::defmethod! q-n-permutations-no-rotations ((mylist list) (num-results number))
 
-  :icon 2
+  :icon 1
   :indoc '("a list for permuting" "the number of permutations desired")
   :outdoc '("non-rotational permuted lists output") 
   :initvals '((1 2 3 4 5) 4)
@@ -598,7 +598,7 @@ Mode=3 all combinations in order of sum of elements.  Mode=4 all combinations in
 
 (om::defmethod! q-permutations+canon-all ((mylist list) &optional (mode 0))
 
-  :icon 2
+  :icon 1
   :indoc '("a list of lists" "optional mode argument")
   :outdoc '("lists that pass the canon query") 
   :initvals '( '((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1)) 0)

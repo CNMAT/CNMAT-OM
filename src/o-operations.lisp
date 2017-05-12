@@ -30,7 +30,7 @@
 
 (om::defmethod! o-list-trans-helper ((mybpf bpf) (num-samples number) (listA list) (listB list))
 
-  :icon 7
+  :icon 1
   :indoc '("a  bpf" "number of samples desired" "list A" "list B" )
   :outdoc '("a sequence of random elements of n-length transitioning between the given lists") 
   :initvals '(nil 10 '(6000 6100 6200) '(7200 7300 7400))
@@ -57,7 +57,7 @@
 
 (om::defmethod! o-list-trans ((mybpf bpf) (num-times number) (num-samples number) (listA list) (listB list))
 
-  :icon 7
+  :icon 1
   :indoc '("a  bpf" "number of output lists deisred" "number of samples desired" "list A" "list B")
   :outdoc '("a sequence of random elements of n-length transitioning between the given lists") 
   :initvals '(nil 1 10 '(6000 6100 6200) '(7200 7300 7400))
@@ -86,7 +86,7 @@
 
 (om::defmethod! o-list-lengths ((my-list list) &rest rest-lists)
 
-  :icon 6
+  :icon 1
   :indoc '("a list of lists or more lists of lists" )
   :outdoc '("compare lists of sublists") 
   :initvals '(((1 2 3 4) (5 6 7 8)) (nil))
@@ -127,7 +127,7 @@
 
 (om::defmethod! o-count-trunc ((my-list list) (length-desired integer))
 
-  :icon 2
+  :icon 1
   :indoc '("a  list of lists" "the desired length in elements of each list")
   :outdoc '("list of lists with elements of the desired length") 
   :initvals '(((1 2 3)) 2)
@@ -148,7 +148,7 @@
 ;;;uses get-rotations method/function
 
 (om::defmethod! get-rotations ((durations list))
-  :icon 2
+  :icon 1
   :indoc '("a list of lists of values")
   :outdoc '("list of rotations (circular permutations)") 
   :initvals '((1 2 3))
@@ -158,7 +158,7 @@
 
 (om::defmethod! o-cribs ((my-list list))
 
-  :icon 2
+  :icon 1
   :indoc '("a list of lists of values")
   :outdoc '("list of rotations (circular permutations) for each list") 
   :initvals '(((1 2 3) (4 5 6)))
@@ -180,7 +180,7 @@
 
 (om::defmethod! o-equal-prob ((my-list list))
 
-  :icon 2
+  :icon 1
   :indoc '("a list of elements")
   :outdoc '("a list of elements and a list of equal probabilities = 1") 
   :initvals '((55 56 57 58 59))
@@ -211,7 +211,7 @@
 
 (om::defmethod! o-index ((source list) (index-lists list) &optional (mode 0))
 
-  :icon 7
+  :icon 1
   :indoc '("a list of lists" "a list of lists" "mode: 0 = multiple source lists with multiple index lists; 1 = single source list with multiple index lists")
   :outdoc '("Returns a list of lists of elements from the source lists chosen by index number") 
   :initvals '(((3 4 5 1 2)) ((0 1 2 3 4)) 0)
@@ -315,7 +315,7 @@
 
 (om::defmethod! o-list-rand ((mylist list) (num-return-vals number))
 
-  :icon 7
+  :icon 1
   :indoc '("a list with or without random weights" "desired length of output sequence")
   :outdoc '("a sequence of random elements of n-length from a list") 
   :initvals '((7100 (7200 0.9) 7300 7400 7800) 20)
@@ -352,7 +352,7 @@
 
 (om::defmethod! o-list-repeat ((mylist list) (desired-length integer)  &optional (mode 0))
 
-  :icon 6
+  :icon 1
   :indoc '("a list of lists" "an integer number for number of repetitions")
   :outdoc '("mode=0 returns a repeated list preserving the original list structure; mode=1 returns a repeated list preserving the original list structure and tailored to desired length input") 
   :initvals '(((1 2 3)(34 45)) 5 0)
@@ -447,7 +447,7 @@
 
 ;;; output sums of lists of lists
 (om::defmethod! o-sum-lists ((my-list list) &optional (mode 0))
-  :icon 5
+  :icon 1
   :indoc '("list of lists to be summed" "mode: 0 = sum all numbers; 1 = sum numbers and retain list structure")
   :initvals '(((1 2 3) (4 5 6)) 0)
   :menuins '((1 (("sum of the list of lists per voice" 0) ("sums that preserve list structure" 1))))
@@ -507,7 +507,7 @@
 
 ;;; output sums of lists of lists
 (om::defmethod! o-list-info ((mylist list) &optional (mode 0))
-  :icon 5
+  :icon 1
   :indoc '("list of lists to be tallied" "mode: 0 length of sublist and sum of sublist returned retaining list structure"
            "mode 1 for simple list of lists, e.g. pitch lists")
   :initvals '(((1 2 3) (3 5 5 6 7) (19 43 59) (34) (68)) ((1 2 3 4) (22 4)) 0)
@@ -588,7 +588,7 @@
 
 ;;; output sums of lists of lists
 (om::defmethod! o-list-info2 ((mylist list) (tatumlist list) &optional (mode 0))
-  :icon 5
+  :icon 1
   :indoc '("list of lists to be tallied" "a tatum list to be tallied"
            "An optional mode argument; mode 1 for simple list of lists, e.g. pitch lists")
   :initvals '(((1 2 3) (3 5 5 6 7) (19 43 59) (34) (68)) ((1 2 3 4) (22 4)) 0)
@@ -628,7 +628,7 @@
 
 (om::defmethod! o-tatum-maker ((mylist list) )
 
-  :icon 6
+  :icon 1
   :indoc '("a list of lists or more lists of lists" )
   :outdoc '("compare lists of sublists") 
   :initvals '( nil)
@@ -699,7 +699,7 @@
 
 (om::defmethod! o-tatum-format ((mylist list) )
 
-  :icon 6
+  :icon 1
   :indoc '("a list of lists or more lists of lists" )
   :outdoc '("compare lists of sublists") 
   :initvals '( nil)

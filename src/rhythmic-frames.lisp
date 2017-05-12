@@ -158,7 +158,7 @@
 
   :doc "Generate all children substitutions for a desired duration or set of durations..
 "
-  :icon 5
+  :icon 1
 
   (let* ((my-combinations (flat (mapcar (lambda (x)  (combinations-subs-children x)) children-desired) 1))
       (filtered-combinations (filter-disallowed-children my-combinations remove-values))
@@ -177,7 +177,7 @@
 
   :doc "Replaces a rhythmic value with subset values (substitutions) that sum to the original value.
 "
-  :icon 5
+  :icon 1
 
     (cond ((= mode 1) (r-diminutions rhythm val subs))
 
@@ -273,7 +273,7 @@
 (defmethod! r-merge ((rhythm polyrhythmic-frame) &optional myvoices me)
 
   :doc "R-merge collapes the attacks of all rhythmic frames within a polyrhythmic frame into one rhythmic frame."
-  :icon 5
+  :icon 1
 
   (cond 
       (myvoices 
@@ -325,7 +325,7 @@
 (defmethod! r-tatum-mapping ((mything list))
 
   :doc "Maps numbers to tatums according to a key."
-  :icon 5
+  :icon 1
 
    (flat (mapcar (lambda (x) (r-tatum-mapping-helper x)) mything) 2)
   

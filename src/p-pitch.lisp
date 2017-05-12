@@ -12,7 +12,7 @@
 
 (om::defmethod! p-harmony-from-analysis (( mychordseq chord-seq) &optional (numpitches 0))
 
-  :icon 2
+  :icon 1
   :indoc '("a chor-seq" "an optional argument specifying the numnber of pitches to return based on highest partial amplitude")
   :outdoc '("lists") 
   :initvals '( '(nil) 0)
@@ -98,7 +98,7 @@
 ;;;this receieves list of durations lists (output from get-rotations)
 (om::defmethod! p-bands-collection ( (bpf-lib list) (attacks-voices list) (pitch-collection list) &optional (mode 0))
 
-  :icon 2
+  :icon 1
   :indoc '("a bpf-lib of two bpfs" "a list of list of attacks, in rotations or other specification" " a pitch collection from which to draw pitches" "mode: 0 = n/a")
   :outdoc '("a list of pitces mapped from the bpf to the pitch-collection") 
   :initvals '( nil ((1 2 3 4)(2 3 4 5))  (6000 6600 7200 7500))
@@ -219,7 +219,7 @@
 ;;;this receieves list of durations lists (output from get-rotations)
 (om::defmethod! p-bands-pitchclass ( (bpf-lib list) (attacks-voices list) (allowable-pitchclasses list) &optional (mode 0))
 
-  :icon 2
+  :icon 1
   :indoc '("a bpf-lib of two bpfs" "a list of list of attacks, in rotations or other specification" " a collection of allowable pitchclasses" "mode: 0 = n/a")
   :outdoc '("a list of pitces mapped from the bpf to the pitch-collection") 
   :initvals '( nil ((1 2 3 4)(2 3 4 5))  (0 1 5))
@@ -310,7 +310,7 @@
 ;;;this receieves list of durations lists (output from get-rotations)
 (om::defmethod! p-bands-register ( (bpf-lib list) (pitches list) &optional (mode 0))
 
-  :icon 2
+  :icon 1
   :indoc '("a bpf-lib of two bpfs" "a list of list of attacks, in rotations or other specification" "mode: 0 = n/a; mode=1 for multiple pitch list input")
   :outdoc '("a list of pitces mapped from the bpf to the pitch-collection") 
   :initvals '( nil '(6000 6000 6000 6000)  0)
@@ -366,7 +366,7 @@
 
 (om::defmethod! p-inversion ((pitchlist list) (inversion-element integer))
 
-  :icon 7
+  :icon 1
   :indoc '("a list of pitch lists" "a pitch to invert around")
   :outdoc '("Returns a list of lists of pitches inverted around a given pitch") 
   :initvals '(((7000 7100 8000) (6000 6800 7000)) 7100)
@@ -404,7 +404,7 @@
 )
 
 (om::defmethod! p-make-bands ((my-chord-seq chord-seq) &optional (mode 0))
-  :icon 7
+  :icon 1
   :indoc '("a chord-seq" "mode: 0 = n/a")
   :initvals '((nil) 0)
   :outdoc '("Returns a bpf lib.")
@@ -537,7 +537,7 @@
 ;;;this receieves list of durations lists (output from get-rotations)
 (om::defmethod! p-map1 ( (durations-list list) (mapping-list list) &optional (mode 0))
 
-  :icon 2
+  :icon 1
   :indoc '("a list of rhythm lists" "a list of mappings in midics" "mode: 0 = 1-1 mapping; 1 = map to random choice from set; 2 = map to random choice in a range of choices. (Use two midic pitches to designate the bottom and top of range")
   :outdoc '("a list of pitch mappings to use with") 
   :initvals '( ((3 4 5) (4 5 3) (5 3 4)) (((3) (6000)) ((4) (6100)) ((5) (6200)))  0)
@@ -613,7 +613,7 @@
 ;;;this receieves list of durations lists (output from get-rotations)
 (om::defmethod! p-map2 ( (durations-list list) (pitch-collection list) &optional (mode 0))
 
-  :icon 2
+  :icon 1
   :indoc '("a list of rhythm lists (list of lists)" "a list (or list of lists) for pitch collections" "mode: 0 = random choice from a pitch collection; 1 = random choice from a range of pitches")
   :outdoc '("a list of pitch mappings to use with") 
   :initvals '( ((3 4 5) (4 5 3) (5 3 4)) (7200 7300 7500 7700)  0)

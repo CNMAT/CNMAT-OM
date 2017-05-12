@@ -13,7 +13,7 @@
 
 (om::defmethod! s-combine-polys ((poly1 poly) (poly2 poly))
 
-  :icon 7
+  :icon 1
   :indoc '("a poly object" "a second poly object")
   :outdoc '("Joins (concatenates) one poly to another. Outputs a poly object.") 
   :initvals '('(nil) '(nil))
@@ -114,7 +114,7 @@
 ;;;this receieves list of durations lists (output from get-rotations)
 (om::defmethod! s-cuts ( (durations-list list) (meter list) (tatum number) (pitches list) (tempo integer) &optional (mode 0))
 
-  :icon 2
+  :icon 1
   :indoc '("a list for the meter" "a list of lists for durations" "a tatum specified as a fraction" "a list of lists of pitches" "a tempo as integer" "mode: 0 = sustain mode output; 1 = rests mode output")
   :outdoc '("a poly") 
   :initvals '( ((1 5 7 10)) (4 4) 1/16 ((6100)) 110 0)
@@ -389,7 +389,7 @@
 ;;;this receieves list of durations lists (output from get-rotations)
 (om::defmethod! s-cuts2 ( (durations-list list) (meter list) (tatum-list list) (pitches list) (tempo integer) &optional (mode 0))
 
-  :icon 2
+  :icon 1
   :indoc '("a list for the meter" "a list of lists for durations" "list of lists of tatums for each voice" "a list of lists of pitches" "a tempo as integer" "mode: 0 = sustain mode output; 1 = rests mode output")
   :outdoc '("a poly") 
   :initvals '( ((1 5 7 10)) (4 4) (((1 (16)))) ((6100)) 110 0)
@@ -483,7 +483,7 @@
 ;;;this receives list of durations lists (output from get-rotations)
 (om::defmethod! s-poly ( (durations-list list) (meter list) (tatum number) (pitches list) (tempo integer) &optional (mode 0))
 
-  :icon 2
+  :icon 1
   :indoc '("a list for the meter" "a list of lists for durations" "a tatum specified as a fraction" "a list of lists of pitches" "a tempo as integer" "mode: 0 = sustain mode output; 1 = rests mode output")
   :outdoc '("a poly") 
   :initvals '( ((1 5 7 10)) (4 4) 1/16 ((6100)) 110 0)
@@ -536,7 +536,7 @@
 
 
 (om::defmethod! s-poly->voice ((mypoly poly) &optional (mode 0) )
-  :icon 2
+  :icon 1
   :indoc '("A poly object--make sure that it is locked." "mode:0 = notes truncated on following attacks; mode: 1 = notes sustained for original durations.")
   :outdoc '("A voice object") 
   :initvals '('(nil) 0)
@@ -754,7 +754,7 @@
 ;;;this receieves list of durations lists (output from get-rotations)
 (om::defmethod! rotations->poly2 ( (durations-list list) (meter list) (tatum list) (pitches list) (tempo integer) &optional (mode 0))
 
-  :icon 2
+  :icon 1
   :indoc '("a list for the meter" "a list of lists for durations" "a tatum specified as a fraction" "a list of lists of pitches" "a tempo as integer" "mode: 0 = sustain mode output; 1 = rests mode output")
   :outdoc '("a poly") 
   :initvals '( ((1 5 7 10)) (4 4) (((1(16)) (2(20)))) ((6100)) 110 0)
@@ -799,7 +799,7 @@
 ;;;this receieves list of durations lists (output from get-rotations)
 (om::defmethod! s-poly2 ( (durations-list list) (meter list) (tatum list) (pitches list) (tempo integer) &optional (mode 0))
 
-  :icon 2
+  :icon 1
   :indoc '("a list for the meter" "a list of lists for durations" "a tatum specified as a fraction" "a list of lists of pitches" "a tempo as integer" "mode: 0 = sustain mode output; 1 = rests mode output")
   :outdoc '("a poly") 
   :initvals '( ((1 5 7 10)) (4 4) (((1(16)) (2(20)))) ((6100)) 110 0)
@@ -893,7 +893,7 @@
 ;;;making the sustain version first
 (om::defmethod! s-voice ( (durations-list list) (meter list) (tatum number) (pitches list) (tempo integer))
 
-  :icon 2
+  :icon 1
   :indoc '("a list for the meter" "a list of lists for durations" "a tatum specified as a fraction" "a list of lists of pitches" "a tempo as integer")
   :outdoc '("a voice") 
   :initvals '( ((1 5 7 10)) (4 4) 1/16 ((6100)) 100)

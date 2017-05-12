@@ -14,7 +14,7 @@
 
 (om::defmethod! rand-from-list ((mylist list) (num-return-vals number))
 
-  :icon 7
+  :icon 1
   :indoc '("a list with or without random weights" "desired length of output sequence")
   :outdoc '("a sequence of random elements of n-length from a list") 
   :initvals '((7100 (7200 0.9) 7300 7400 7800) 20)
@@ -70,7 +70,7 @@
 
 (om::defmethod! r-scatter-attacks ((rhythmlist list) (numvoices number))
 
-  :icon 6
+  :icon 1
   :indoc '("a list of lists" )
   :outdoc '("returns rhythm lists combined by voice") 
   :initvals '((1/16 1/16 1/8 1/16 1/16 1/16 1/8) (nil))
@@ -114,7 +114,7 @@
 
 (om::defmethod! r-combine-lists ((my-list list) &rest rest-list)
 
-  :icon 6
+  :icon 1
   :indoc '("a list of lists" )
   :outdoc '("returns rhythm lists combined by voice") 
   :initvals '(((1 2 3 4) (5 6 7 8)) (nil))
@@ -175,7 +175,7 @@
 
 (defmethod! r-duration-list ((myvoices list)) 
 :doc "Returns the durations of all rhythmic frame voices. Resulting lists may be."
-:icon 5
+:icon 1
     (mapcar #'(lambda (r)  (cnmat::pulses r))  myvoices)
 )
 
@@ -199,7 +199,7 @@
   ;;;In this case, remove the voice designatory, e.g. "0", before sending it on
 
   :doc "Replaces a rhythmic value with subset values (diminutions) that sum to the original value."
-  :icon 5
+  :icon 1
 
            (if (eq 0 (car (first subs)))
 
@@ -226,7 +226,7 @@
 
 
 (defmethod r-interleave (rhythm-parent   &rest rest )
-  :icon 3
+  :icon 1
   :initvals '(nil) 
   :indoc '("first element" "second element" "additional elements")
   :doc "Interleaves a parent and a child polyrhythmic frame.."
@@ -271,7 +271,7 @@
 
   
 (om::defmethod! r-retro-canon? ((my-list list))
-  :icon 7
+  :icon 1
   :indoc '("Tests canon-query on list combined with its retrograde")
   :outdoc '("If true, returns list. If false, returns nil") 
   :initvals '((1 2 3 4 5))

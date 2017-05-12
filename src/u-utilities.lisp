@@ -63,7 +63,7 @@
 
 (om::defmethod! u-score-lists ( (my-thing voice))
 
-  :icon 7
+  :icon 1
   :indoc '("a poly or a voice")
   :outdoc '("Returns a list of lists containing pitches, rhythms and no. items (pitches). Connect 'self' output of poly or voice" "and another thing") 
   :initvals '(nil)
@@ -98,7 +98,7 @@
 
 (om::defmethod! u-score-lists ( (my-thing poly)  )
 
-  :icon 7
+  :icon 1
   :indoc '("a poly or a voice" )
   :outdoc '("Returns a list of lists containing pitches, rhythms and no. items (pitches). Connect 'self' output of poly or voice") 
   :initvals '(nil)
@@ -146,7 +146,7 @@
 
 (om::defmethod! u-retro ( (mylist list) &optional (mode 0))
 
-  :icon 7
+  :icon 1
   :indoc '("a list of lists" )
   :outdoc '("Returns the retrograde of every list within a list of lists" "Mode=1 returns the retrograde of every sublist in the list of lists") 
   :initvals '(nil)
@@ -177,7 +177,7 @@
 
 (om::defmethod! u-+ ( (mylist list) (mynumber number) &optional  (mode 0) (mod 12))
 
-  :icon 7
+  :icon 1
   :indoc '("a list" "a number" "Optional mode argument" "Optional mod argument" )
   :outdoc '("U-+ is a utility for quick addition/subtraction of a number to a lists of numbers.  Default mode is normal addition/subtraction. The second number determines addition/subtraction.  Optional Mode=1 is mod12-based addition.  Optional mod=12 to change mod number.") 
   :initvals '((nil) (nil) (nil))
@@ -194,7 +194,7 @@
 
 (om::defmethod! u-+-helper ( (mylist list) (mynumber number) &optional  (mode 0) (mod 12))
 
-  :icon 7
+  :icon 1
   :indoc '("a list" "a number" "Optional mode argument" "Optional mod argument" )
   :outdoc '("U-+ is a utility for quick addition of a number to a lists of numbers.  Default mode is normal addition. Optional Mode=1 is mod12-based addition.  Optional mod=12 to change mod number.") 
   :initvals '((nil) (nil) (nil))
@@ -222,7 +222,7 @@
 
 (om::defmethod! u-- ( (mylist list) (mynumber number) &optional (mode 0) (mod 12))
 
-  :icon 7
+  :icon 1
   :indoc '("a list" "a number" "Optional mode argument" "Optional mod argument" )
   :outdoc '("U-- is a utility for quick subtraction of a number from a lists of numbers.  Default mode is normal subtraction. Optional Mode=1 is mod12-based subtraction.  Optional mod=12 to change mod number.") 
   :initvals '((nil) (nil) (nil))
@@ -248,7 +248,7 @@
 
 (om::defmethod! u-* ( (mylist list) (mynumber number) &optional (mode 0) (mod 12))
 
-  :icon 7
+  :icon 1
   :indoc '("a list" "a number" "Optional mode argument" "Optional mod argument" )
   :outdoc '("U-* is a utility for quick multiplication of a number with a lists of numbers.  Default mode is normal multiplication. Optional Mode=1 is mod12-based multiplication.  Optional mod=12 to change mod number.") 
   :initvals '((nil) (nil) (nil))
@@ -275,7 +275,7 @@
 
 (om::defmethod! u-inversion ((pitchlist list) (inversion-element integer) &optional (mode 0) (mod 12))
 
-  :icon 7
+  :icon 1
   :indoc '("a list of pitch lists" "a pitch to invert around")
   :outdoc '("Returns a list of lists of pitches inverted around a given pitch. With optional mode=1 toconvert to mod12. And with optional mod input to change mod12 to another number.") 
   :initvals '(((7000 7100 8000) (6000 6800 7000)) 7100)
@@ -302,7 +302,7 @@
 
 (om::defmethod! u-midic->pc ( (mylist list))
 
-  :icon 7
+  :icon 1
   :indoc '("a list of lists" )
   :outdoc '("U-midics->mod12 takes in a list of list of midics and converts them to lists of pitch class sets")
   :initvals '((nil) (nil) (nil))
@@ -328,7 +328,7 @@
 
 (om::defmethod! u-pc->midic ( (mylist list) (reference-pitch number))
 
-  :icon 7
+  :icon 1
   :indoc '("a list of lists" "a reference pitch" )
   :outdoc '("U-pc->midic takes in a list of list of pcs and converts them to lists of midics using a reference pitch to set the register. The reference pitch should be a midic, ideally a C pitchclass. The output midics will align with the closest octave.")
   :initvals '((nil) (nil) (nil))
@@ -364,7 +364,7 @@
 
 (om::defmethod! u-flat-by-voice ( (mylist list) &optional (flat-level 0))
 
-  :icon 7
+  :icon 1
   :indoc '("a list" )
   :outdoc '("Takes a list of lists and flats the contents by voice. Optional Flat-level=nth argument flats each voice by nth level only, which can be used to preserve sublists within a voice for items like chords, etc...") 
   :initvals '((nil) (nil) (nil))
@@ -388,7 +388,7 @@
 
 (om::defmethod! u-pc-remap ((mylist list) (transfer-list list))
 
-  :icon 7
+  :icon 1
   :indoc '("a list of list of midics" "a list of of transfers in pcs")
   :outdoc '("Applies a transfer list of pitchclasses to a list of lists of midics or of pitchclasses") 
   :initvals '((nil) (nil))
@@ -476,7 +476,7 @@
 ;;;SEE CODE FOR u-list-info in o-operations o-list-info
 
 (om::defmethod! u-list-info ((mylist list) &optional (mode 0))
-  :icon 5
+  :icon 1
   :indoc '("list of lists to be tallied" "mode: 0 length of sublist and sum of sublist returned retaining list structure"
            "mode 1 for simple list of lists, e.g. pitch lists")
   :initvals '(((1 2 3) (3 5 5 6 7) (19 43 59) (34) (68)) ((1 2 3 4) (22 4)) 0)
@@ -498,7 +498,7 @@
 
 ;;; output sums of lists of lists
 (om::defmethod! u-list-info2 ((mylist list) (tatumlist list) &optional (mode 0))
-  :icon 5
+  :icon 1
   :indoc '("list of lists to be tallied" "a tatum list to be tallied"
            "An optional mode argument; mode 1 for simple list of lists, e.g. pitch lists")
   :initvals '(((1 2 3) (3 5 5 6 7) (19 43 59) (34) (68)) ((1 2 3 4) (22 4)) 0)
@@ -521,7 +521,7 @@
 
 
 (om::defmethod! u-divisors ((input number) )
-  :icon 5
+  :icon 1
   :indoc '("list of lists to be tallied" "a tatum list to be tallied"
            "An optional mode argument; mode 1 for simple list of lists, e.g. pitch lists")
   :initvals '(20)
@@ -550,7 +550,7 @@
 
 (om::defmethod! u-tatum-format ((mylist list) )
 
-  :icon 6
+  :icon 1
   :indoc '("a list of lists or more lists of lists" )
   :outdoc '("compare lists of sublists") 
   :initvals '( nil)
@@ -571,7 +571,7 @@
 
 (om::defmethod! u-list-duplicator ((mylist list) (duplicates number))
 
-  :icon 6
+  :icon 1
   :indoc '("a list of lists" "number of duplicates")
   :outdoc '("duplicate lists") 
   :initvals '( nil nil)
