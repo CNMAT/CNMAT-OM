@@ -122,8 +122,9 @@
 (om-print "
 ;;;================================================
 ;;; CNMAT-OM
-;;; (c) Center for New Music and Audio Technologies
-;;; University of California, Berkeley
+;;; Center for New Music and Audio Technologies
+;;; Copyright (c) 2017 Regents of the University of California. 
+;;; All rights reserved.
 ;;;================================================
 ")
 
