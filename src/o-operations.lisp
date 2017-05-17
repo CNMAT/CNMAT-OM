@@ -175,9 +175,6 @@
 
 (in-package :cnmat)
 
-;;;create all of the rotations of a rhythm
-;;;uses get-rotations method/function
-
 (om::defmethod! o-equal-prob ((my-list list))
 
   :icon 1
