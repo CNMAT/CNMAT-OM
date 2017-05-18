@@ -1,5 +1,5 @@
 <html>
-<head><title>GET-ROTATIONS - CNMAT-OM Reference Documentation</title>
+<head><title>P-MAP1 - CNMAT-OM Reference Documentation</title>
 <STYLE TYPE="text/css"><!--  
 
 BODY {background-color: #EEEEEE;
@@ -46,7 +46,7 @@ P,UL,LI, TD {
 <br>
 <table align=center bgcolor=FFFFFF width=87%><tr>
 <td>
-<h2>GET-ROTATIONS</h2>
+<h2>P-MAP1</h2>
 <font size=-1>[GENERIC-FUNCTION]</font><br><br>
 </td><td width=130>
 <img src=./omlogo.gif width=100><br>
@@ -58,19 +58,43 @@ P,UL,LI, TD {
 <tr>
 <td width=40>&nbsp;</td>
 <td>
-- <font color=333366><b>durations</b></font>
+- <font color=333366><b>durations-list</b></font>
 </td>
-<td>a list of values</td>
-<td>[default = (1 2 3)]</td>
+<td>a list of rhythm lists</td>
+<td>[default = ((3 4 5) (4 5 3) (5 3 4))]</td>
+</tr>
+<tr>
+<tr>
+<td width=40>&nbsp;</td>
+<td>
+- <font color=333366><b>mapping-list</b></font>
+</td>
+<td>a list of mappings in midics</td>
+<td>[default = (((3) (6000)) ((4) (6100)) ((5) (6200)))]</td>
+</tr>
+<tr>
+<tr>
+<td>
+<i><b>&optional</b></i><br>
+</td>
+<td colspan=3>&nbsp;</td></tr>
+<tr>
+<tr>
+<td width=40>&nbsp;</td>
+<td>
+- <font color=333366><b>mode</b></font>
+</td>
+<td>mode: 0 = 1-1 mapping; 1 = map to random choice from set; 2 = map to random choice in a range of choices. (Use two midic pitches to designate the bottom and top of range</td>
+<td>[default = 0]</td>
 </tr>
 <tr>
 </table>
 </tr>
 <tr><td colspan=2>
 <br><font color=882222><b>Description:</b></font><p>
-Computes and returns the list of all rotations (circular permutations) of a given list &lt;durations&gt;.<br>
+Ways to map pitches to rhythmic sequences when generating scores, including: 1-1 mapping, random mapping from collections, and random mapping from ranges. Includes probabilistic weighted choice.<br>
 </p><br><br></td></tr>
 <td class=center colspan=2>
-<center><font size=-2>Auto doc generation by OpenMusic 6.10.1 © 2011 IRCAM</font></center>
+<center><font size=-2>Auto doc generation by OpenMusic 6.12 © 2017 IRCAM</font></center>
 </td></tr></table>
 </body></html>

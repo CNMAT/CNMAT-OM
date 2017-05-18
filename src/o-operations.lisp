@@ -202,7 +202,7 @@
 
 (defun get-position (source-list index-list)
 
-  (mapcar #'posn-match source-list index-list)
+  (posn-match source-list index-list)
 )
 
 
@@ -216,10 +216,13 @@
   :doc "Returns a list of lists of elements from the source lists chosen by index number."
   
   (case mode
-    (0  (mapcar (lambda (x) (get-position x (flat index-lists 1))) source)
+    (0  (mapcar (lambda (x y) (get-position x y)) source index-lists)
+
+;;0  (mapcar (lambda (x) (get-position x (flat index-lists 1))) source)
      )
      
-    (1 (list (mapcar (lambda (x) (posn-match (flat source) x)) (flat index-lists 1)))
+    (1  (print index-lists)
+         (mapcar (lambda (x) (posn-match (flat source) x))  index-lists )
      )
   )
 )

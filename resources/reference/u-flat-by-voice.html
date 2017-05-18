@@ -1,5 +1,5 @@
 <html>
-<head><title>GET-COMBI - CNMAT-OM Reference Documentation</title>
+<head><title>U-FLAT-BY-VOICE - CNMAT-OM Reference Documentation</title>
 <STYLE TYPE="text/css"><!--  
 
 BODY {background-color: #EEEEEE;
@@ -46,7 +46,7 @@ P,UL,LI, TD {
 <br>
 <table align=center bgcolor=FFFFFF width=87%><tr>
 <td>
-<h2>GET-COMBI</h2>
+<h2>U-FLAT-BY-VOICE</h2>
 <font size=-1>[GENERIC-FUNCTION]</font><br><br>
 </td><td width=130>
 <img src=./omlogo.gif width=100><br>
@@ -58,28 +58,10 @@ P,UL,LI, TD {
 <tr>
 <td width=40>&nbsp;</td>
 <td>
-- <font color=333366><b>dur-space</b></font>
+- <font color=333366><b>mylist</b></font>
 </td>
-<td>list of allowed durations</td>
-<td>[default = (1 2 3 4 5 6 8 10 12 15 20 24 30 40 60 120)]</td>
-</tr>
-<tr>
-<tr>
-<td width=40>&nbsp;</td>
-<td>
-- <font color=333366><b>sum</b></font>
-</td>
-<td>sum of durations</td>
-<td>[default = 120]</td>
-</tr>
-<tr>
-<tr>
-<td width=40>&nbsp;</td>
-<td>
-- <font color=333366><b>num</b></font>
-</td>
-<td>number of elements</td>
-<td>&nbsp;</td>
+<td>a list</td>
+<td>[default = (nil)]</td>
 </tr>
 <tr>
 <tr>
@@ -91,22 +73,19 @@ P,UL,LI, TD {
 <tr>
 <td width=40>&nbsp;</td>
 <td>
-- <font color=333366><b>mode</b></font>
+- <font color=333366><b>flat-level</b></font>
 </td>
-<td>allow repeated elements?</td>
-<td>[default = 0]</td>
+<td>&nbsp;</td>
+<td>[default = (nil)]</td>
 </tr>
 <tr>
 </table>
 </tr>
 <tr><td colspan=2>
 <br><font color=882222><b>Description:</b></font><p>
-Computes and returns the list of all combinations of &lt;num&gt; elements in &lt;dur-space&gt; which sum up to &lt;sum&gt;.<br>
-&lt;mode&gt; (0, 1 or 2) determines whether or not the list must remain ordered and if repetitions are allowed in the results.<br>
-<br>
-&lt;num&gt; can be a signle number or a list of integers. If &lt;num&gt; = NIL allnumber of elements will be searched.<br>
+Takes a list of lists and flats the contents by voice. Optional Flat-level=nth argument flats each voice by nth level only, which can be used to preserve sublists within a voice for items like chords, etc...<br>
 </p><br><br></td></tr>
 <td class=center colspan=2>
-<center><font size=-2>Auto doc generation by OpenMusic 6.10.1 © 2011 IRCAM</font></center>
+<center><font size=-2>Auto doc generation by OpenMusic 6.12 © 2017 IRCAM</font></center>
 </td></tr></table>
 </body></html>
