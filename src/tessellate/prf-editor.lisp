@@ -39,9 +39,9 @@
 (defmethod set-selection ((self prfeditor) (panel prf-panel))
   (init-selection (datapanel self))
   (unless (equal panel (datapanel self))
-    (setf (selected panel) t)
     (setf (selection self) panel)  
-    (oa::om-set-bg-color panel (oa::om-make-color 0.9 1 0.9))
+    ;(setf (selected panel) t)   
+    ;(oa::om-set-bg-color panel (oa::om-make-color 0.9 1 0.9))
     (oa::om-invalidate-view self)))
 
 (defmethod reset-contents ((self prfeditor))
@@ -123,14 +123,80 @@
     ;  (oa:om-draw-rect-outline 1 1 (- (om::w self) 2) (- (om::h self) 2)))
     NIL 
     (oa::om-with-focused-view self
+      (when (selected self) 
+        (oa:om-with-fg-color nil
+            (oa::om-make-color 0.98 0.96 0.95)
+            (oa::om-fill-rect 0 0 (1- (om::w self)) (1- (om::h self)))))
       (draw-rhythmic-line (prf self) 
                           (get-r-frame-size (get-prf self))
-                          4 (- (om::w self) 8) 2 (- (om::h self) 4) 0)  
+                          4 (- (om::w self) 8) 2 (- (om::h self) 4) 0
+                          (selected self))  
       )))
 
 (defmethod oa::om-view-click-handler ((self prf-panel) pos)
-  (unless (selected self)
-    (set-selection (om::editor self) self)))
+  (init-selection (om::editor self))
+  (set-selection (om::editor self) self)
+  (let ((beatpos (beat-graphic-positions (get-r-frame-size (get-prf self))
+                                         (- (om::w self) 8)
+                                         4)))
+    ;; click on beat ?
+    (let ((clicked-beat (position pos beatpos :test #'(lambda (p x)
+                                    (and (>= (oa::om-point-x p) (- x 5))
+                                         (<= (oa::om-point-x p) (+ x 5))
+                                         (>= (oa::om-point-y p) (- (round (om::h self) 2) 15))
+                                         (<= (oa::om-point-y p) (+ (round (om::h self) 2) 10)))))))
+      (if clicked-beat 
+          (let ((nth-pulse (position clicked-beat (accent-beats (pulses (prf self))))))
+            (when (and (oa::om-command-key-p) (not nth-pulse))
+              (setf (pulses (prf self)) (om::x->dx (sort (cons clicked-beat (accent-beats (pulses (prf self)))) '<))))
+            (setf (selected self) (list (position clicked-beat (accent-beats (pulses (prf self))))))
+            (om::report-modifications (om::editor self))
+            )
+        (unless (selected self) ;; if no beat selected, just select the line
+          (setf (selected self) (list -1))
+          )))
+    
+    (oa:om-invalidate-view self)))
+
+
+(defmethod om::handle-key-event ((self prfeditor) char)
+  (let ((selected-panel (selection self)))
+    (when selected-panel
+      (let ((selected-frame (prf selected-panel))
+            (container-prf (get-prf selected-panel))
+            (accents (accent-beats (pulses (prf selected-panel))))
+            (selection (car (selected selected-panel))))
+        (case char
+          (:om-key-delete
+           (if (and (numberp selection) (>= selection 0))
+               (let () 
+                 (setf (pulses (prf selected-panel))
+                       (om::x->dx (append (om::first-n accents selection)
+                                          (nthcdr (1+ selection) accents))))
+                 (initialize-instance (prf selected-panel)))
+             (progn 
+               (delete-prf-voice selected-frame (om::object self) (om::object self))
+               (reset-contents self)))
+           (oa:om-invalidate-view selected-panel)
+           (om::report-modifications self))
+          (#\-  
+           (let ((pos (position selection accents)))
+             (setf (nth pos (pulses (prf selected-panel)))
+                   (- (nth pos (pulses (prf selected-panel)))))
+             (om::report-modifications self)
+             (oa:om-invalidate-view selected-panel)
+             (om::report-modifications self)))
+          (:om-key-esc
+           (init-selection self))
+          (#\s  
+           (apply-r-substitute container-prf selected-frame nil nil)
+           (reset-contents self)
+           (om::report-modifications self))
+          )
+        ))))
+
+
+;; todo : remove, inverse sign, move l/r
 
 (defmethod delete-prf-voice ((voice t) (from rhythmic-frame) top-level) nil)
 
@@ -164,25 +230,9 @@
         ))
     ))
 
-       
-(defmethod om::handle-key-event ((self prfeditor) char)
-  (let ((selected-panel (selection self)))
-    (when selected-panel
-      (let ((selected-frame (prf selected-panel))
-            (container-prf (get-prf selected-panel)))
-        (case char
-          (:om-key-delete 
-           (delete-prf-voice selected-frame (om::object self) (om::object self))
-           (reset-contents self)
-           (om::report-modifications self))
-          (:om-key-esc
-           (init-selection self))
-          (#\s  
-           (apply-r-substitute container-prf selected-frame nil nil)
-           (reset-contents self)
-           (om::report-modifications self))
-          )
-        ))))
+
+
+
 
 (defmethod om::get-menubar ((self prfeditor)) 
   (list (oa::om-make-menu 

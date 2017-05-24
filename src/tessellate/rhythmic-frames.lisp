@@ -50,7 +50,7 @@
         (draw-rhythmic-line value maxsize 10 (- (om::w view) 20) 10 (- (om::h view) 20) 0)))))
 
 
-(defmethod draw-rhythmic-line ((line polyrhythmic-frame) size x w y h i)
+(defmethod draw-rhythmic-line ((line polyrhythmic-frame) size x w y h i &optional selection)
   (when (voices line)
     (let ((lineh (/ h (length (voices line)))))
     ;(oa::om-with-line '(2 2)
@@ -58,30 +58,47 @@
       (om::om-with-fg-color nil (oa::om-make-color 0 0 0)   
         (loop for v in (voices line) 
               for i = 0 then (1+ i) do
-              (draw-rhythmic-line v size x w (+ y (* i lineh)) lineh i))
+              (draw-rhythmic-line v size x w (+ y (* i lineh)) lineh i selection))
         ))))
  
-   
-(defmethod draw-rhythmic-line ((line rhythmic-frame) size x w y h i)
+
+(defun beat-graphic-positions (size w x)
+  (let ((bs (/ w size)))
+    (loop for i from 0 to size collect (+ x (* i bs)))))
+         
+(defun accent-beats (pulses)
+  (om::dx->x 0 (om::om-abs pulses)))
+
+(defmethod draw-rhythmic-line ((line rhythmic-frame) size x w y h i &optional selection)
   (let* ((pulses (pulses line))
+         (pulses-pos (beat-graphic-positions size w x))
          (yy (+ y (/ h 2)))
-         (bs (/ w size))
-         (plist (om::dx->x 0 (om-abs pulses)))
+         (plist (accent-beats pulses))
          (sign t))
     (oa::om-with-fg-color nil (oa::om-make-color 0 0 0)
-    (oa::om-draw-line x yy (+ x w) yy)
-    (loop for b = 0 then (+ b 1) while (<= b size) do
-          (if sign (oa::om-draw-line (+ x (* b bs)) yy (+ x (* b bs)) (- yy 4)))
-          (let ((pos (position b plist)))
-            (when (and pos (nth pos pulses))
-              (if (> (nth pos pulses) 0)
-                (progn (setq sign t)
-                  (oa::om-fill-ellipse (+ x 0.5 (* b bs)) (- yy 3) 3 3)
-                  (oa:om-draw-string (+ x -3 (* b bs)) (- yy 8) 
-                                     (om::integer-to-string (nth pos pulses))))
-                (setq sign nil))
-              )
-            )))))
+      (oa::om-draw-line x yy (+ x (* w (/ (size line) size))) yy)
+      (loop for b = 0 then (+ b 1) 
+            for bx in pulses-pos do
+            ;(if sign (oa::om-draw-line bx yy bx (- yy 4)))
+            (let* ((pos (position b plist))
+                   (beat (and pos (nth pos pulses))))
+              (if beat
+                (om::om-with-fg-color nil 
+                    (if (find pos selection) oa::*om-dark-red-color* oa::*om-black-color*)
+                  (if (> beat 0)
+                      (progn (setq sign t)
+                        (oa::om-fill-ellipse (+ 0.5 bx) (- yy 3) 3 3)
+                        (oa:om-draw-string (- bx 4) (- yy 8) (om::integer-to-string beat)))
+                    (progn (setq sign nil)
+                      (oa::om-draw-ellipse (+ 0.5 bx) (+ yy 4) 3 3)
+                      (oa:om-draw-string (- bx 8) (- yy 3) (om::integer-to-string beat)))
+                    ))
+                (when sign 
+                  (oa::om-draw-line bx yy bx (- yy 4)))
+                )))
+      )))
+
+
 
 ;;;Matt's code for rfi starts here
 
