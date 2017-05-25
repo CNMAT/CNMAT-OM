@@ -145,51 +145,128 @@
                                          (<= (oa::om-point-x p) (+ x 5))
                                          (>= (oa::om-point-y p) (- (round (om::h self) 2) 15))
                                          (<= (oa::om-point-y p) (+ (round (om::h self) 2) 10)))))))
-      (if clicked-beat 
-          (let ((nth-pulse (position clicked-beat (accent-beats (pulses (prf self))))))
+      (if clicked-beat  ;;; the click is on one of the beats
+          
+          ;;; is  this beat part of the line's pulses ?
+          (let ((nth-pulse (position clicked-beat (accent-beats (pulses (prf self)))))) 
             (when (and (oa::om-command-key-p) (not nth-pulse))
-              (setf (pulses (prf self)) (om::x->dx (sort (cons clicked-beat (accent-beats (pulses (prf self)))) '<))))
+              ;;; ... if not + cmd-click : add the beat
+              (setf (pulses (prf self)) (accents-to-pulses (sort (cons clicked-beat (accent-beats (pulses (prf self)))) '<))))
+            
+            ;;; set this beat as selection in any case
             (setf (selected self) (list (position clicked-beat (accent-beats (pulses (prf self))))))
-            (om::report-modifications (om::editor self))
-            )
-        (unless (selected self) ;; if no beat selected, just select the line
-          (setf (selected self) (list -1))
-          )))
-    
+            
+            (om::report-modifications (om::editor self)))
+        
+        ;; else (if no beat selected) just select the line
+        (unless (selected self) (setf (selected self) (list -1))))
+      )
+   
     (oa:om-invalidate-view self)))
 
 
 (defmethod om::handle-key-event ((self prfeditor) char)
   (let ((selected-panel (selection self)))
     (when selected-panel
-      (let ((selected-frame (prf selected-panel))
-            (container-prf (get-prf selected-panel))
-            (accents (accent-beats (pulses (prf selected-panel))))
-            (selection (car (selected selected-panel))))
+      (let* ((rf (prf selected-panel))
+             (container-prf (get-prf selected-panel))
+             (accents (accent-beats (pulses rf)))
+             (selection (car (selected selected-panel))))
+        
         (case char
+
           (:om-key-delete
            (if (and (numberp selection) (>= selection 0))
-               (let () 
-                 (setf (pulses (prf selected-panel))
-                       (om::x->dx (append (om::first-n accents selection)
+               ;;; there's a beat selected
+               ;;; => remove it from line's pulses
+               (progn  
+                 (setf (pulses rf)
+                       (accents-to-pulses (append (om::first-n accents selection)
                                           (nthcdr (1+ selection) accents))))
-                 (initialize-instance (prf selected-panel)))
+                 (initialize-instance rf))
              (progn 
-               (delete-prf-voice selected-frame (om::object self) (om::object self))
+               ;;; the pane is selected but no specific beat
+               ;;; => delete it
+               (delete-prf-voice rf (om::object self) (om::object self))
                (reset-contents self)))
-           (oa:om-invalidate-view selected-panel)
+           (init-selection (om::editor self))
            (om::report-modifications self))
+
           (#\-  
+           ;;; inverse pulse / silence
            (let ((pos (position selection accents)))
-             (setf (nth pos (pulses (prf selected-panel)))
-                   (- (nth pos (pulses (prf selected-panel)))))
-             (om::report-modifications self)
+             (setf (nth selection (pulses rf))
+                   (- (nth selection (pulses rf))))
              (oa:om-invalidate-view selected-panel)
              (om::report-modifications self)))
+
+          (:om-key-right  
+           ;;; move selected pulse to the right
+           (when (and (numberp selection) (>= selection 0))
+             (let* ((current-accent (nth selection accents))
+                    (new-accent? (1+ current-accent))
+                    (silence? (minusp (nth selection (pulses rf)))))
+               
+               (unless (or (>= new-accent? (size (prf selected-panel)))
+                           (find new-accent? accents))
+               
+                 (setf (pulses rf) 
+                       (accents-to-pulses (sort (cons new-accent? (remove current-accent accents)) '<)))
+                 
+                 (when silence? 
+                   (setf (nth selection (pulses rf))
+                       (- (nth selection (pulses rf)))))
+                 
+                 (oa:om-invalidate-view selected-panel)
+               (om::report-modifications self)))))
+
+          (:om-key-left 
+           ;;; move selected pulse to the right
+           (when (and (numberp selection) (>= selection 0))
+             (let* ((current-accent (nth selection accents))
+                    (current-pulse-value (nth selection (pulses rf)))
+                    (new-accent? (1- current-accent))
+                    (silence? (minusp (nth selection (pulses rf)))))
+               
+               (unless (or (< new-accent? 0)
+                         (find new-accent? accents))
+                 
+                 (setf (pulses rf) 
+                       (accents-to-pulses (sort (cons new-accent? (remove current-accent accents)) '<)))
+                 
+                 (when silence? 
+                 (setf (nth selection (pulses rf))
+                       (- (nth selection (pulses rf)))))
+                 
+                 (oa:om-invalidate-view selected-panel)
+                 (om::report-modifications self)))))
+
+          (:om-key-up
+           ;;; extend the fralme averall size : longer duration for last pulse
+           (setf (pulses rf) (append (butlast (pulses rf))
+                                     (list (if (plusp (car (last (pulses rf))))
+                                               (1+ (car (last (pulses rf))))
+                                             (1- (car (last (pulses rf))))))))
+           (initialize-instance rf)
+           (oa:om-invalidate-view self)
+           (om::report-modifications self))
+
+          (:om-key-down 
+           ;;; reduce move pulse to the right
+           (when (> (abs (car (last (pulses rf)))) 1)
+             (setf (pulses rf) (append (butlast (pulses rf))
+                                     (list (if (plusp (car (last (pulses rf))))
+                                               (1- (car (last (pulses rf))))
+                                             (1+ (car (last (pulses rf))))))))
+             (initialize-instance rf)
+             (oa:om-invalidate-view self)
+             (om::report-modifications self)))
+
           (:om-key-esc
            (init-selection self))
+
           (#\s  
-           (apply-r-substitute container-prf selected-frame nil nil)
+           (apply-r-substitute container-prf rf nil nil)
            (reset-contents self)
            (om::report-modifications self))
           )

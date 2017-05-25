@@ -69,6 +69,9 @@
 (defun accent-beats (pulses)
   (om::dx->x 0 (om::om-abs pulses)))
 
+(defun accents-to-pulses (a)
+  (om::x->dx a))
+
 (defmethod draw-rhythmic-line ((line rhythmic-frame) size x w y h i &optional selection)
   (let* ((pulses (pulses line))
          (pulses-pos (beat-graphic-positions size w x))
@@ -78,7 +81,8 @@
     (oa::om-with-fg-color nil (oa::om-make-color 0 0 0)
       (oa::om-draw-line x yy (+ x (* w (/ (size line) size))) yy)
       (loop for b = 0 then (+ b 1) 
-            for bx in pulses-pos do
+            for bx in pulses-pos 
+            while (<= b (size line)) do
             ;(if sign (oa::om-draw-line bx yy bx (- yy 4)))
             (let* ((pos (position b plist))
                    (beat (and pos (nth pos pulses))))
