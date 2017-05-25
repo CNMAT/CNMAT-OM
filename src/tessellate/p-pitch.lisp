@@ -104,12 +104,14 @@
   :initvals '( nil ((1 2 3 4)(2 3 4 5))  (6000 6600 7200 7500))
   :doc "Returns random pitch samples from a collection, with pitches following the contour of the bpf pitch bands provided."
   
-  (case mode
 
-    (0  
      
+     (print 'pitch-collection)
+     (print (second pitch-collection))
+
      (cond 
-         ((listp (second (flat pitch-collection 1)))
+         ((second pitch-collection)
+          (print 'got-here)
          (let ((prelim-sample-pitches (mapcar (lambda (x) (sample-from-bands bpf-lib x))  attacks-voices)))
          (mapcar (lambda (x y) (get-pitch-from-collection-by-voice x (flat y ))) prelim-sample-pitches pitch-collection)))
         
@@ -118,7 +120,7 @@
          (mapcar (lambda (x) (get-pitch-from-collection-by-voice x (flat pitch-collection))) prelim-sample-pitches)
          ))
      )
-   ))
+   
 
 )
 
@@ -247,7 +249,6 @@
 
 (defun scaled-bpf-samples-registration (my-bpf pitches)
 
-  
   (let ((hold-samples (om::bpf-sample my-bpf 'nil 'nil (length pitches))))
     ;;;round them
     (om::om* (om::om-round (om::om/ hold-samples 100.00)) 100)
@@ -308,18 +309,21 @@
 
 
 ;;;this receieves list of durations lists (output from get-rotations)
-(om::defmethod! p-bands-register ( (bpf-lib list) (pitches list) &optional (mode 0))
+(om::defmethod! p-bands-register ( (bpf-lib list) (pitches list))
 
   :icon 1
   :indoc '("a bpf-lib of two bpfs" "a list of list of attacks, in rotations or other specification" "mode: 0 = n/a; mode=1 for multiple pitch list input")
   :outdoc '("a list of pitces mapped from the bpf to the pitch-collection") 
-  :initvals '( nil '(6000 6000 6000 6000)  0)
+  :initvals '( nil '(6000 6000 6000 6000))
   :doc "Registrates a pitch sequence within the registral bands determined by a bpf. Random pitch samples conform to a list of allowable pitchclasses and are determed following the contour of the bpf pitch bands provided. Optional Mode=1 will take in multiple pitchlists."
   
-  (case mode
 
-    (0 
-        (let* ((bpf-samples (mapcar (lambda (x) (scaled-bpf-samples-registration x pitches)) bpf-lib))
+  (cond ((listp (car pitches))
+        ;;when there is a list of pitches lists
+        (mapcar (lambda (x) (p-bands-register bpf-lib x)) pitches))
+        
+        (t 
+         (let* ((bpf-samples (mapcar (lambda (x) (scaled-bpf-samples-registration x  pitches )) bpf-lib))
               ;;;put these bpf samples into high-low pairs
               (organized-bpf-samples (mat-trans bpf-samples))
               ;;;now get all of the possibly relevant pitches
@@ -331,15 +335,9 @@
           ;;;originally provided in the pitches list
 
           (mapcar (lambda (x)  (nth (om-random 0 (- (length x) 1)) x)) right-pitches-no-nils)
-          )
+          ))
 
-          )
-
-    (1
-     ;;;this mode deals with many-voiced-rhythm-lists
-     (mapcar (lambda (x) (p-bands-register bpf-lib x)) pitches)
-     
-     )
+          
     )
 )
 
