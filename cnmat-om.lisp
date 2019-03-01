@@ -91,28 +91,19 @@
 (in-package :om)
 
 
-;files?
+(mapc #'(lambda (file) 
+          (compile&load (om-relative-path '("src" "tessellate") file)))
+      '("rhythmic-frames"
+        "prf-editor"
+        "combinations"
+        "o-operations"
+        "p-pitch"
+        "r-rhythm"
+        "q-queries"
+        "s-score"
+        "s-combine-voices"
+        "u-utilities"))
 
-
-(compile&load (om-relative-path '("src/tessellate") "rhythmic-frames"))
-
-(compile&load (om-relative-path '("src/tessellate") "prf-editor"))
-
-(compile&load (om-relative-path '("src/tessellate") "combinations"))
-
-(compile&load (om-relative-path '("src/tessellate") "o-operations"))
-
-(compile&load (om-relative-path '("src/tessellate") "p-pitch"))
-
-(compile&load (om-relative-path '("src/tessellate") "r-rhythm"))
-
-(compile&load (om-relative-path '("src/tessellate") "q-queries"))
-
-(compile&load (om-relative-path '("src/tessellate") "s-score"))
-
-(compile&load (om-relative-path '("src/tessellate") "s-combine-voices"))
-
-(compile&load (om-relative-path '("src/tessellate") "u-utilities"))
 
 
 (set-lib-release 0.1 (om::find-library "CNMAT-OM"))
