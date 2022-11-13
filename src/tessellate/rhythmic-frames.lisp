@@ -15,7 +15,8 @@
 (defclass! polyrhythmic-frame ()
   ((voices :initform nil :initarg :voices :accessor voices)))
 
-(defclass! prf (polyrhythmic-frame) ())
+(defclass! prf (polyrhythmic-frame) 
+  ((voices :initform nil :initarg :voices :accessor voices)))
 
 (defmethod initialize-instance :after ((self polyrhythmic-frame) &rest args)
   (setf (voices self)
@@ -30,8 +31,15 @@
 
 (defmethod flat-voices ((self rhythmic-frame)) self)
 
+#+om-sharp
+(defmethod om::display-modes-for-object ((self rhythmic-frame))
+  '(:mini-view :text :hidden))
 
+#+om-sharp
+(defmethod om::draw-mini-view ((object rhythmic-frame) box x y w h &optional time) 
+  (draw-rhythmic-line object (size object) (+ x 10) (- w 20) (+ y 10) (- h 20)))
 
+#-om-sharp
 (defmethod om::draw-mini-view  ((view t) (value rhythmic-frame)) 
   (oa:om-with-focused-view view 
     (draw-rhythmic-line value (size value) 10 (- (om::w view) 20) 10 (- (om::h view) 20))))
@@ -44,6 +52,17 @@
     1))
 
 
+#+om-sharp
+(defmethod om::display-modes-for-object ((self polyrhythmic-frame))
+  '(:mini-view :text :hidden))
+
+#+om-sharp
+(defmethod om::draw-mini-view ((object polyrhythmic-frame) box x y w h &optional time) 
+  (when (voices object)
+    (let ((maxsize (get-r-frame-size object)))
+      (draw-rhythmic-line object maxsize (+ x 10) (- w 20) (+ y 10) (- h 20)))))
+
+#-om-sharp
 (defmethod om::draw-mini-view  ((view t) (value polyrhythmic-frame)) 
   (when (voices value)
     (oa:om-with-focused-view view 
@@ -94,7 +113,8 @@
                     (if (find pos selection) selected-color unselected-color)
                   (if (> beat 0)
                       (progn (setq sign t)
-                        (oa::om-fill-ellipse (+ 0.5 bx) (- yy 3) 3 3)
+                        #+om-sharp(oa:om-draw-ellipse (+ 0.5 bx) (- yy 3) 3 3 :fill t)
+                        #-om-sharp(oa:om-fill-ellipse (+ 0.5 bx) (- yy 3) 3 3)
                         (oa:om-draw-string (- bx 4) (- yy 8) (format nil "~D" beat)))
                     (progn (setq sign nil)
                       (oa::om-draw-ellipse (+ 0.5 bx) (+ yy 4) 3 3)
