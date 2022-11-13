@@ -129,7 +129,7 @@
             (oa::om-fill-rect 0 0 (1- (om::w self)) (1- (om::h self)))))
       (draw-rhythmic-line (prf self) 
                           (get-r-frame-size (get-prf self))
-                          4 (- (om::w self) 8) 2 (- (om::h self) 4) 0
+                          4 (- (om::w self) 8) 2 (- (om::h self) 4)
                           (selected self))  
       )))
 

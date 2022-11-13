@@ -47,10 +47,10 @@
   (when (voices value)
     (oa:om-with-focused-view view 
       (let ((maxsize (get-r-frame-size value)))
-        (draw-rhythmic-line value maxsize 10 (- (om::w view) 20) 10 (- (om::h view) 20) 0)))))
+        (draw-rhythmic-line value maxsize 10 (- (om::w view) 20) 10 (- (om::h view) 20))))))
 
 
-(defmethod draw-rhythmic-line ((line polyrhythmic-frame) size x w y h i &optional selection)
+(defmethod draw-rhythmic-line ((line polyrhythmic-frame) size x w y h &optional selection)
   (when (voices line)
     (let ((lineh (/ h (length (voices line)))))
     ;(oa::om-with-line '(2 2)
@@ -58,7 +58,7 @@
       (om::om-with-fg-color nil (oa::om-make-color 0 0 0)   
         (loop for v in (voices line) 
               for i = 0 then (1+ i) do
-              (draw-rhythmic-line v size x w (+ y (* i lineh)) lineh i selection))
+              (draw-rhythmic-line v size x w (+ y (* i lineh)) lineh selection))
         ))))
  
 
@@ -72,7 +72,7 @@
 (defun accents-to-pulses (a)
   (om::x->dx a))
 
-(defmethod draw-rhythmic-line ((line rhythmic-frame) size x w y h i &optional selection)
+(defmethod draw-rhythmic-line ((line rhythmic-frame) size x w y h &optional selection)
   (let* ((pulses (pulses line))
          (pulses-pos (beat-graphic-positions size w x))
          (yy (+ y (/ h 2)))
