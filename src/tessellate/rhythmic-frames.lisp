@@ -78,7 +78,9 @@
          (pulses-pos (beat-graphic-positions size w x))
          (yy (+ y (/ h 2)))
          (plist (accent-beats pulses))
-         (sign t))
+         (sign t)
+         (unselected-color (oa::om-make-color 0 0 0))
+         (selected-color (oa::om-make-color 0.9 0.3 0.3)))
     (oa::om-with-fg-color nil (oa::om-make-color 0 0 0)
       (oa::om-draw-line x yy (+ x (* w (/ (size line) size))) yy)
       (loop for b = 0 then (+ b 1) 
@@ -89,14 +91,14 @@
                    (beat (and pos (nth pos pulses))))
               (if beat
                 (om::om-with-fg-color nil 
-                    (if (find pos selection) oa::*om-dark-red-color* oa::*om-black-color*)
+                    (if (find pos selection) selected-color unselected-color)
                   (if (> beat 0)
                       (progn (setq sign t)
                         (oa::om-fill-ellipse (+ 0.5 bx) (- yy 3) 3 3)
-                        (oa:om-draw-string (- bx 4) (- yy 8) (om::integer-to-string beat)))
+                        (oa:om-draw-string (- bx 4) (- yy 8) (format nil "~D" beat)))
                     (progn (setq sign nil)
                       (oa::om-draw-ellipse (+ 0.5 bx) (+ yy 4) 3 3)
-                      (oa:om-draw-string (- bx 8) (- yy 3) (om::integer-to-string beat)))
+                      (oa:om-draw-string (- bx 8) (- yy 3) (format nil "~D" beat)))
                     ))
                 (when sign 
                   (oa::om-draw-line bx yy bx (- yy 4)))
