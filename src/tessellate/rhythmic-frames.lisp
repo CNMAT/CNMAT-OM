@@ -263,8 +263,7 @@
 
 (defun remove-rest-values-helper (durations-list intervals-list)
 
-   (let ((final-list '())
-      (pre-final-list '()))
+   (let ((final-list '()))
 
     ;get rid of intervals corresponding with rests
     (loop for duration in durations-list
