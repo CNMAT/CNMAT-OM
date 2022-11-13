@@ -34,7 +34,8 @@
 
 (defmethod om::draw-mini-view  ((view t) (value rhythmic-frame)) 
   (oa:om-with-focused-view view 
-    (draw-rhythmic-line (pulses value) (size value) 10 (- (om::w view) 20) 10 (- (om::h view) 20))))
+    (draw-rhythmic-line value (size value) 10 (- (om::w view) 20) 10 (- (om::h view) 20))))
+
 
 (defmethod get-r-frame-size ((self rhythmic-frame)) (size self))
 (defmethod get-r-frame-size ((self polyrhythmic-frame)) 
