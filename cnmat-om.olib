@@ -1,0 +1,52 @@
+
+(:om-lib
+ 
+ (:version 0.1)
+
+ (:author "Center for New Music and Audio Technologies.")
+
+ (:doc "CNMAT-OM contains compositional tools collected from CNMAT researh and projects.
+
+Copyright (c) 2017 Regents of the University of California. All rights reserved.")
+
+ (:source-files 
+    "src/package"
+    "src/tessellate/rhythmic-frames"
+    "src/tessellate/combinations"
+    "src/tessellate/o-operations"
+    "src/tessellate/p-pitch"
+    "src/tessellate/r-rhythm"
+    "src/tessellate/q-queries"
+    "src/tessellate/s-score"
+    "src/tessellate/s-combine-voices"
+    "src/tessellate/u-utilities")
+
+ (:symbols
+  (:packages
+    (:package 
+      (:name "Tessellate")
+      (:functions combinations)
+      (:package 
+        (:name "database")
+        (:functions q-combi q-combi-filter q-canon q-rotations  q-permute+remove-dup-rotations q-n-permutations-no-rotations q-permutations+canon q-permutations+canon-utility q-permutations+canon-all q-rotation-canon? q-canon-permutations-no-overlaps q-combi-from-elements q-random-permutations-no-dups q-remove-rotations))
+      (:package 
+        (:name "operations")
+        (:functions o-operations o-list-trans o-index o-count-trunc o-equal-prob o-index o-list-rand o-list-repeat o-sum-lists  o-list-rand o-list-info))
+      (:package 
+        (:name "pitch")
+        (:functions p-map1 p-inversion p-map2 p-make-bands p-bands-collection p-bands-pitchclass p-bands-register p-harmony-from-analysis))
+      (:package 
+        (:name "rhythm")
+        (:functions prf rhythmic-frames r-diminutions r-interleave r-duration-list r-merge r-combine-lists r-retro-canon? r-substitute r-substitute-children r-tatum-mapping r-scatter-attacks r-retro-canon?)
+        (:classes prf))
+      (:package 
+        (:name "score")
+        (:functions s-poly s-poly->voice s-poly2 s-cuts s-cuts2 s-combine-voices s-combine-polys))
+      (:package 
+        (:name "utilities")
+        (:functions u-info u-list-info u-score-lists u-retro-canon? u-+ u-- u-* u-inversion u-midic->pc u-flat-by-voice u-pc-remap u-divisors u-tatum-format u-list-duplicator))
+  )))
+)
+
+
+
